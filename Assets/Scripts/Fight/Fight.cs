@@ -23,7 +23,7 @@ public class Fight : MonoBehaviour
    public List<SpriteRenderer> HeroesSprites;
    public List<SpriteRenderer> EnemiesSprites;
 
-   public List<Image> SkillsImages;
+   public List<GameObject> SkillsCards;
 
    public GameObject WinLosePanel;
    public TMP_Text WinLoseText;
@@ -457,18 +457,20 @@ public class Fight : MonoBehaviour
          if(!isEnemyTurn)
             foreach(Skill skill in PlayerUITeam[0].skills)
             {
-               var SkIm = SkillsImages[i];
-               SkIm.enabled = true;
-               SkIm.sprite = skill.Icon;
-               SkIm.gameObject.GetComponent<Skill_Image>().skill = skill;
+               var SkCard = SkillsCards[i];
+               SkCard.SetActive(true);
+               SkCard.GetComponent<CardFiller>().skill = skill;
+               SkCard.GetComponent<Skill_Image>().skill = skill;
+               //SkIm.sprite = skill.Icon;
+               //SkIm.gameObject.GetComponent<Skill_Image>().skill = skill;
                i++;
             }
       }
       else
       {
-         foreach (Image Sk_Image in SkillsImages)
+         foreach (var Sk_Card in SkillsCards)
          {
-            Sk_Image.enabled = false;
+            Sk_Card.SetActive(false);
          }
       }
    }
