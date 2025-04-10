@@ -13,12 +13,14 @@ public class SkillSO : ScriptableObject
 
    public enum SkillType
    {
-      Solo_Target,
-      Mass_Target, //По всем из выбранной тимы
+      Solo_Enemy, //По одному врагу
+      Mass_Enemies, //По всем врагам
+      Solo_Ally, //По одному союзнику
+      Mass_Allies, //По всем союзникам
       All, //по всем абсолютно
-      Random_Target, //Из тимы врага
-      Allies_Random_Target,//Из тимы союзников
-      Hard_Random_Target, //Из всех
+      Random_Enemy, //Случайный враг
+      Random_Ally,//Случайный союзник
+      Random_Target, //Случайный персонаж
       Passive
    };
 }

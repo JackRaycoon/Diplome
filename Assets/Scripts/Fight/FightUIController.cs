@@ -52,6 +52,7 @@ public class FightUIController : MonoBehaviour
                go.GetComponent<FightPortrait>().isInteractable = !Fight.AlreadyTurn.Contains(Fight.PlayerTeam[fp.id]);
             if(allDisable) go.GetComponent<FightPortrait>().isInteractable = false;
             if (allInteractable) go.GetComponent<FightPortrait>().isInteractable = true;
+            if (_countHeroes == 1 && Fight.selectedSkill != null) fp.isInteractable = false;
          }
 
          foreach (Transform go in enemies.transform)
@@ -87,6 +88,7 @@ public class FightUIController : MonoBehaviour
             if (fp.id < 6)
                fp.isInteractable = !Fight.AlreadyTurn.Contains(Fight.PlayerTeam[fp.id]);
             if (allDisable) go.GetComponent<FightPortrait>().isInteractable = false;
+            if (_countHeroes == 1 && Fight.selectedSkill != null) fp.isInteractable = false;
          }
          switch (_countHeroes)
          {
@@ -191,10 +193,13 @@ public class FightUIController : MonoBehaviour
          healthIconRTransform.anchoredPosition = currentPositionImage;
       }
    }
+   public static bool hardUpdate;
    void Update()
     {
-      if (_countHeroes != CountHeroes) 
+      if (_countHeroes != CountHeroes)
+      {
          UpdateCount(1);
+      }
      // if (oneID_heroes != _oneID_heroes)
      //    UpdateCount(1);
       if (_countEnemies != CountEnemies)
@@ -202,11 +207,12 @@ public class FightUIController : MonoBehaviour
       if(_allDisable != allDisable || _allInteractable != allInteractable)
          UpdateCount(0);
 
-      //if (hardUpdate) Ћомают и позвол€ют ходить в ход врага -> ќшибка
-      //{
-      //   hardUpdate = false;
-      //   UpdateCount(1);
-      //   UpdateCount(2);
-      //}
+      if (hardUpdate) //Ћомают и позвол€ют ходить в ход врага -> ќшибка
+      {
+         hardUpdate = false;
+         UpdateCount(1);
+         UpdateCount(2);
+         UpdateCount(0);
+      }
    }
 }

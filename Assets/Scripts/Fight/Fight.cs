@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -129,12 +130,34 @@ public class Fight : MonoBehaviour
       CardShowerReset();
 
       //Ждём пока не выберется скилл
+      ChangeSkill:
+      EnemyUITeam = new List<Fighter>(EnemyTeam);
+      UpdatePortrait();
       while (selectedSkill == null) yield return null;
 
-      ChangeSkill:
-      PlayerUITeam = new List<Fighter>(PlayerTeam);
+      //Сделать чтобы менялось в зависимости от целей каста, менять EnemyUITeam
+      PlayerUITeam = new List<Fighter>() { SelectedCharacter() };
+      switch (selectedSkill.skillData.skill_type)
+      {
+         case SkillSO.SkillType.Solo_Enemy:
+         case SkillSO.SkillType.Mass_Enemies:
+         case SkillSO.SkillType.Random_Enemy:
+            EnemyUITeam = new List<Fighter>(EnemyTeam);
+            break;
+         case SkillSO.SkillType.All:
+         case SkillSO.SkillType.Random_Target:
+            EnemyUITeam = new List<Fighter>(AllCharacter);
+            break;
+         case SkillSO.SkillType.Solo_Ally:
+         case SkillSO.SkillType.Mass_Allies:
+         case SkillSO.SkillType.Random_Ally:
+            EnemyUITeam = new List<Fighter>(PlayerTeam);
+            break;
+            
+      }
       UpdatePortrait();
       FightUIController.allInteractable = true;
+      FightUIController.hardUpdate = true;
 
       var temp_skill = selectedSkill;
 
@@ -151,20 +174,19 @@ public class Fight : MonoBehaviour
 
          if(temp_skill != selectedSkill)
          {
+            FightUIController.allInteractable = false;
             goto ChangeSkill;
          }
       }
       var selectedTargets = new List<Fighter>();
       switch (selectedSkill.skillData.skill_type)
       {
-         case SkillSO.SkillType.Solo_Target:
+         case SkillSO.SkillType.Solo_Enemy:
+         case SkillSO.SkillType.Solo_Ally:
             selectedTargets.Add(selectedTarget);
             break;
-         case SkillSO.SkillType.Mass_Target:
-            if (PlayerTeam.Contains(selectedTarget as PlayableCharacter))
-               selectedTargets = new List<Fighter>(PlayerTeam);
-            else
-               selectedTargets = new List<Fighter>(EnemyTeam);
+         case SkillSO.SkillType.Mass_Enemies:
+            selectedTargets = new List<Fighter>(EnemyTeam);
             if (!selectedSkill.skillData.isCorpseTargetToo)
             {
                for(int i = 0; i<selectedTargets.Count; i++)
@@ -191,7 +213,7 @@ public class Fight : MonoBehaviour
                }
             }
             break;
-         case SkillSO.SkillType.Random_Target:
+         case SkillSO.SkillType.Random_Enemy:
             selectedTargets = new List<Fighter>() { EnemyTeam[Random.Range(0, EnemyTeam.Count)] };
             if (!selectedSkill.skillData.isCorpseTargetToo)
             {
@@ -201,7 +223,21 @@ public class Fight : MonoBehaviour
                } while (selectedTargets[0].isDead);
             }
             break;
-         case SkillSO.SkillType.Allies_Random_Target:
+         case SkillSO.SkillType.Mass_Allies:
+            selectedTargets = new List<Fighter>(PlayerTeam);
+            if (!selectedSkill.skillData.isCorpseTargetToo)
+            {
+               for (int i = 0; i < selectedTargets.Count; i++)
+               {
+                  if (selectedTargets[i].isDead)
+                  {
+                     selectedTargets.Remove(selectedTargets[i]);
+                     i--;
+                  }
+               }
+            }
+            break;
+         case SkillSO.SkillType.Random_Ally:
             selectedTargets = new List<Fighter>() { PlayerTeam[Random.Range(0, PlayerTeam.Count)] };
             if (!selectedSkill.skillData.isCorpseTargetToo)
             {
@@ -211,7 +247,7 @@ public class Fight : MonoBehaviour
                } while (selectedTargets[0].isDead);
             }
             break;
-         case SkillSO.SkillType.Hard_Random_Target:
+         case SkillSO.SkillType.Random_Target:
             selectedTargets = new List<Fighter>() { AllCharacter[Random.Range(0, AllCharacter.Count)] };
             if (!selectedSkill.skillData.isCorpseTargetToo)
             {
@@ -282,11 +318,26 @@ public class Fight : MonoBehaviour
       var selectedTargets = new List<Fighter>();
       switch (selectedEnemy.Intension.skillData.skill_type)
       {
-         case SkillSO.SkillType.Solo_Target:
+         case SkillSO.SkillType.Solo_Enemy:
+         case SkillSO.SkillType.Solo_Ally:
             selectedTargets.Add(target);
             break;
-         case SkillSO.SkillType.Mass_Target:
+         case SkillSO.SkillType.Mass_Enemies:
             selectedTargets = new List<Fighter>(PlayerTeam);
+            if (!selectedEnemy.Intension.skillData.isCorpseTargetToo)
+            {
+               for (int i = 0; i < selectedTargets.Count; i++)
+               {
+                  if (selectedTargets[i].isDead)
+                  {
+                     selectedTargets.Remove(selectedTargets[i]);
+                     i--;
+                  }
+               }
+            }
+            break;
+         case SkillSO.SkillType.Mass_Allies:
+            selectedTargets = new List<Fighter>(EnemyTeam);
             if (!selectedEnemy.Intension.skillData.isCorpseTargetToo)
             {
                for (int i = 0; i < selectedTargets.Count; i++)
@@ -313,7 +364,7 @@ public class Fight : MonoBehaviour
                }
             }
             break;
-         case SkillSO.SkillType.Random_Target:
+         case SkillSO.SkillType.Random_Enemy:
             selectedTargets = new List<Fighter>() { PlayerTeam[Random.Range(0, PlayerTeam.Count)] };
             if (!selectedEnemy.Intension.skillData.isCorpseTargetToo)
             {
@@ -323,7 +374,7 @@ public class Fight : MonoBehaviour
                } while (selectedTargets[0].isDead);
             }
             break;
-         case SkillSO.SkillType.Allies_Random_Target:
+         case SkillSO.SkillType.Random_Ally:
             selectedTargets = new List<Fighter>() { EnemyTeam[Random.Range(0, EnemyTeam.Count)] };
             if (!selectedEnemy.Intension.skillData.isCorpseTargetToo)
             {
@@ -333,7 +384,7 @@ public class Fight : MonoBehaviour
                } while (selectedTargets[0].isDead);
             }
             break;
-         case SkillSO.SkillType.Hard_Random_Target:
+         case SkillSO.SkillType.Random_Target:
             selectedTargets = new List<Fighter>() { AllCharacter[Random.Range(0, AllCharacter.Count)] };
             if (!selectedEnemy.Intension.skillData.isCorpseTargetToo)
             {
@@ -433,6 +484,7 @@ public class Fight : MonoBehaviour
    }
    public static PlayableCharacter SelectedCharacter()
    {
+      if (SelectedCharacterID == -1) return null;
       return PlayerTeam[SelectedCharacterID];
    }
    public static void SelectTarget(int id)

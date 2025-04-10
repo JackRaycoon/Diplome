@@ -15,7 +15,6 @@ MonoBehaviour:
   _name: Fire Wave
   icon: {fileID: 21300000, guid: 659f89bb3b7da3943b7eed3776c26a83, type: 3}
   description: "<b><size=55>\u0412\u043E\u043B\u043D\u0430 \u043E\u0433\u043D\u044F</size></b>\n\u041D\u0430\u043D\u043E\u0441\u0438\u0442
-    {0} \u0443\u0440\u043E\u043D\u0430 \u043F\u043E \u0432\u044B\u0431\u0440\u0430\u043D\u043D\u043E\u0439
-    \u0441\u0442\u043E\u0440\u043E\u043D\u0435"
-  skill_type: 1
+    {0} \u0443\u0440\u043E\u043D\u0430 \u0432\u0441\u0435\u043C \u043F\u0440\u043E\u0442\u0438\u0432\u043D\u0438\u043A\u0430\u043C"
+  skill_type: 4
   isCorpseTargetToo: 0

@@ -65,7 +65,7 @@ public class Skill_Image : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
 
    public void Action()
    {
-      if (!isEnabled || !isClickable) { return; }
+      if (!isClickable) { return; }
 
       Fight.selectedSkill = skill;
       isEnabled = false;

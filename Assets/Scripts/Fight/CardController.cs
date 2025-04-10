@@ -66,12 +66,13 @@ public class CardController : MonoBehaviour
             }
          }
          //Разлок на колёсико
-         if (Input.GetKeyDown(KeyCode.Mouse2))
+         /*if (Input.GetKeyDown(KeyCode.Mouse2))
          {
             var cardSh = topCard.GetComponent<CardShower>();
             cardSh.isLock = false;
             Skill_Image.isOneLocked = false;
-         }
+            Fight.selectedSkill = null;
+         }*/
 
          if (topCard != currentCard)
          {
