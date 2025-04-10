@@ -69,16 +69,22 @@ public class Fight : MonoBehaviour
 
    private void Update()
    {
-      //Возврат по правой кнопки мыши
+      //Р’РѕР·РІСЂР°С‚ РїРѕ РїСЂР°РІРѕР№ РєРЅРѕРїРєРё РјС‹С€Рё
       if (Input.GetKeyDown(KeyCode.Mouse1) && selectedSkill == null)
       {
+         CardShowerReset();
          SelectedCharacterID = -1;
          _selected = false;
          PlayerUITeam = new List<Fighter>(PlayerTeam);
          UpdatePortrait();
       }
+      else if (Input.GetKeyDown(KeyCode.Mouse1))
+      {
+         selectedSkill = null;
+         Debug.Log("NUll");
+      }
 
-      //Вывод выбранного персонажа
+      //Р’С‹РІРѕРґ РІС‹Р±СЂР°РЅРЅРѕРіРѕ РїРµСЂСЃРѕРЅР°Р¶Р°
       if (SelectedCharacterID != -1 && !_selected)
       {
          _selected = true;
@@ -86,13 +92,24 @@ public class Fight : MonoBehaviour
          UpdatePortrait();
       }
 
-      //Обновление по требованию
+      //РћР±РЅРѕРІР»РµРЅРёРµ РїРѕ С‚СЂРµР±РѕРІР°РЅРёСЋ
       if (needUpdatePortrait)
       {
          needUpdatePortrait = false;
          UpdatePortrait();
       }
-      RoundNum.text = "Раунд: " + round_number;
+      RoundNum.text = "Р Р°СѓРЅРґ: " + round_number;
+   }
+
+   public void CardShowerReset()
+   {
+      foreach (var SkCard in SkillsCards)
+      {
+         SkCard.GetComponent<CardShower>().isFirstMove = false;
+         SkCard.GetComponent<CardShower>().isLock = false;
+      }
+      Skill_Image.isOneLocked = false;
+      Skill_Image.isNeedClose = true;
    }
 
    private void FightStart()
@@ -109,15 +126,19 @@ public class Fight : MonoBehaviour
       StartTurn:
       selectedSkill = null;
       selectedTarget = null;
+      CardShowerReset();
 
-      //Ждём пока не выберется скилл
+      //Р–РґС‘Рј РїРѕРєР° РЅРµ РІС‹Р±РµСЂРµС‚СЃСЏ СЃРєРёР»Р»
       while (selectedSkill == null) yield return null;
 
+      ChangeSkill:
       PlayerUITeam = new List<Fighter>(PlayerTeam);
       UpdatePortrait();
       FightUIController.allInteractable = true;
 
-      //Ждём выбора цели
+      var temp_skill = selectedSkill;
+
+      //Р–РґС‘Рј РІС‹Р±РѕСЂР° С†РµР»Рё
       while (selectedTarget == null)
       {
          yield return null;
@@ -126,6 +147,11 @@ public class Fight : MonoBehaviour
             FightUIController.allInteractable = false;
             _selected = false;
             goto StartTurn;
+         }
+
+         if(temp_skill != selectedSkill)
+         {
+            goto ChangeSkill;
          }
       }
       var selectedTargets = new List<Fighter>();
@@ -223,6 +249,7 @@ public class Fight : MonoBehaviour
       UpdatePortrait();
 
       Skip:
+      CardShowerReset();
       CheckRoundChange();
       if (isAllDoTurn) StartCoroutine(PlayerTurn());
       else if(!isWin && !isLose) StartCoroutine(EnemyTurn());
@@ -245,12 +272,12 @@ public class Fight : MonoBehaviour
       yield return new WaitForSeconds(2f);
 
       var selectedEnemy = notTurnEnemies[Random.Range(0, notTurnEnemies.Count)];
-      //Реализовать логику выбора цели
+      //Р РµР°Р»РёР·РѕРІР°С‚СЊ Р»РѕРіРёРєСѓ РІС‹Р±РѕСЂР° С†РµР»Рё
       Fighter target;
       do
       {
          target = PlayerTeam[Random.Range(0, PlayerTeam.Count)];
-      } while (target.isDead); //выбираем не мёртвую цель
+      } while (target.isDead); //РІС‹Р±РёСЂР°РµРј РЅРµ РјС‘СЂС‚РІСѓСЋ С†РµР»СЊ
 
       var selectedTargets = new List<Fighter>();
       switch (selectedEnemy.Intension.skillData.skill_type)
@@ -318,7 +345,7 @@ public class Fight : MonoBehaviour
             break;
       }
 
-      Debug.Log("Использует умение: " + selectedEnemy.Intension.skillData._name);
+      Debug.Log("РСЃРїРѕР»СЊР·СѓРµС‚ СѓРјРµРЅРёРµ: " + selectedEnemy.Intension.skillData._name);
       PlayerUITeam = selectedTargets;
       EnemyUITeam = new List<Fighter> { selectedEnemy };
       cast = true;
@@ -387,7 +414,7 @@ public class Fight : MonoBehaviour
          allEnemiesDoTurn = false;
          allPlayerCharactersDoTurn = false;
          round_number++;
-         Debug.Log("Следующий раунд: " + round_number.ToString());
+         Debug.Log("РЎР»РµРґСѓСЋС‰РёР№ СЂР°СѓРЅРґ: " + round_number.ToString());
          MakeIntention();
       }
    }
@@ -396,8 +423,8 @@ public class Fight : MonoBehaviour
    {
       StopAllCoroutines();
       WinLosePanel.SetActive(true);
-      if (isLose) WinLoseText.text = "К сожалению, вы проиграли";
-      else if (isWin) WinLoseText.text = "Поздравляю с победой";
+      if (isLose) WinLoseText.text = "Рљ СЃРѕР¶Р°Р»РµРЅРёСЋ, РІС‹ РїСЂРѕРёРіСЂР°Р»Рё";
+      else if (isWin) WinLoseText.text = "РџРѕР·РґСЂР°РІР»СЏСЋ СЃ РїРѕР±РµРґРѕР№";
    }
 
    public static void SelectCharacter(int id)
@@ -419,7 +446,7 @@ public class Fight : MonoBehaviour
       {
          figh.prevIntension = figh.Intension;
 
-         //Количество скиллов без пассивок (используемых скиллов)
+         //РљРѕР»РёС‡РµСЃС‚РІРѕ СЃРєРёР»Р»РѕРІ Р±РµР· РїР°СЃСЃРёРІРѕРє (РёСЃРїРѕР»СЊР·СѓРµРјС‹С… СЃРєРёР»Р»РѕРІ)
          int skillCount = 0;
          foreach(Skill skill in figh.skills)
          {
@@ -458,7 +485,8 @@ public class Fight : MonoBehaviour
             foreach(Skill skill in PlayerUITeam[0].skills)
             {
                var SkCard = SkillsCards[i];
-               SkCard.SetActive(true);
+               SkCard.GetComponent<Graphic>().enabled = true;
+               Show(SkCard);
                SkCard.GetComponent<CardFiller>().skill = skill;
                SkCard.GetComponent<Skill_Image>().skill = skill;
                //SkIm.sprite = skill.Icon;
@@ -468,10 +496,39 @@ public class Fight : MonoBehaviour
       }
       else
       {
-         foreach (var Sk_Card in SkillsCards)
+         foreach (var SkCard in SkillsCards)
          {
-            Sk_Card.SetActive(false);
+            Hide(SkCard);
          }
+      }
+   }
+
+   void Show(GameObject go)
+   {
+      go.GetComponent<LayoutElement>().ignoreLayout = false;
+      go.GetComponent<Graphic>().enabled = true;
+      ShowChildren(go);
+   }
+   void Hide(GameObject go)
+   {
+      go.GetComponent<LayoutElement>().ignoreLayout = true;
+      HideChildren(go);
+      go.GetComponent<Graphic>().enabled = false;
+   }
+   void HideChildren(GameObject go)
+   {
+      Graphic[] lChildRenderers = go.GetComponentsInChildren<Graphic>();
+      foreach (Graphic lRenderer in lChildRenderers)
+      {
+         lRenderer.enabled = false;
+      }
+   }
+   void ShowChildren(GameObject go)
+   {
+      Graphic[] lChildRenderers = go.GetComponentsInChildren<Graphic>();
+      foreach (Graphic lRenderer in lChildRenderers)
+      {
+         lRenderer.enabled = true;
       }
    }
 }

@@ -32,18 +32,47 @@ public class CardController : MonoBehaviour
 
       if (topCard != null)
       {
+         //Лок по клику
          if (Input.GetKeyDown(KeyCode.Mouse0))
          {
             var cardSh = topCard.GetComponent<CardShower>();
-            cardSh.isLock = !cardSh.isLock;
-            foreach(var card in allCards)
+            /*if (cardSh.isLock)
+            {
+               var skimage = topCard.GetComponent<Skill_Image>();
+               cardSh.isLock = false;
+               Skill_Image.isOneLocked = false;
+               skimage.Action();
+               return;
+            }*/
+            cardSh.isLock = true; 
+            var skimage = topCard.GetComponent<Skill_Image>();
+            skimage.Action();
+            Skill_Image.isOneLocked = true;
+            bool allUnlock = true;
+            foreach (var card in allCards)
             {
                if(card != cardSh)
                {
+                  if (card.isLock) allUnlock = false;
                   card.isLock = false;
                }
             }
+            if(!allUnlock)
+            {
+               //var skimage = topCard.GetComponent<Skill_Image>();
+               skimage.Exit();
+               skimage.Enter(false);
+               //StartCoroutine(skimage.Open(false));
+            }
          }
+         //Разлок на колёсико
+         if (Input.GetKeyDown(KeyCode.Mouse2))
+         {
+            var cardSh = topCard.GetComponent<CardShower>();
+            cardSh.isLock = false;
+            Skill_Image.isOneLocked = false;
+         }
+
          if (topCard != currentCard)
          {
             if (currentCard != null)

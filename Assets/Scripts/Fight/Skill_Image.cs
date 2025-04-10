@@ -25,6 +25,10 @@ public class Skill_Image : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
 
    public bool isClickable = true;
 
+   public static bool isOneLocked = false;
+
+   public static bool isNeedClose = false;
+
    private void Start()
    {
       startPos_part1 = part1.transform.position;
@@ -34,20 +38,32 @@ public class Skill_Image : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
 
    private void Update()
    {
-      if (externalSkill != null) { Enter(true); externalSkill = null; }
+      if (externalSkill != null)
+      { 
+         Enter(true); 
+         externalSkill = null; 
+      }
+
       if (isDisableExSkill)
       {
          isDisableExSkill = false;
+         Exit();
+      }
+
+      if (isNeedClose)
+      {
+         isNeedClose = false;
          Exit();
       }
    }
 
    public void OnPointerEnter(PointerEventData eventData)
    {
-      if (!isEnabled) { return; }
+      if (!isEnabled || isOneLocked) { return; }
       Enter(false);
    }
-   public void OnPointerClick(PointerEventData eventData)
+
+   public void Action()
    {
       if (!isEnabled || !isClickable) { return; }
 
@@ -55,20 +71,40 @@ public class Skill_Image : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
       isEnabled = false;
 
       Enter(false);
-      if (wait != null) StopCoroutine(wait);
+      if (wait != null) 
+         StopCoroutine(wait);
       wait = StartCoroutine(Wait());
-      if (move3 != null) StopCoroutine(move3);
-      move3 = StartCoroutine(MoveToPosition(Veil, pos_Veil.position, 1000f));
+      //if (move3 != null) StopCoroutine(move3);
+      //move3 = StartCoroutine(MoveToPosition(Veil, pos_Veil.position, 200f));
+      //Debug.Log("Veil move to zero");
    }
+   /*public void OnPointerClick(PointerEventData eventData)
+   {
+      
+   }*/
 
    public void OnPointerExit(PointerEventData eventData)
    {
-      if (!isEnabled) { return; }
+      if (!isEnabled || isOneLocked) { return; }
       Exit();
    }
 
    public void Enter(bool external)
    {
+      StartCoroutine(Open(external));
+   }
+   public void Exit()
+   {
+      //CenterSkill.sprite = null;
+
+      if (move1 != null) { StopCoroutine(move1); StopCoroutine(move2); }
+      move1 = StartCoroutine(MoveToPosition(part1, startPos_part1, 200f));
+      move2 = StartCoroutine(MoveToPosition(part2, startPos_part2, 200f, null, ""));
+   }
+
+   public IEnumerator Open(bool external)
+   {
+      if (move1 != null) { yield return move1; yield return move2; }
       if (external)
       {
          CenterSkill.sprite = externalSkill.Icon;
@@ -79,36 +115,23 @@ public class Skill_Image : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
          CenterSkill.sprite = skill.Icon;
          Description.text = skill.Description;
       }
-
-      StartCoroutine(Open());
-   }
-   public void Exit()
-   {
-      CenterSkill.sprite = null;
-
-      if (move1 != null) { StopCoroutine(move1); StopCoroutine(move2); }
-      move1 = StartCoroutine(MoveToPosition(part1, startPos_part1, 1000f));
-      move2 = StartCoroutine(MoveToPosition(part2, startPos_part2, 1000f));
-   }
-
-   public IEnumerator Open()
-   {
-      if (move1 != null) { yield return move1; yield return move2; }
-      move1 = StartCoroutine(MoveToPosition(part1, pos_part1.position, 200f));
-      move2 = StartCoroutine(MoveToPosition(part2, pos_part2.position, 200f));
+      move1 = StartCoroutine(MoveToPosition(part1, pos_part1.position, 100f));
+      move2 = StartCoroutine(MoveToPosition(part2, pos_part2.position, 100f));
    }
    public IEnumerator Wait()
    {
       while (Fight.selectedSkill != null) 
       { 
-         //Debug.Log("Wait"); 
+         Debug.Log("Wait"); 
          yield return null; 
       }
 
       isEnabled = true;
       Exit();
-      if (move3 != null) StopCoroutine(move3);
-      move3 = StartCoroutine(MoveToPosition(Veil, startPosVeil, 1000f));
+      //if (move3 != null) StopCoroutine(move3);
+      //move3 = StartCoroutine(MoveToPosition(Veil, startPosVeil, 200f));
+      //wait = null;
+      //Debug.Log("Veil move to start");
    }
 
    public IEnumerator MoveToPosition(GameObject moveObj, Vector3 targetPosition, float moveSpeed)
@@ -127,5 +150,30 @@ public class Skill_Image : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
       }
 
       moveObj.transform.position = targetPosition;
+   }
+
+   public IEnumerator MoveToPosition(GameObject moveObj, Vector3 targetPosition, float moveSpeed, Sprite sprite, string description)
+   {
+      Vector3 startPosition = moveObj.transform.position;
+      float distance = Vector3.Distance(startPosition, targetPosition);
+
+      while (distance > 0.01f)
+      {
+         float step = moveSpeed * Time.deltaTime;
+         moveObj.transform.position = Vector3.MoveTowards(moveObj.transform.position, targetPosition, step);
+
+         distance = Vector3.Distance(moveObj.transform.position, targetPosition);
+
+         yield return null;
+      }
+
+      moveObj.transform.position = targetPosition;
+      CenterSkill.sprite = sprite;
+      Description.text = description;
+   }
+
+   public void OnPointerClick(PointerEventData eventData)
+   {
+      return;
    }
 }

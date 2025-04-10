@@ -10,7 +10,7 @@ public class CardShower : MonoBehaviour
    public bool isLock;
    public bool isActive;
    private bool isActualActive;
-   private bool isFirstMove; //Сработало ли хоть раз (для определения переменных)
+   public bool isFirstMove; //Сработало ли хоть раз (для определения переменных)
 
 
 
