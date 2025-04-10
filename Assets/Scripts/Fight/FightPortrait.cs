@@ -95,6 +95,6 @@ public class FightPortrait : MonoBehaviour
 
       hp_text.text = character.hp.ToString() +
          "/" + (character.max_hp + character.bonus_hp).ToString() +
-         ((character.armor > 0) ? (" (" + character.armor + ")A") : "");
+         ((character.armor > 0) ? ("\n" + character.armor + " A") : "");
    }
 }

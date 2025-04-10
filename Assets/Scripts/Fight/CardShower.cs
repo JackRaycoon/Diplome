@@ -35,7 +35,7 @@ public class CardShower : MonoBehaviour
    {
       //if (move != null) return;
       if (!isFirstMove) startPos = new Vector3(transform.position.x, transform.position.y, transform.position.z);
-       targetPosition =  startPos + new Vector3(0f, 1.2f, 0f);
+       targetPosition =  startPos + new Vector3(0f, 4f, 0f);
        move = StartCoroutine(MoveCard( startPos,  targetPosition, 0.1f));
        //isActualActive = true;
        isFirstMove = true;
