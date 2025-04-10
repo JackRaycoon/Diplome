@@ -8,6 +8,8 @@ public class RoomBehaviour : MonoBehaviour
    public GameObject[] walls; // 0 - North, 1 - South, 2 - East, 3 - West
    public GameObject[] entrances;
    public GameObject[] doors;
+   public GameObject[] lampOn;
+   public GameObject[] lampOff;
    private Room3D room3d;
 
    private void Start()
@@ -20,6 +22,8 @@ public class RoomBehaviour : MonoBehaviour
       {
          entrances[i].SetActive(status[i]);
          walls[i].SetActive(!status[i]);
+         lampOn[i].SetActive(status[i]);
+         lampOff[i].SetActive(!status[i]);
       }
    }
    bool isFilled = false;
