@@ -33,18 +33,19 @@ public class CircularMenu : MonoBehaviour
 
    void Update()
    {
-      // ”правление стрелками (вверх/вниз)
-      if (Input.GetKeyDown(KeyCode.UpArrow))
+      if ((Input.GetKeyDown(KeyCode.UpArrow) || Input.GetAxis("Mouse ScrollWheel") > 0f) && currentIndex > 0)
       {
-         currentIndex = (currentIndex - 1 + buttons.Count) % buttons.Count;
+         currentIndex--;
          UpdateButtonPositions();
       }
-      else if (Input.GetKeyDown(KeyCode.DownArrow))
+      else if ((Input.GetKeyDown(KeyCode.DownArrow) || Input.GetAxis("Mouse ScrollWheel") < 0f) && currentIndex < 4)
       {
-         currentIndex = (currentIndex + 1) % buttons.Count;
+         currentIndex++;
          UpdateButtonPositions();
       }
    }
+
+
 
    public void UpdateButtonPositions(bool instant = false)
    {

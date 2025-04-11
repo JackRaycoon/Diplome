@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -10,23 +11,37 @@ public class Buttons : MonoBehaviour
    private CircularMenu cm;
    public List<CanvasGroup> panels;
    public CanvasGroup dark;
+   public CanvasGroup loadScreen;
    public float duration = 0.2f; // Время анимации
 
    private bool isOpened;
    private int openID = -1;
    private Coroutine animate;
+   private short choisenSlot = 0;
+
+   public TextMeshProUGUI continueText;
+
+   private bool newGameSlot1 = true, newGameSlot2 = true, newGameSlot3 = true;
    private void Start()
    {
       cm = GetComponent<CircularMenu>();
+
+      //Загрузка здесь
+
+      //отключаем "продолжить"
+      continueText.color = (newGameSlot1 && newGameSlot2 && newGameSlot3) ? 
+         new Color(0.4528302f, 0.4528302f, 0.4528302f) : new Color(1f, 1f, 1f);
    }
 
    private void Update()
    {
-      if (Input.GetKeyUp(KeyCode.Mouse1))
+      if (Input.GetKeyUp(KeyCode.Mouse1) || Input.GetKeyUp(KeyCode.Escape))
       {
-         if (animate != null) StopCoroutine(animate);
-         animate = StartCoroutine(AnimatePanel(panels[openID], false, false));
-         openID = -1;
+         CloseAllPanels();
+      }
+      if (Input.GetKeyUp(KeyCode.Return))
+      {
+         ButtonClick(cm.currentIndex);
       }
    }
    public void ButtonClick(int id)
@@ -34,6 +49,7 @@ public class Buttons : MonoBehaviour
       if (cm.isMoving || openID == id) return;
       if (cm.currentIndex == id)
       {
+         if (id == 1 && (newGameSlot1 && newGameSlot2 && newGameSlot3)) return;
          if (animate != null) StopCoroutine(animate);
          if (isOpened)
             animate = StartCoroutine(AnimatePanel(panels[openID], false, true, panels[id]));
@@ -96,5 +112,48 @@ public class Buttons : MonoBehaviour
    public void ExitYesBtn()
    {
       Application.Quit();
+   }
+   public void CloseAllPanels()
+   {
+      if (openID == -1) return;
+      if (animate != null) StopCoroutine(animate);
+      animate = StartCoroutine(AnimatePanel(panels[openID], false, false));
+      openID = -1;
+   }
+
+   public void NewRunBtn(int slot)
+   {
+      choisenSlot = (short)slot;
+   }
+   public void ContinueBtn(int slot)
+   {
+      //Просто загружаем сцену с нужными данными, не забыть проверку на то что слот не новый
+      choisenSlot = (short)slot;
+      StartCoroutine(LoadScene());
+   }
+
+   IEnumerator LoadScene()
+   {
+      //Переход к сцене для выбранного слота
+      //choisenSlot
+      float startAlpha = 0f, endAlpha = 1f, elapsed = 0f;
+      loadScreen.alpha = startAlpha;
+      loadScreen.interactable = true;
+      loadScreen.blocksRaycasts = true;
+
+      while (elapsed < duration)
+      {
+         float t = elapsed / duration;
+         float alpha = Mathf.Lerp(startAlpha, endAlpha, t);
+
+         loadScreen.alpha = alpha;
+
+         elapsed += Time.deltaTime;
+         yield return null;
+      }
+
+      // Установка финальных значений
+      loadScreen.alpha = endAlpha;
+      SceneManager.LoadScene(1);
    }
 }
