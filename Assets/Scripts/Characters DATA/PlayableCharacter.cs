@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+
 public class PlayableCharacter : Fighter
 {
    public byte currentPhase = 1; //1 - человек, 2 - получеловек, 3 - монстр
@@ -15,6 +16,24 @@ public class PlayableCharacter : Fighter
          if (skills.Count == 5) break;
       }
       //
+   }
+
+   public PlayableCharacter(CharacterSaveData charSD) : base(charSD.nameClass)
+   {
+      hp = charSD.hp;
+      max_hp = charSD.max_hp;
+      armor = charSD.armor;
+      strengh = charSD.strengh;
+      agility = charSD.agility;
+      wisdow = charSD.wisdow;
+      constitution = charSD.constitution;
+      currentPhase = charSD.currentPhase;
+      isDead = charSD.isDead;
+      isSpawn = charSD.isSpawn;
+      foreach(var skillName in charSD.skillNameList)
+      {
+         skills.Add(SkillDB.Instance.GetSkillByName(skillName));
+      }
    }
 
    public new Sprite Portrait

@@ -44,12 +44,12 @@ public class Fight : MonoBehaviour
    public static bool isEnemyTurn = false;
    private void Start()
    {
-      RunInfo.PlayerTeam.Add(new PlayableCharacter("Playable Warrior"));
-      RunInfo.PlayerTeam.Add(new PlayableCharacter("Playable Archer"));
-      RunInfo.PlayerTeam.Add(new PlayableCharacter("Playable Priest"));
+      SaveLoadController.runInfo.PlayerTeam.Add(new PlayableCharacter("Playable Warrior"));
+      SaveLoadController.runInfo.PlayerTeam.Add(new PlayableCharacter("Playable Archer"));
+      SaveLoadController.runInfo.PlayerTeam.Add(new PlayableCharacter("Playable Priest"));
 
 
-      PlayerTeam = RunInfo.PlayerTeam;
+      PlayerTeam = SaveLoadController.runInfo.PlayerTeam;
       EnemyTeam = new List<Fighter>
       {
          new Fighter("Wolf"),

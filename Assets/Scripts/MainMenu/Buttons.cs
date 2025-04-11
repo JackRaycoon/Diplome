@@ -21,13 +21,14 @@ public class Buttons : MonoBehaviour
    private bool isOpened;
    private int openID = -1;
    private Coroutine animate;
-   private short choisenSlot = 0;
 
    public TextMeshProUGUI continueText;
 
-   private bool newGameSlot1 = true, newGameSlot2 = true, newGameSlot3 = true;
+   private bool[] newGameSlots = {true, true, true};
    private bool isLoading;
    private bool isChangedMenu;
+
+   public static PlayableCharacter selectedCharacter = null;
 
    private void Start()
    {
@@ -35,9 +36,12 @@ public class Buttons : MonoBehaviour
       cg = GetComponent<CanvasGroup>();
 
       //Загрузка здесь
-
+      for (short i = 1; i <= newGameSlots.Length; i++)
+      {
+         newGameSlots[i - 1] = !SaveLoadController.ExistSave(i);
+      }
       //отключаем "продолжить"
-      continueText.color = (newGameSlot1 && newGameSlot2 && newGameSlot3) ? 
+      continueText.color = (newGameSlots[0] && newGameSlots[1] && newGameSlots[2]) ? 
          new Color(0.4528302f, 0.4528302f, 0.4528302f) : new Color(1f, 1f, 1f);
    }
 
@@ -49,6 +53,7 @@ public class Buttons : MonoBehaviour
          if (isChangedMenu)
          {
             isChangedMenu = false;
+            selectedCharacter = null;
             StartCoroutine(ChangeMenuBack());
          }
          else
@@ -61,10 +66,11 @@ public class Buttons : MonoBehaviour
    }
    public void ButtonClick(int id)
    {
+      Debug.Log(id);
       if (cm.isMoving || openID == id) return;
       if (cm.currentIndex == id)
       {
-         if (id == 1 && (newGameSlot1 && newGameSlot2 && newGameSlot3)) return;
+         if (id == 1 && (newGameSlots[0] && newGameSlots[1] && newGameSlots[2])) return;
          if (animate != null) StopCoroutine(animate);
          if (isOpened)
             animate = StartCoroutine(AnimatePanel(panels[openID], false, true, panels[id]));
@@ -134,12 +140,13 @@ public class Buttons : MonoBehaviour
       if (animate != null) StopCoroutine(animate);
       animate = StartCoroutine(AnimatePanel(panels[openID], false, false));
       openID = -1;
-      choisenSlot = 0;
+      SaveLoadController.slot = 0;
+      selectedCharacter = null;
    }
 
    public void NewRunBtn(int slot)
    {
-      choisenSlot = (short)slot;
+      SaveLoadController.slot = (short)slot;
       StartCoroutine(ChangeMenu());
    }
 
@@ -150,7 +157,7 @@ public class Buttons : MonoBehaviour
    public void ContinueBtn(int slot)
    {
       //Просто загружаем сцену с нужными данными, не забыть проверку на то что слот не новый
-      choisenSlot = (short)slot;
+      SaveLoadController.slot = (short)slot;
       StartCoroutine(LoadScene());
    }
 
@@ -250,13 +257,26 @@ public class Buttons : MonoBehaviour
 
    IEnumerator LoadScene()
    {
-      //Переход к сцене для выбранного слота
-      //choisenSlot
+      //Переход к игре для выбранного слота
       isLoading = true;
-      float startAlpha = 0f, endAlpha = 1f, elapsed = 0f;
-      loadScreen.alpha = startAlpha;
       loadScreen.interactable = true;
       loadScreen.blocksRaycasts = true;
+
+      //Здесь устанавливаем параметры
+      if (newGameSlots[SaveLoadController.slot - 1])
+      {
+         //Новая игра
+         SaveLoadController.runInfo.PlayerTeam = new List<PlayableCharacter>() { selectedCharacter };
+         SaveLoadController.Save();
+      }
+      else
+      {
+         SaveLoadController.Load();
+      }
+
+         //Экран загрузки
+         float startAlpha = 0f, endAlpha = 1f, elapsed = 0f;
+      loadScreen.alpha = startAlpha;
 
       while (elapsed < duration)
       {

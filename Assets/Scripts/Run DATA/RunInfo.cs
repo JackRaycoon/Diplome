@@ -1,9 +1,21 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+   using System;
+   using System.Collections;
+   using System.Collections.Generic;
+   using Unity.VisualScripting;
+   using UnityEngine;
 
-public class RunInfo
-{
-   public static List<PlayableCharacter> PlayerTeam = new List<PlayableCharacter>();
-}
+   [Serializable]
+   public class RunInfo
+   {
+      public int slot;
+      public List<CharacterSaveData> saveTeam = new List<CharacterSaveData>();
+
+      [NonSerialized]
+      public List<PlayableCharacter> PlayerTeam = new();
+
+      public RunInfo(int slot)
+      {
+         this.slot = slot;
+      }
+   }
 

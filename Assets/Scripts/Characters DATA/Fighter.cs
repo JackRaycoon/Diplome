@@ -7,7 +7,7 @@ public class Fighter
 {
    //Данные
    public CharacterSO Data;
-   public int lvl = 1;
+   //public int lvl = 1;
 
    //Боевые характеристики
    public int hp;

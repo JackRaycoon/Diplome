@@ -19,6 +19,7 @@ public class CircularMenu : MonoBehaviour
 
    private Coroutine[] move = new Coroutine[5];
    float[] alphaLevels = { 1f, 0.3f, 0.1f, 0.02f, 0f };
+   float[] sizeLevels = { 170f, 120f, 100f, 70f, 70f };
 
    void Start()
    {
@@ -69,8 +70,8 @@ public class CircularMenu : MonoBehaviour
          // Изменение прозрачности в зависимости от расстояния
          float distance = Mathf.Abs(i - currentIndex);
          float alpha = distance < alphaLevels.Length ? alphaLevels[(int)distance] : 0f;
-
-         buttons[i].sizeDelta = new Vector2(buttons[i].sizeDelta.x, 170 - distance * 20); 
+         
+         buttons[i].sizeDelta = new Vector2(buttons[i].sizeDelta.x, sizeLevels[(int)distance]); 
 
          if (instant)
             buttons[i].anchoredPosition = targetPos;

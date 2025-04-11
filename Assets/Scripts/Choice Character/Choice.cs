@@ -45,6 +45,7 @@ public class Choice :MonoBehaviour
       //Центр
       pictureCenter.sprite = allCharacters[shift].Portrait;
 
+      Buttons.selectedCharacter = allCharacters[shift];
       characterName.text = allCharacters[shift].Data.character_name;
       characterDescription.text = allCharacters[shift].Data.character_description;
 

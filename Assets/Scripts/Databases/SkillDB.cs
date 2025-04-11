@@ -113,7 +113,7 @@ public class SkillDB
       var max_characteristic = Mathf.Max(caster.strengh + caster.bonus_strengh, 
          caster.agility + caster.bonus_agility, 
          caster.wisdow + caster.bonus_wisdow);
-      return new List<int> { caster.lvl + max_characteristic / 3 };
+      return new List<int> { 1 + max_characteristic / 3 };
    }
    public void FireWaveCast(List<Fighter> targets)
    {
