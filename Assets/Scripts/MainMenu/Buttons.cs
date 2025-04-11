@@ -9,6 +9,10 @@ using UnityEngine.UI;
 public class Buttons : MonoBehaviour
 {
    private CircularMenu cm;
+   private CanvasGroup cg;
+
+   public CanvasGroup choiseHeroBtn;
+
    public List<CanvasGroup> panels;
    public CanvasGroup dark;
    public CanvasGroup loadScreen;
@@ -22,9 +26,13 @@ public class Buttons : MonoBehaviour
    public TextMeshProUGUI continueText;
 
    private bool newGameSlot1 = true, newGameSlot2 = true, newGameSlot3 = true;
+   private bool isLoading;
+   private bool isChangedMenu;
+
    private void Start()
    {
       cm = GetComponent<CircularMenu>();
+      cg = GetComponent<CanvasGroup>();
 
       //Загрузка здесь
 
@@ -35,9 +43,16 @@ public class Buttons : MonoBehaviour
 
    private void Update()
    {
+      if (isLoading) return;
       if (Input.GetKeyUp(KeyCode.Mouse1) || Input.GetKeyUp(KeyCode.Escape))
       {
-         CloseAllPanels();
+         if (isChangedMenu)
+         {
+            isChangedMenu = false;
+            StartCoroutine(ChangeMenuBack());
+         }
+         else
+            CloseAllPanels();
       }
       if (Input.GetKeyUp(KeyCode.Return))
       {
@@ -119,11 +134,13 @@ public class Buttons : MonoBehaviour
       if (animate != null) StopCoroutine(animate);
       animate = StartCoroutine(AnimatePanel(panels[openID], false, false));
       openID = -1;
+      choisenSlot = 0;
    }
 
    public void NewRunBtn(int slot)
    {
       choisenSlot = (short)slot;
+      StartCoroutine(ChangeMenu());
    }
    public void ContinueBtn(int slot)
    {
@@ -132,10 +149,105 @@ public class Buttons : MonoBehaviour
       StartCoroutine(LoadScene());
    }
 
+   IEnumerator ChangeMenu()
+   {
+      if (animate != null) StopCoroutine(animate);
+      animate = StartCoroutine(AnimatePanel(panels[0], false, true, panels[5]));
+      openID = 5;
+
+      float startAlpha = 1f, endAlpha = 0f, elapsed = 0f;
+      float startAlpha2 = 0f, endAlpha2 = 1f; ;
+      cg.alpha = startAlpha;
+      cg.interactable = false;
+      cg.blocksRaycasts = false;
+
+      choiseHeroBtn.alpha = startAlpha2;
+      choiseHeroBtn.interactable = false;
+      choiseHeroBtn.blocksRaycasts = false;
+
+      while (elapsed < duration)
+      {
+         float t = elapsed / duration;
+         float alpha = Mathf.Lerp(startAlpha, endAlpha, t);
+
+         cg.alpha = alpha;
+
+         elapsed += Time.deltaTime;
+         yield return null;
+      }
+      // Установка финальных значений
+      cg.alpha = endAlpha;
+
+      while (elapsed < duration)
+      {
+         float t = elapsed / duration;
+         float alpha2 = Mathf.Lerp(startAlpha2, endAlpha2, t);
+
+         choiseHeroBtn.alpha = alpha2;
+
+         elapsed += Time.deltaTime;
+         yield return null;
+      }
+
+      // Установка финальных значений
+      choiseHeroBtn.alpha = endAlpha2;
+      choiseHeroBtn.interactable = true;
+      choiseHeroBtn.blocksRaycasts = true;
+      isChangedMenu = true;
+   }
+   IEnumerator ChangeMenuBack()
+   {
+      if (animate != null) StopCoroutine(animate);
+      animate = StartCoroutine(AnimatePanel(panels[5], false, true, panels[0]));
+      openID = 0;
+
+      float startAlpha2 = 1f, endAlpha2 = 0f, elapsed = 0f;
+      float startAlpha = 0f, endAlpha = 1f; ;
+      cg.alpha = startAlpha;
+      cg.interactable = false;
+      cg.blocksRaycasts = false;
+
+      choiseHeroBtn.alpha = startAlpha2;
+      choiseHeroBtn.interactable = false;
+      choiseHeroBtn.blocksRaycasts = false;
+
+
+      while (elapsed < duration)
+      {
+         float t = elapsed / duration;
+         float alpha2 = Mathf.Lerp(startAlpha2, endAlpha2, t);
+
+         choiseHeroBtn.alpha = alpha2;
+
+         elapsed += Time.deltaTime;
+         yield return null;
+      }
+
+      // Установка финальных значений
+      choiseHeroBtn.alpha = endAlpha2;
+
+      while (elapsed < duration)
+      {
+         float t = elapsed / duration;
+         float alpha = Mathf.Lerp(startAlpha, endAlpha, t);
+
+         cg.alpha = alpha;
+
+         elapsed += Time.deltaTime;
+         yield return null;
+      }
+      // Установка финальных значений
+      cg.alpha = endAlpha;
+      cg.interactable = true;
+      cg.blocksRaycasts = true;
+      isChangedMenu = false;
+   }
+
    IEnumerator LoadScene()
    {
       //Переход к сцене для выбранного слота
       //choisenSlot
+      isLoading = true;
       float startAlpha = 0f, endAlpha = 1f, elapsed = 0f;
       loadScreen.alpha = startAlpha;
       loadScreen.interactable = true;

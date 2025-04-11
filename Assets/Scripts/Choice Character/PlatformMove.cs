@@ -28,6 +28,14 @@ public class PlatformMove : MonoBehaviour
       }
    }
 
+   public void ControlBtn(bool _isNext)
+   {
+      if (is_Block) return;
+      is_Next = _isNext;
+      is_Block = true;
+      StartCoroutine(Move());
+   }
+
    public IEnumerator Move()
    {
       Coroutine lastCoroutine;

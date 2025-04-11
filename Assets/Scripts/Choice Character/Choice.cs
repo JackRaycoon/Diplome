@@ -5,7 +5,8 @@ using UnityEngine;
 public class Choice :MonoBehaviour
 {
    public SpriteRenderer pictureLeftLeft, pictureLeft, pictureCenter, pictureRight, pictureRightRight;
-   readonly List<PlayableCharacter> PlayerTeam = RunInfo.PlayerTeam;
+   readonly List<PlayableCharacter> allCharacters = new();
+   private List<PlayableCharacter> allCharactersTemp;
    private static int playerCount;
 
    private static int currentPortraitShift = 0;
@@ -14,11 +15,13 @@ public class Choice :MonoBehaviour
 
    private void Start()
    {
-      PlayerTeam.Add(new PlayableCharacter("Playable Warrior"));
-      PlayerTeam.Add(new PlayableCharacter("Playable Archer"));
-      PlayerTeam.Add(new PlayableCharacter("Playable Priest"));
+      allCharacters.Add(new PlayableCharacter("Playable Warrior"));
+      allCharacters.Add(new PlayableCharacter("Playable Archer"));
+      allCharacters.Add(new PlayableCharacter("Playable Priest"));
 
-      playerCount = PlayerTeam.Count;
+      allCharactersTemp = new(allCharacters);
+
+      playerCount = allCharacters.Count;
 
       needUpdatePortrait = true;
    }
@@ -37,37 +40,37 @@ public class Choice :MonoBehaviour
       Sprite TempPic;
 
       //Центр
-      pictureCenter.sprite = RunInfo.PlayerTeam[shift].Portrait;
+      pictureCenter.sprite = allCharacters[shift].Portrait;
 
       //Левая
-      if (shift - 1 >= 0) TempPic = PlayerTeam[shift - 1].Portrait;
-      else TempPic = PlayerTeam[PlayerTeam.Count - 1].Portrait;
+      if (shift - 1 >= 0) TempPic = allCharactersTemp[shift - 1].Portrait;
+      else TempPic = allCharactersTemp[allCharactersTemp.Count - 1].Portrait;
 
       pictureLeft.sprite = TempPic;
 
       //Правая
-      if (shift + 1 < PlayerTeam.Count) TempPic = PlayerTeam[shift + 1].Portrait;
-      else TempPic = PlayerTeam[0].Portrait;
+      if (shift + 1 < allCharactersTemp.Count) TempPic = allCharactersTemp[shift + 1].Portrait;
+      else TempPic = allCharactersTemp[0].Portrait;
 
       pictureRight.sprite = TempPic;
 
       // Левая-левая
       if (shift - 2 >= 0)
-         TempPic = PlayerTeam[shift - 2].Portrait;
+         TempPic = allCharactersTemp[shift - 2].Portrait;
       else if (shift - 2 == -1)
-         TempPic = PlayerTeam[PlayerTeam.Count - 1].Portrait;
+         TempPic = allCharactersTemp[allCharactersTemp.Count - 1].Portrait;
       else
-         TempPic = PlayerTeam[PlayerTeam.Count - 2].Portrait;
+         TempPic = allCharactersTemp[allCharactersTemp.Count - 2].Portrait;
 
       pictureLeftLeft.sprite = TempPic;
 
       // Правая-правая
-      if (shift + 2 < PlayerTeam.Count)
-         TempPic = PlayerTeam[shift + 2].Portrait;
-      else if (shift + 2 == PlayerTeam.Count)
-         TempPic = PlayerTeam[0].Portrait;
+      if (shift + 2 < allCharactersTemp.Count)
+         TempPic = allCharactersTemp[shift + 2].Portrait;
+      else if (shift + 2 == allCharactersTemp.Count)
+         TempPic = allCharactersTemp[0].Portrait;
       else
-         TempPic = PlayerTeam[1].Portrait;
+         TempPic = allCharactersTemp[1].Portrait;
 
       pictureRightRight.sprite = TempPic;
    }
