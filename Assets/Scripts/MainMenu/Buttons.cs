@@ -142,6 +142,11 @@ public class Buttons : MonoBehaviour
       choisenSlot = (short)slot;
       StartCoroutine(ChangeMenu());
    }
+
+   public void BeginNewRun()
+   {
+      StartCoroutine(LoadScene());
+   }
    public void ContinueBtn(int slot)
    {
       //ѕросто загружаем сцену с нужными данными, не забыть проверку на то что слот не новый
@@ -266,6 +271,7 @@ public class Buttons : MonoBehaviour
 
       // ”становка финальных значений
       loadScreen.alpha = endAlpha;
+      yield return null;
       SceneManager.LoadScene(1);
    }
 }

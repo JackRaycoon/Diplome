@@ -5,6 +5,8 @@ using UnityEngine;
 public class CharacterSO : ScriptableObject
 {
    public string character_name;
+   [TextArea] 
+   public string character_description;
    public Sprite portrait_human;
    public Sprite portrait_halfhuman;
    public Sprite portrait_monster;

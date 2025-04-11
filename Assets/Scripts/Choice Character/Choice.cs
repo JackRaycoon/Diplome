@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 
 public class Choice :MonoBehaviour
@@ -12,6 +13,8 @@ public class Choice :MonoBehaviour
    private static int currentPortraitShift = 0;
 
    private static bool needUpdatePortrait = false;
+
+   public TextMeshProUGUI characterName, characterDescription;
 
    private void Start()
    {
@@ -41,6 +44,9 @@ public class Choice :MonoBehaviour
 
       //Центр
       pictureCenter.sprite = allCharacters[shift].Portrait;
+
+      characterName.text = allCharacters[shift].Data.character_name;
+      characterDescription.text = allCharacters[shift].Data.character_description;
 
       //Левая
       if (shift - 1 >= 0) TempPic = allCharactersTemp[shift - 1].Portrait;
