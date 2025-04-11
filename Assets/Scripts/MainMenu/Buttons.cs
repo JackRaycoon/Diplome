@@ -1,82 +1,100 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class Buttons : MonoBehaviour
 {
    private CircularMenu cm;
+   public List<CanvasGroup> panels;
+   public CanvasGroup dark;
+   public float duration = 0.2f; // Время анимации
+
+   private bool isOpened;
+   private int openID = -1;
+   private Coroutine animate;
    private void Start()
    {
       cm = GetComponent<CircularMenu>();
    }
-   public void NewRun()
-   {
-      if (cm.isMoving) return;
 
-      if(cm.currentIndex == 0)
-         SceneManager.LoadScene("RunScene");
+   private void Update()
+   {
+      if (Input.GetKeyUp(KeyCode.Mouse1))
+      {
+         if (animate != null) StopCoroutine(animate);
+         animate = StartCoroutine(AnimatePanel(panels[openID], false, false));
+         openID = -1;
+      }
+   }
+   public void ButtonClick(int id)
+   {
+      if (cm.isMoving || openID == id) return;
+      if (cm.currentIndex == id)
+      {
+         if (animate != null) StopCoroutine(animate);
+         if (isOpened)
+            animate = StartCoroutine(AnimatePanel(panels[openID], false, true, panels[id]));
+         else
+            animate = StartCoroutine(AnimatePanel(panels[id], true, false));
+         openID = id;
+      }
       else
       {
-         cm.currentIndex = 0;
+         cm.currentIndex = id;
          cm.UpdateButtonPositions(false);
       }
    }
-   public void Continue()
-   {
-      if (cm.isMoving) return;
 
-      if (cm.currentIndex == 1)
+   private IEnumerator AnimatePanel(CanvasGroup panelGroup, bool open, bool needOpen, CanvasGroup panelOpen = null)
+   {
+      float startAlpha = open ? 0f : 1f;
+      float endAlpha = open ? 1f : 0f;
+
+      float t1 = Mathf.InverseLerp(startAlpha, endAlpha, panelGroup.alpha);
+      float elapsed = t1 * duration;
+
+      panelGroup.interactable = false;
+      panelGroup.blocksRaycasts = false;
+      dark.interactable = false;
+      dark.blocksRaycasts = false;
+
+      while (elapsed < duration)
       {
-         Debug.Log("Continue");
+         float t = elapsed / duration;
+         float alpha = Mathf.Lerp(startAlpha, endAlpha, t);
+
+         panelGroup.alpha = alpha;
+         if(!needOpen && dark.alpha != endAlpha)
+            dark.alpha = alpha;
+
+         elapsed += Time.deltaTime;
+         yield return null;
       }
-      else
+
+      // Установка финальных значений
+      panelGroup.alpha = endAlpha;
+      if (!needOpen)
+         dark.alpha = endAlpha;
+      isOpened = false;
+
+      if (open)
       {
-         cm.currentIndex = 1;
-         cm.UpdateButtonPositions(false);
+         panelGroup.interactable = true;
+         panelGroup.blocksRaycasts = true;
+         isOpened = true;
+      }
+      if (needOpen)
+      {
+         animate = StartCoroutine(AnimatePanel(panelOpen, true, false));
       }
    }
-   public void Credits()
-   {
-      if (cm.isMoving) return;
 
-      if (cm.currentIndex == 2)
-      {
-         Debug.Log("Credits");
-      }
-      else
-      {
-         cm.currentIndex = 2;
-         cm.UpdateButtonPositions(false);
-      }
-   }
-   public void Options()
-   {
-      if (cm.isMoving) return;
 
-      if (cm.currentIndex == 3)
-      {
-         Debug.Log("Options");
-      }
-      else
-      {
-         cm.currentIndex = 3;
-         cm.UpdateButtonPositions(false);
-      }
-   }
-   public void Exit()
+   public void ExitYesBtn()
    {
-      if (cm.isMoving) return;
-
-      if (cm.currentIndex == 4)
-      {
-         Application.Quit();
-         Debug.Log("Exit");
-      }
-      else
-      {
-         cm.currentIndex = 4;
-         cm.UpdateButtonPositions(false);
-      }
+      Application.Quit();
    }
 }
