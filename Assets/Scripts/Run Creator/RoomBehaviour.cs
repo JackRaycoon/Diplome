@@ -45,9 +45,8 @@ public class RoomBehaviour : MonoBehaviour
          {
             door.GetComponent<KeyDoorController>().room = room3d.room;
          }
-
-         RotateCanvasToCamera();
       }
+      RotateCanvasToCamera();
    }
 
    private void RotateCanvasToCamera()
@@ -58,7 +57,7 @@ public class RoomBehaviour : MonoBehaviour
          return;
       }
 
-      Vector3 direction = Camera.main.transform.position - eventCanvasGO.transform.position;
+      Vector3 direction = eventCanvasGO.transform.position - Camera.main.transform.position;
       direction.y = 0;
 
       if (direction.sqrMagnitude > 0.001f)
@@ -69,7 +68,6 @@ public class RoomBehaviour : MonoBehaviour
              targetRot,
              Time.deltaTime * 5f // скорость поворота
          );
-         Debug.Log("Поворот");
       }
    }
 

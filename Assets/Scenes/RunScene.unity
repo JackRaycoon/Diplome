@@ -1172,6 +1172,7 @@ GameObject:
   - component: {fileID: 3518441275449431628}
   - component: {fileID: 4840104756006011842}
   - component: {fileID: 4840104756006011843}
+  - component: {fileID: 4840104756006011844}
   m_Layer: 0
   m_Name: Camera
   m_TagString: MainCamera
@@ -5455,6 +5456,21 @@ MonoBehaviour:
   excluseLayerName: 
   openDoorKey: 323
   crosshair: {fileID: 1885557874}
+--- !u!114 &4840104756006011844
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3518441275449431630}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1e852b19d74a4a949b47a8c9b44df2f3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  crosshair: {fileID: 1885557874}
+  normalColor: {r: 1, g: 1, b: 1, a: 1}
+  hoverColor: {r: 1, g: 0, b: 0, a: 1}
 --- !u!1001 &6245549879770441299
 PrefabInstance:
   m_ObjectHideFlags: 0
