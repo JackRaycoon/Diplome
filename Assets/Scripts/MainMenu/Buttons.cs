@@ -18,6 +18,8 @@ public class Buttons : MonoBehaviour
    public CanvasGroup loadScreen;
    public float duration = 0.2f; // Время анимации
 
+   public List<Button> slotsContinue;
+
    private bool isOpened;
    private int openID = -1;
    private Coroutine animate;
@@ -30,15 +32,19 @@ public class Buttons : MonoBehaviour
 
    public static PlayableCharacter selectedCharacter = null;
 
-   private void Start()
+   private void Awake()
    {
       cm = GetComponent<CircularMenu>();
       cg = GetComponent<CanvasGroup>();
 
       //Загрузка здесь
+      SaveLoadController.Load();
       for (short i = 1; i <= newGameSlots.Length; i++)
       {
-         newGameSlots[i - 1] = !SaveLoadController.ExistSave(i);
+         bool exist = SaveLoadController.ExistSave(i);
+         newGameSlots[i - 1] = !exist;
+         slotsContinue[i - 1].interactable = exist;
+         slotsContinue[i - 1].gameObject.GetComponent<CanvasGroup>().alpha = exist ? 1f : 0.5f;
       }
       //отключаем "продолжить"
       continueText.color = (newGameSlots[0] && newGameSlots[1] && newGameSlots[2]) ? 
@@ -66,7 +72,6 @@ public class Buttons : MonoBehaviour
    }
    public void ButtonClick(int id)
    {
-      Debug.Log(id);
       if (cm.isMoving || openID == id) return;
       if (cm.currentIndex == id)
       {
