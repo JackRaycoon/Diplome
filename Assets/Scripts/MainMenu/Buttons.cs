@@ -157,13 +157,13 @@ public class Buttons : MonoBehaviour
 
    public void BeginNewRun()
    {
-      StartCoroutine(LoadScene());
+      StartCoroutine(LoadScene(true));
    }
    public void ContinueBtn(int slot)
    {
       //Просто загружаем сцену с нужными данными, не забыть проверку на то что слот не новый
       SaveLoadController.slot = (short)slot;
-      StartCoroutine(LoadScene());
+      StartCoroutine(LoadScene(false));
    }
 
    IEnumerator ChangeMenu()
@@ -260,7 +260,7 @@ public class Buttons : MonoBehaviour
       isChangedMenu = false;
    }
 
-   IEnumerator LoadScene()
+   IEnumerator LoadScene(bool isNewGame)
    {
       //Переход к игре для выбранного слота
       isLoading = true;
@@ -268,7 +268,7 @@ public class Buttons : MonoBehaviour
       loadScreen.blocksRaycasts = true;
 
       //Здесь устанавливаем параметры
-      if (newGameSlots[SaveLoadController.slot - 1])
+      if (isNewGame)
       {
          //Новая игра
          SaveLoadController.runInfo.PlayerTeam = new List<PlayableCharacter>() { selectedCharacter };

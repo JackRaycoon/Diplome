@@ -41,3 +41,21 @@ MonoBehaviour:
     \u0441\u043C\u0435\u0440\u0442\u044C \u043B\u0438\u0446\u043E\u043C \u043A \u043B\u0438\u0446\u0443,
     \u0447\u0435\u043C \u043F\u0440\u044F\u0442\u0430\u0442\u044C\u0441\u044F."
   choices: []
+  minGold: 0
+  maxGold: 0
+  rewardSkillList: []
+  allSkillsFromList: 0
+  randomRewardTarget: 0
+  strengthRewardMin: 0
+  strengthRewardMax: 0
+  agilityRewardMin: 0
+  agilityRewardMax: 0
+  winsdowRewardMin: 0
+  winsdowRewardMax: 0
+  constitutionRewardMin: 0
+  constitutionRewardMax: 0
+  armorRewardMin: 0
+  armorRewardMax: 0
+  healRewardMin: 0
+  healRewardMax: 0
+  isStatsPackReward: 0

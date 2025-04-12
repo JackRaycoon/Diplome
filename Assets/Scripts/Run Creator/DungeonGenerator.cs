@@ -223,8 +223,20 @@ public class DungeonGenerator : MonoBehaviour
          if (rooms.Count > 0) nextCoords = GetNextCoords(nextCoords);
          if (usedCoords.Contains(nextCoords)) continue;
          Room room = new(rooms.Count + 1, nextCoords);
+         if (room.Coords.x == 0 && room.Coords.y == 0) 
+         {
+            string path = $"EventData/Start Events/{(int)SaveLoadController.runInfo.PlayerTeam[0].charClass - 2}-0";
+            room.eventData = Resources.Load<EventData>(path);
+            MiniMapUI.currentRoom = room; 
+         }
+         else
+         {
+            //Генератор ивента будет тут
+            int eventID = 0;
+            room.eventData = Resources.Load<EventData>(
+               $"EventData/{eventID}-0");
+         }
          rooms.Add(room);
-         if (room.Coords.x == 0 && room.Coords.y == 0) MiniMapUI.currentRoom = room;
          usedCoords.Add(nextCoords);
          roomsToCreate--;
       }

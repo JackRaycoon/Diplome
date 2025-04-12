@@ -6,6 +6,8 @@ public class Room
 {
    private int roomId;
    private Vector2Int coords;
+   public EventData eventData;
+
 
    public Room(int id, Vector2Int roomCoords)
    {

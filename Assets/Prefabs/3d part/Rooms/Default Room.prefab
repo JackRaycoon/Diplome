@@ -93,12 +93,12 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 40
+  m_fontSize: 30
   m_fontSizeBase: 24
   m_fontWeight: 400
   m_enableAutoSizing: 1
-  m_fontSizeMin: 20
-  m_fontSizeMax: 40
+  m_fontSizeMin: 15
+  m_fontSizeMax: 30
   m_fontStyle: 0
   m_HorizontalAlignment: 2
   m_VerticalAlignment: 512
@@ -491,7 +491,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "\u0422\u0435\u043A\u0441\u0442 \u0438\u0432\u0435\u043D\u0442\u0430"
+  m_text: "\u0422\u0435\u043A\u0441\u0442"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 9dcbab94ae2a08b4ea57978d64a765e6, type: 2}
   m_sharedMaterial: {fileID: -780465184510917948, guid: 9dcbab94ae2a08b4ea57978d64a765e6, type: 2}
@@ -522,11 +522,11 @@ MonoBehaviour:
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1
-  m_fontSizeMin: 20
+  m_fontSizeMin: 30
   m_fontSizeMax: 50
   m_fontStyle: 0
-  m_HorizontalAlignment: 1
-  m_VerticalAlignment: 256
+  m_HorizontalAlignment: 2
+  m_VerticalAlignment: 512
   m_textAlignment: 65535
   m_characterSpacing: 0
   m_wordSpacing: 0
@@ -1287,6 +1287,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1ea4847cdd21232419ba40bb919cbbcf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  eventTitle: {fileID: 762759504554706445}
+  eventText: {fileID: 5293277953365692765}
+  eventBtnsText:
+  - {fileID: 1535171250743103449}
+  - {fileID: 6283881128440061110}
+  - {fileID: 5918614324721960090}
+  eventBtns:
+  - {fileID: 4233834956068104149}
+  - {fileID: 3606486940360697961}
+  - {fileID: 3269778481785853011}
 --- !u!1 &5665379725002712785
 GameObject:
   m_ObjectHideFlags: 0
@@ -1608,12 +1618,12 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 40
+  m_fontSize: 30
   m_fontSizeBase: 24
   m_fontWeight: 400
   m_enableAutoSizing: 1
-  m_fontSizeMin: 20
-  m_fontSizeMax: 40
+  m_fontSizeMin: 15
+  m_fontSizeMax: 30
   m_fontStyle: 0
   m_HorizontalAlignment: 2
   m_VerticalAlignment: 512
@@ -1743,12 +1753,12 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 40
+  m_fontSize: 30
   m_fontSizeBase: 24
   m_fontWeight: 400
   m_enableAutoSizing: 1
-  m_fontSizeMin: 20
-  m_fontSizeMax: 40
+  m_fontSizeMin: 15
+  m_fontSizeMax: 30
   m_fontStyle: 0
   m_HorizontalAlignment: 2
   m_VerticalAlignment: 512
