@@ -122,7 +122,6 @@ public class Skill_Image : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
    {
       while (Fight.selectedSkill != null) 
       { 
-         Debug.Log("Wait"); 
          yield return null; 
       }
 

@@ -46,7 +46,7 @@ public class SaveLoadController
             {
                data.PlayerTeam.Add(new(chara));
             }
-            runInfoSlots[i-1] = data;
+            runInfoSlots[i - 1] = data;
          }
       }
    }

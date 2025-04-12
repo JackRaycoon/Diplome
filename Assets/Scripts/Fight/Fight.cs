@@ -44,11 +44,8 @@ public class Fight : MonoBehaviour
    public static bool isEnemyTurn = false;
    private void Start()
    {
-      SaveLoadController.runInfo.PlayerTeam.Add(new PlayableCharacter("Playable Warrior"));
-      SaveLoadController.runInfo.PlayerTeam.Add(new PlayableCharacter("Playable Archer"));
-      SaveLoadController.runInfo.PlayerTeam.Add(new PlayableCharacter("Playable Priest"));
-
-
+      SaveLoadController.slot = 1;
+      SaveLoadController.Load();
       PlayerTeam = SaveLoadController.runInfo.PlayerTeam;
       EnemyTeam = new List<Fighter>
       {
@@ -57,6 +54,8 @@ public class Fight : MonoBehaviour
       };
       PlayerUITeam = new List<Fighter>(PlayerTeam);
       EnemyUITeam = new List<Fighter>(EnemyTeam);
+
+      SelectedCharacterID_Reset();
 
       AlreadyTurn = new List<Fighter>();
       AllCharacter = new List<Fighter>();
@@ -74,7 +73,7 @@ public class Fight : MonoBehaviour
       if (Input.GetKeyDown(KeyCode.Mouse1) && selectedSkill == null)
       {
          CardShowerReset();
-         SelectedCharacterID = -1;
+         SelectedCharacterID_Reset();
          _selected = false;
          PlayerUITeam = new List<Fighter>(PlayerTeam);
          UpdatePortrait();
@@ -120,10 +119,17 @@ public class Fight : MonoBehaviour
       StartCoroutine(PlayerTurn());
    }
 
+   public void SelectedCharacterID_Reset()
+   {
+      SelectedCharacterID = -1;
+      if (PlayerTeam.Count == 1)
+         SelectedCharacterID = 0;
+   }
+
    IEnumerator PlayerTurn()
    {
       if (allPlayerCharactersDoTurn) goto Skip;
-      SelectedCharacterID = -1;
+      SelectedCharacterID_Reset();
       StartTurn:
       selectedSkill = null;
       selectedTarget = null;
@@ -278,7 +284,7 @@ public class Fight : MonoBehaviour
 
       selectedSkill = null;
       selectedTarget = null;
-      SelectedCharacterID = -1;
+      SelectedCharacterID_Reset();
       _selected = false;
 
       cast = false;
@@ -287,8 +293,11 @@ public class Fight : MonoBehaviour
       Skip:
       CardShowerReset();
       CheckRoundChange();
-      if (isAllDoTurn) StartCoroutine(PlayerTurn());
-      else if(!isWin && !isLose) StartCoroutine(EnemyTurn());
+      if (!isWin && !isLose) 
+      {
+         if (isAllDoTurn) StartCoroutine(PlayerTurn());
+         else StartCoroutine(EnemyTurn());
+      }
    }
 
    IEnumerator EnemyTurn()
@@ -534,7 +543,8 @@ public class Fight : MonoBehaviour
       {
          int i = 0;
          if(!isEnemyTurn)
-            foreach(Skill skill in PlayerUITeam[0].skills)
+         {
+            foreach (Skill skill in PlayerUITeam[0].skills)
             {
                var SkCard = SkillsCards[i];
                SkCard.GetComponent<Graphic>().enabled = true;
@@ -545,13 +555,27 @@ public class Fight : MonoBehaviour
                //SkIm.gameObject.GetComponent<Skill_Image>().skill = skill;
                i++;
             }
+            for(;i< SkillsCards.Count; i++)
+            {
+               Hide(SkillsCards[i]);
+            }
+         }
+         else
+         {
+            AllHide();
+         }
       }
       else
       {
-         foreach (var SkCard in SkillsCards)
-         {
-            Hide(SkCard);
-         }
+         AllHide();
+      }
+   }
+
+   void AllHide()
+   {
+      foreach (var SkCard in SkillsCards)
+      {
+         Hide(SkCard);
       }
    }
 

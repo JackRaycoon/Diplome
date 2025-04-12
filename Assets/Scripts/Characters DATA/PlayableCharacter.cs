@@ -30,6 +30,7 @@ public class PlayableCharacter : Fighter
       currentPhase = charSD.currentPhase;
       isDead = charSD.isDead;
       isSpawn = charSD.isSpawn;
+      skills = new();
       foreach(var skillName in charSD.skillNameList)
       {
          skills.Add(SkillDB.Instance.GetSkillByName(skillName));
