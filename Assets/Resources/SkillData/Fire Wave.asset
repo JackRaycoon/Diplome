@@ -17,4 +17,5 @@ MonoBehaviour:
   description: "<b><size=55>\u0412\u043E\u043B\u043D\u0430 \u043E\u0433\u043D\u044F</size></b>\n\u041D\u0430\u043D\u043E\u0441\u0438\u0442
     {0} \u0443\u0440\u043E\u043D\u0430 \u0432\u0441\u0435\u043C \u043F\u0440\u043E\u0442\u0438\u0432\u043D\u0438\u043A\u0430\u043C"
   skill_type: 4
+  availableClasses: 02000000
   isCorpseTargetToo: 0

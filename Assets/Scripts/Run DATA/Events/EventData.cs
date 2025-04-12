@@ -15,7 +15,7 @@ public class EventData : ScriptableObject
    [TextArea]
    public string eventName;
 
-   [TextArea]
+   [TextArea(10, 20)]
    public string eventText;
 
    [Tooltip("StartEvent - Стартовый для персонажа, сюжетный?\n" +
@@ -39,4 +39,35 @@ public class EventData : ScriptableObject
       StartEvent, //Стартовый для персонажа, сюжетный?
       EnteranceEvent //Появляется после входа в комнату, старт ивента
    }
+
+   [Header("Награда")]
+   public int minGold;
+   public int maxGold;
+
+   public List<SkillSO> rewardSkillList = new();
+   [Tooltip("Если включено, то в награду будут выданы все скиллы из списка\n" +
+      "Иначе будет выдан случайный")]
+   public bool allSkillsFromList;
+   [Tooltip("Случайный ли (подходящий) герой из списка получит скилл в награду, если выключено то игрок выбирает сам")]
+   public bool randomRewardTarget;
+
+   public int strengthRewardMin;
+   public int strengthRewardMax;
+
+   public int agilityRewardMin;
+   public int agilityRewardMax;
+
+   public int winsdowRewardMin;
+   public int winsdowRewardMax;
+
+   public int constitutionRewardMin;
+   public int constitutionRewardMax;
+
+   public int armorRewardMin;
+   public int armorRewardMax;
+
+   public int healRewardMin;
+   public int healRewardMax;
+
+   public bool isStatsPackReward;
 }

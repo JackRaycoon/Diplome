@@ -1,11 +1,13 @@
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor;
 using UnityEngine;
 
 
 public class PlayableCharacter : Fighter
 {
    public byte currentPhase = 1; //1 - человек, 2 - получеловек, 3 - монстр
+   public Class charClass;
 
    public PlayableCharacter(string name) : base(name)
    {
@@ -15,6 +17,7 @@ public class PlayableCharacter : Fighter
          skills.Add(SkillDB.Instance.GetSkillByName(skillSO.name));
          if (skills.Count == 5) break;
       }
+      charClass = StringToClass(name);
       //
    }
 
@@ -35,6 +38,7 @@ public class PlayableCharacter : Fighter
       {
          skills.Add(SkillDB.Instance.GetSkillByName(skillName));
       }
+      charClass = StringToClass(charSD.nameClass);
    }
 
    public new Sprite Portrait
@@ -50,5 +54,25 @@ public class PlayableCharacter : Fighter
          };
       }
       private set { }
+   }
+
+   private Class StringToClass(string name)
+   {
+      return name switch
+      {
+         "Playable Warrior" => Class.Warrior,
+         "Playable Archer" => Class.Archer,
+         "Playable Priest" => Class.Priest,
+         _ => Class.Enemy,
+      };
+   }
+
+   public enum Class
+   {
+      Enemy,
+      All,
+      Warrior,
+      Archer,
+      Priest
    }
 }
