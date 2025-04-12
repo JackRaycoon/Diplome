@@ -10,6 +10,8 @@ public class SkillSO : ScriptableObject
    public Sprite icon;
    [TextArea] public string description;
    public SkillType skill_type;
+   [Tooltip("Каким классам доступен скилл, враги по дефолту входят в доступные")]
+   public List<PlayableCharacter.Class> availableClasses;
    public bool isCorpseTargetToo = false;
 
    public enum SkillType
