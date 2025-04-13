@@ -161,7 +161,6 @@ public class Buttons : MonoBehaviour
    }
    public void ContinueBtn(int slot)
    {
-      //ѕросто загружаем сцену с нужными данными, не забыть проверку на то что слот не новый
       SaveLoadController.slot = (short)slot;
       StartCoroutine(LoadScene(false));
    }

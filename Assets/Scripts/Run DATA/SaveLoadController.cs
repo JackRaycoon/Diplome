@@ -7,6 +7,7 @@ using UnityEngine;
 public class SaveLoadController
 {
    public static RunInfo[] runInfoSlots = { new(1), new(2), new(3) };
+   public static bool[] corruptedSlots = { false, false, false };
    public static short slot = 0;
 
    public static RunInfo runInfo {
@@ -39,7 +40,16 @@ public class SaveLoadController
          {
             BinaryFormatter bf = new BinaryFormatter();
             FileStream file = File.Open(Application.persistentDataPath + $"/saveRun{i}.corrupted", FileMode.Open);
-            RunInfo data = (RunInfo)bf.Deserialize(file);
+            RunInfo data = null;
+            try
+            {
+               data = (RunInfo)bf.Deserialize(file);
+            }
+            catch
+            {
+               corruptedSlots[i - 1] = true;
+               continue;
+            }
             file.Close();
             data.PlayerTeam = new();
             foreach (var chara in data.saveTeam)
@@ -52,6 +62,7 @@ public class SaveLoadController
    }
    public static bool ExistSave(short slot)
    {
-      return File.Exists(Application.persistentDataPath + $"/saveRun{slot}.corrupted");
+      return File.Exists(Application.persistentDataPath + $"/saveRun{slot}.corrupted")
+         && !corruptedSlots[slot - 1];
    }
 }

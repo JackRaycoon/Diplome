@@ -40,5 +40,9 @@ public class Slot : MonoBehaviour
       classImage.sprite = uncnownCharacter;
       className.text = "Персонаж не выбран";
       locationName.text = "Новое сохранение";
+      if (SaveLoadController.corruptedSlots[slotID - 1])
+      {
+         locationName.text = "Повреждённое сохранение";
+      }
    }
 }
