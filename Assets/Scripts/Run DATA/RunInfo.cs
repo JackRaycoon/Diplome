@@ -10,6 +10,8 @@
       public List<CharacterSaveData> saveTeam = new();
       public Locations currentLocation = Locations.Dungeon;
 
+      public int goldCount = 0;
+
       [NonSerialized]
       public List<PlayableCharacter> PlayerTeam = new();
 

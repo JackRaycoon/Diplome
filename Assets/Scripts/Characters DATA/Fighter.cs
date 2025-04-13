@@ -46,9 +46,17 @@ public class Fighter
       {
          foreach (SkillSO skillSO in Data.skills)
          {
-            skills.Add(SkillDB.Instance.GetSkillByName(skillSO.name));
+            AddSkill(skillSO);
          }
       }
+   }
+
+   public void AddSkill(SkillSO skillData)
+   {
+      skills.Add(SkillDB.Instance.GetSkillByName(skillData.name));
+   }public void AddSkill(string skillName)
+   {
+      skills.Add(SkillDB.Instance.GetSkillByName(skillName));
    }
 
    public Sprite Portrait

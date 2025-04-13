@@ -9,6 +9,7 @@ public class SkillSO : ScriptableObject
    public string _name;
    public Sprite icon;
    [TextArea] public string description;
+   [TextArea] public string quote;
    public SkillType skill_type;
    [Tooltip("Каким классам доступен скилл, враги по дефолту входят в доступные")]
    public List<PlayableCharacter.Class> availableClasses;

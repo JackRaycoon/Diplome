@@ -36,7 +36,7 @@ public class PlayableCharacter : Fighter
       skills = new();
       foreach(var skillName in charSD.skillNameList)
       {
-         skills.Add(SkillDB.Instance.GetSkillByName(skillName));
+         AddSkill(skillName);
       }
       charClass = StringToClass(charSD.nameClass);
    }
