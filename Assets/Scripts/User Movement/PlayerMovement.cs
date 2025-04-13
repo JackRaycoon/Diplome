@@ -80,9 +80,13 @@ public class PlayerMovement : MonoBehaviour
          animator.SetBool("isLeft", false);
          animator.SetBool("isForward", false);
          animator.SetBool("isBack", false);
+         animator.SetBool("isSprint", false);
       }
-      if (speedBoost != 1f) animator.SetBool("isSprint", true);
-      else animator.SetBool("isSprint", false);
+      else
+      {
+         if (speedBoost != 1f) animator.SetBool("isSprint", true);
+         else animator.SetBool("isSprint", false);
+      }
    }
    void HandleHeadBobbing(Vector3 movement)
    {
