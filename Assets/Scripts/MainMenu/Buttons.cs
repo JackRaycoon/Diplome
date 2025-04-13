@@ -49,6 +49,8 @@ public class Buttons : MonoBehaviour
       //отключаем "продолжить"
       continueText.color = (newGameSlots[0] && newGameSlots[1] && newGameSlots[2]) ? 
          new Color(0.4528302f, 0.4528302f, 0.4528302f) : new Color(1f, 1f, 1f);
+
+      Cursor.lockState = CursorLockMode.None;
    }
 
    private void Update()

@@ -2,7 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using TMPro;
+using UnityEditor.SearchService;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class Fight : MonoBehaviour
@@ -41,17 +43,23 @@ public class Fight : MonoBehaviour
 
    private bool allEnemiesDoTurn, allPlayerCharactersDoTurn;
    private bool isWin, isLose, isAllDoTurn;
+   public static bool endFight = false;
    public static bool isEnemyTurn = false;
    private void Start()
    {
-      SaveLoadController.slot = 1;
-      SaveLoadController.Load();
+      Cursor.lockState = CursorLockMode.None;
+
+      SelectedCharacterID = -1;
+      _selected = false;
+      selectedSkill = null;
+      selectedTarget = null;
+      needUpdatePortrait = false;
+      cast = false;
+      isEnemyTurn = false;
+      endFight = false;
+
       PlayerTeam = SaveLoadController.runInfo.PlayerTeam;
-      EnemyTeam = new List<Fighter>
-      {
-         new Fighter("Wolf"),
-         new Fighter("Wolf")
-      };
+      EnemyTeam = SaveLoadController.enemies;
       PlayerUITeam = new List<Fighter>(PlayerTeam);
       EnemyUITeam = new List<Fighter>(EnemyTeam);
 
@@ -482,9 +490,11 @@ public class Fight : MonoBehaviour
    private void EndFight() 
    {
       StopAllCoroutines();
+      endFight = true;
       WinLosePanel.SetActive(true);
       if (isLose) WinLoseText.text = "К сожалению, вы проиграли";
       else if (isWin) WinLoseText.text = "Поздравляю с победой";
+      SaveLoadController.Save();
    }
 
    public static void SelectCharacter(int id)
@@ -546,6 +556,7 @@ public class Fight : MonoBehaviour
          {
             foreach (Skill skill in PlayerUITeam[0].skills)
             {
+               if (skill.skillData.skill_type == SkillSO.SkillType.Passive) continue;
                var SkCard = SkillsCards[i];
                SkCard.GetComponent<Graphic>().enabled = true;
                Show(SkCard);
@@ -605,6 +616,19 @@ public class Fight : MonoBehaviour
       foreach (Graphic lRenderer in lChildRenderers)
       {
          lRenderer.enabled = true;
+      }
+   }
+
+   public void ContinueBtn()
+   {
+      if (isWin)
+      {
+         SceneManager.LoadScene(1);
+      }
+      else
+      {
+         SaveLoadController.ClearSave(SaveLoadController.slot);
+         SceneManager.LoadScene(0);
       }
    }
 }

@@ -40,6 +40,20 @@ public class EventData : ScriptableObject
       EnteranceEvent //Появляется после входа в комнату, старт ивента
    }
 
+   [Header("Бой")]
+   [Tooltip("Если никого нет, то ивент обычный, но если есть хоть 1, то все выборы заменяются на кнопку Начать Бой" +
+      "\nНе может быть финальным! Требует ровно 1 ивент для перехода дальше (после победы в бою)")]
+   public List<CharacterSO> enemies;
+   [Tooltip("При включении игрок не будет видеть врагов до боя.")]
+   public bool isFog;
+   [Tooltip("При включении список выше станет пулом из которого могут сгенерироваться враги.")]
+   public bool randomEnemies;
+   [Tooltip("Нужно только для randomEnemies.")]
+   public int minEnemyCount;
+   [Tooltip("Нужно только для randomEnemies.")]
+   public int maxEnemyCount;
+
+
    [Header("Награда")]
    public int minGold;
    public int maxGold;
@@ -48,6 +62,8 @@ public class EventData : ScriptableObject
    [Tooltip("Если включено, то в награду будут выданы все скиллы из списка\n" +
       "Иначе будет выдан случайный")]
    public bool allSkillsFromList;
+   [Tooltip("Шанс на получение скилла из списка, от 0 до 100.")]
+   public List<float> chanceToReceiveSkill = new();
    [Tooltip("Случайный ли (подходящий) герой из списка получит скилл в награду, если выключено то игрок выбирает сам")]
    public bool randomRewardTarget;
 

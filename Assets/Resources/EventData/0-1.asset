@@ -10,38 +10,37 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 378e67e22a5d3a546933c1bef4f501bb, type: 3}
-  m_Name: 0-0
+  m_Name: 0-1
   m_EditorClassIdentifier: 
   eventID: 0
-  eventID_Part: 0
-  eventName: "\u0412\u043E\u043B\u043A\u0438!"
-  eventText: "\u0412\u0441\u0442\u0440\u0435\u0447\u0430 \u0441 \u0432\u043E\u043B\u043A\u0430\u043C\u0438"
-  eventType: 2
-  isLockableEvent: 1
+  eventID_Part: 1
+  eventName: "\u0412\u043E\u043B\u043A\u0438! : \u041F\u043E\u0431\u0435\u0434\u0430"
+  eventText: "\u0412\u044B \u043F\u043E\u0431\u0435\u0434\u0438\u043B\u0438 \u0432\u043E\u043B\u043A\u0430,
+    \u043F\u043E\u0437\u0434\u0440\u0430\u0432\u043B\u044F\u044E!"
+  eventType: 0
+  isLockableEvent: 0
   textChoice: 
-  choices:
-  - {fileID: 11400000, guid: a166038a09f7a27418deb1301a5546a7, type: 2}
-  enemies:
-  - {fileID: 11400000, guid: d7ec80e4941c95a4397043c4da0ef60e, type: 2}
+  choices: []
+  enemies: []
   isFog: 0
   randomEnemies: 0
   minEnemyCount: 0
   maxEnemyCount: 0
-  minGold: 0
-  maxGold: 0
+  minGold: 1
+  maxGold: 10
   rewardSkillList: []
   allSkillsFromList: 0
   randomRewardTarget: 0
   strengthRewardMin: 0
-  strengthRewardMax: 0
+  strengthRewardMax: 1
   agilityRewardMin: 0
-  agilityRewardMax: 0
+  agilityRewardMax: 1
   wisdowRewardMin: 0
-  wisdowRewardMax: 0
+  wisdowRewardMax: 1
   constitutionRewardMin: 0
-  constitutionRewardMax: 0
+  constitutionRewardMax: 1
   armorRewardMin: 0
-  armorRewardMax: 0
+  armorRewardMax: 1
   healRewardMin: 0
-  healRewardMax: 0
+  healRewardMax: 5
   isStatsPackReward: 0

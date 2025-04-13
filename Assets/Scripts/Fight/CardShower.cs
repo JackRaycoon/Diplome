@@ -93,6 +93,6 @@ public class CardShower : MonoBehaviour
          else LowerCard();
 
          isActualActive = isActive;
-      } 
+      }
    }
 }

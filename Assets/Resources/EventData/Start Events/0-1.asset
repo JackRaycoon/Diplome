@@ -47,11 +47,18 @@ MonoBehaviour:
     \u041E\u0441\u0442\u043E\u0440\u043E\u0436\u043D\u043E\u0441\u0442\u044C \u2014
     \u0437\u0430\u043B\u043E\u0433 \u0432\u044B\u0436\u0438\u0432\u0430\u043D\u0438\u044F."
   choices: []
+  enemies: []
+  isFog: 0
+  randomEnemies: 0
+  minEnemyCount: 0
+  maxEnemyCount: 0
   minGold: 0
   maxGold: 0
   rewardSkillList:
   - {fileID: 11400000, guid: be46c839f21fa0042a9bece6406cb419, type: 2}
   allSkillsFromList: 0
+  chanceToReceiveSkill:
+  - 100
   randomRewardTarget: 0
   strengthRewardMin: 0
   strengthRewardMax: 0

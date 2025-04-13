@@ -1,14 +1,18 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class SaveLoadController
 {
    public static RunInfo[] runInfoSlots = { new(), new(), new() };
    public static bool[] corruptedSlots = { false, false, false };
    public static short slot = 0;
+
+   public static List<Fighter> enemies;
 
    public static RunInfo runInfo {
       get
@@ -64,5 +68,18 @@ public class SaveLoadController
    {
       return File.Exists(Application.persistentDataPath + $"/saveRun{slot}.corrupted")
          && !corruptedSlots[slot - 1];
+   }
+   public static void ClearSave(short slot)
+   {
+      if(File.Exists(Application.persistentDataPath + $"/saveRun{slot}.corrupted"))
+      {
+         File.Delete(Application.persistentDataPath + $"/saveRun{slot}.corrupted");
+      }
+   }
+
+   public static void StartFight(List<Fighter> enemiesForFight)
+   {
+      enemies = new(enemiesForFight);
+      SceneManager.LoadScene(2);
    }
 }

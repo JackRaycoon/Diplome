@@ -14,6 +14,7 @@ public class Room3D : MonoBehaviour
    public TextMeshProUGUI eventText;
    public List<TextMeshProUGUI> eventBtnsText;
    public List<GameObject> eventBtns;
+   public GameObject fightBtn;
 
    private EventData data;
 
@@ -22,6 +23,8 @@ public class Room3D : MonoBehaviour
    private RoomBehaviour roomB;
 
    public List<GameObject> invisibleWalls;
+
+   private List<Fighter> enemiesForFight = new();
 
    bool isFilled = false;
 
@@ -45,14 +48,19 @@ public class Room3D : MonoBehaviour
       if (data.eventType == EventData.EventType.EnteranceEvent && MiniMapUI.currentRoom != room)
       {
          eventCG.alpha = 0;
+         eventCG.interactable = false;
+         eventCG.blocksRaycasts = false;
          isFilled = false;
          return;
       }
       eventCG.alpha = 1;
+      eventCG.interactable = true;
+      eventCG.blocksRaycasts = true;
 
       eventTitle.text = data.eventName;
       string text = data.eventText;
 
+      //Награды
       if(data.choices.Count == 0)
       {
          //Добавляем информацию о награде
@@ -151,13 +159,19 @@ public class Room3D : MonoBehaviour
          }
 
          List<SkillSO> rewardSkills = new(data.rewardSkillList);
+         List<float> rewardChances = new(data.chanceToReceiveSkill);
          if (!data.allSkillsFromList && rewardSkills.Count != 1) 
          {
-            Shuffle(rewardSkills);
+            Shuffle(rewardSkills, rewardChances);
          }
 
-        foreach(SkillSO skillData in rewardSkills)
+        for(int j = 0; j < rewardSkills.Count; j++)
          {
+            var skillData = rewardSkills[j];
+            if (!DidSkillDrop(rewardChances[j]))
+            {
+               continue;
+            }
             var classes = skillData.availableClasses;
             List<PlayableCharacter> availableCharacters = new();
             foreach (PlayableCharacter character in SaveLoadController.runInfo.PlayerTeam)
@@ -175,46 +189,82 @@ public class Room3D : MonoBehaviour
             text += $" навык \"{skillData._name}\" - {skillData.description}.\n«{skillData.quote}»";
 
             target.AddSkill(skillData);
+            isNext = true;
             if (!data.allSkillsFromList) break;
          }
+         if (!isNext) text += "Ничего";
          text += ".";
       }
 
       eventText.text = text;
-
-      int i = 0;
-      foreach(var eventData in data.choices)
-      {
-         eventBtns[i].SetActive(true);
-         eventBtnsText[i].text = eventData.textChoice;
-         i++;
-      }
-
-      for(;i< eventBtns.Count; i++)
-      {
-         eventBtns[i].SetActive(false);
-      }
 
       if (data.isLockableEvent) 
       {
          StartCoroutine(LockRoom());
       }
       else roomB.LockDoors(true);
+
+      //Битва, потом дополнить
+      fightBtn.SetActive(data.enemies.Count > 0);
+      if (data.enemies.Count > 0)
+      {
+         foreach (var go in eventBtns) go.SetActive(false);
+         enemiesForFight = new();
+         foreach (CharacterSO enemy in data.enemies)
+         {
+            enemiesForFight.Add(new Fighter(enemy));
+         }
+         return;
+      }
+      int i = 0;
+      foreach (var eventData in data.choices)
+      {
+         eventBtns[i].SetActive(true);
+         eventBtnsText[i].text = eventData.textChoice;
+         i++;
+      }
+
+      for (; i < eventBtns.Count; i++)
+      {
+         eventBtns[i].SetActive(false);
+      }
    }
 
-   private void Shuffle(List<SkillSO> list)
+   bool DidSkillDrop(float chanceToReceiveSkill)
    {
+      int scaledChance = Mathf.RoundToInt(chanceToReceiveSkill * 100);
+      int roll = UnityEngine.Random.Range(0, 10000);
+      return roll < scaledChance;
+   }
+
+
+   private void Shuffle(List<SkillSO> list, List<float> list2)
+   {
+      if (list.Count != list2.Count)
+      {
+         Debug.LogError("Списки разной длины! Shuffle невозможен.");
+         return;
+      }
+
       System.Random rng = new System.Random();
       int n = list.Count;
       while (n > 1)
       {
          n--;
          int k = rng.Next(n + 1);
-         SkillSO value = list[k];
+
+         // Меняем элементы в первом списке
+         SkillSO tempSkill = list[k];
          list[k] = list[n];
-         list[n] = value;
+         list[n] = tempSkill;
+
+         // Меняем соответствующие элементы во втором списке
+         float tempValue = list2[k];
+         list2[k] = list2[n];
+         list2[n] = tempValue;
       }
    }
+
 
 
    IEnumerator LockRoom()
@@ -235,8 +285,20 @@ public class Room3D : MonoBehaviour
 
    public void ChoiceBtnClick(int choiceID)
    {
-      room.eventData = data.choices[choiceID];
-      data = room.eventData;
-      FillEvent();
+      if(choiceID == 3)
+      {
+         SaveLoadController.Save();
+         room.eventData = data.choices[0];
+         data = room.eventData;
+         SaveLoadController.StartFight(enemiesForFight);
+         FillEvent();
+      }
+      else
+      {
+         room.eventData = data.choices[choiceID];
+         data = room.eventData;
+         SaveLoadController.Save();
+         FillEvent();
+      }
    }
 }

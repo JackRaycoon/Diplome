@@ -44,6 +44,8 @@ public class SkillDB
       AddSkillCast("Fire Wave", FireWaveCast, FireWaveCalc);
 
       AddSkillPassive("Passive Wolf", WolfPassive, WolfReverse);
+      //Заглушка
+      AddSkillPassive("Old Fighter's Plate", WolfPassive, WolfReverse);
       //AddSkillPassive(KeyWord.Gigachad, "Test Skill", GigachadEveryTurn);
       //AddSkillPassive(KeyWord.Gigachad, "Gigachad", GigachadPassive, GigachadReverse, "Гигачад своим видом вдохновляет каждого союзника. Все союзники получают +1 к атаке.");
    }

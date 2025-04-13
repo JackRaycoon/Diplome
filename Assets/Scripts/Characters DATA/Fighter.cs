@@ -34,6 +34,16 @@ public class Fighter
    public Fighter(string name)
    {
       Data = Resources.Load<CharacterSO>("CharData/" + name);
+      Fill(Data);
+   }
+   public Fighter(CharacterSO data)
+   {
+      Data = data;
+      Fill(Data);
+   }
+
+   private void Fill(CharacterSO Data)
+   {
       max_hp = Data.constitution * 5;
       hp = max_hp;
       strengh = Data.strengh;
@@ -53,10 +63,15 @@ public class Fighter
 
    public void AddSkill(SkillSO skillData)
    {
-      skills.Add(SkillDB.Instance.GetSkillByName(skillData.name));
-   }public void AddSkill(string skillName)
+      var skill = SkillDB.Instance.GetSkillByName(skillData.name);
+      if (!skills.Contains(skill))
+         skills.Add(skill);
+   }
+   public void AddSkill(string skillName)
    {
-      skills.Add(SkillDB.Instance.GetSkillByName(skillName));
+      var skill = SkillDB.Instance.GetSkillByName(skillName);
+      if (!skills.Contains(skill))
+         skills.Add(skill);
    }
 
    public Sprite Portrait
