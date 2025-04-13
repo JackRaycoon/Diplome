@@ -6,7 +6,7 @@ using UnityEngine;
 
 public class SaveLoadController
 {
-   public static RunInfo[] runInfoSlots = { new(1), new(2), new(3) };
+   public static RunInfo[] runInfoSlots = { new(), new(), new() };
    public static bool[] corruptedSlots = { false, false, false };
    public static short slot = 0;
 
@@ -27,7 +27,7 @@ public class SaveLoadController
          runInfo.saveTeam.Add(new(chara));
       }
       BinaryFormatter bf = new BinaryFormatter();
-      FileStream file = File.Create(Application.persistentDataPath + $"/saveRun{runInfo.slot}.corrupted");
+      FileStream file = File.Create(Application.persistentDataPath + $"/saveRun{slot}.corrupted");
       bf.Serialize(file, runInfo);
       file.Close();
    }

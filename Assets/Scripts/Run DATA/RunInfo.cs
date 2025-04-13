@@ -7,17 +7,11 @@
    [Serializable]
    public class RunInfo
    {
-      public int slot;
       public List<CharacterSaveData> saveTeam = new();
       public Locations currentLocation = Locations.Dungeon;
 
       [NonSerialized]
       public List<PlayableCharacter> PlayerTeam = new();
-
-      public RunInfo(int slot)
-      {
-         this.slot = slot;
-      }
 
       public enum Locations
       {
