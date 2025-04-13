@@ -56,11 +56,23 @@ public class MiniMapUI : MonoBehaviour
          if (fog.room == lockedRoom)
             child.GetChild(1).gameObject.SetActive(true);
       }
+      foreach (Transform child in fullMapContent.transform)
+      {
+         var fog = child.GetComponent<FogOfWarUI>();
+         if (fog.room == lockedRoom)
+            child.GetChild(1).gameObject.SetActive(true);
+      }
       lockedRoom = null;
    }
    private void UnlockRoom()
    {
       foreach (Transform child in mapContent.transform)
+      {
+         var fog = child.GetComponent<FogOfWarUI>();
+         if (fog.room == unlockedRoom)
+            child.GetChild(1).gameObject.SetActive(false);
+      }
+      foreach (Transform child in fullMapContent.transform)
       {
          var fog = child.GetComponent<FogOfWarUI>();
          if (fog.room == unlockedRoom)

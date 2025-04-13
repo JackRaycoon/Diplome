@@ -16,6 +16,8 @@ public class RoomBehaviour : MonoBehaviour
    private Canvas eventCanvas;
    private CanvasGroup eventCanvasCG;
 
+   public List<KeyItemController.ObjectType> doorsObjectTypes = new();
+
    private void Start()
    {
       room3d = gameObject.GetComponent<Room3D>();
@@ -24,6 +26,11 @@ public class RoomBehaviour : MonoBehaviour
 
       eventCanvasCG.alpha = 1;
       eventCanvas.worldCamera = Camera.main;
+
+      foreach(GameObject go in doors)
+      {
+         doorsObjectTypes.Add(go.GetComponent<KeyItemController>().objectType);
+      }
    }
    public void UpdateRoom(bool[] status) //true for doors
    {
@@ -71,4 +78,30 @@ public class RoomBehaviour : MonoBehaviour
       }
    }
 
+   public void LockDoors(bool isUnlock)
+   {
+      if (isUnlock)
+      {
+         UnlockDoors();
+      }
+      else
+      {
+         foreach (GameObject door in doors)
+         {
+            door.GetComponent<KeyItemController>().objectType = KeyItemController.ObjectType.LockDoor;
+            var keyDoor = door.GetComponent<KeyDoorController>();
+            if (keyDoor.doorOpen)
+            {
+               StartCoroutine(keyDoor.OpenDoor(true));
+            }
+         }
+      }
+   }
+   private void UnlockDoors()
+   {
+      for(int i = 0; i< doors.Length; i++)
+      {
+         doors[i].GetComponent<KeyItemController>().objectType = doorsObjectTypes[i];
+      }
+   }
 }

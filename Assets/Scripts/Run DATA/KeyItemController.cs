@@ -6,23 +6,20 @@ namespace KeySystem
 {
    public class KeyItemController : MonoBehaviour
    {
-      [SerializeField] private ObjectType objectType;
+      public ObjectType objectType;
 
       public enum ObjectType
       {
          ZeroDoor,
          RedDoor,
          RedKey,
-         GoodBtn,
-         BadBtn,
-         NeutralBtn1,
-         NeutralBtn2
+         LockDoor //Always
       }
       private KeyDoorController doorObject;
 
       private void Start()
       {
-         if (objectType == ObjectType.RedDoor || objectType == ObjectType.ZeroDoor)
+         if (objectType == ObjectType.RedDoor || objectType == ObjectType.ZeroDoor || objectType == ObjectType.LockDoor)
          {
             doorObject = GetComponent<KeyDoorController>();
          }
@@ -42,13 +39,8 @@ namespace KeySystem
                KeyInventory.hasRedKey = true;
                gameObject.SetActive(false);
                break;
-            case ObjectType.GoodBtn:
-               break;
-            case ObjectType.BadBtn:
-               break;
-            case ObjectType.NeutralBtn1:
-               break;
-            case ObjectType.NeutralBtn2:
+            case ObjectType.LockDoor:
+               doorObject.PlayAnimation(false);
                break;
          }
       }

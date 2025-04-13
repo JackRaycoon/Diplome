@@ -16,20 +16,25 @@ namespace KeySystem
       [SerializeField] private string lockedAnimationName = "DoorLocked";
 
       [SerializeField] private int timeToShowUI = 1;
-      [SerializeField] private GameObject showDoorLockedUI = null;
+      [SerializeField] private List<MeshRenderer> showDoorLockedUI = null;
 
       [SerializeField] private float waitTimer = 1;
       [SerializeField] private bool pauseInteraction = false;
+
+      public List<Material> lockMaterials = new();
 
       private BoxCollider bCollider;
       private bool playerInTrigger;
 
       public Room room;
 
+      private KeyItemController itemController;
+
       private void Awake()
       {
          doorAnim = gameObject.GetComponent<Animator>();
          bCollider = GetComponent<BoxCollider>();
+         itemController = GetComponent<KeyItemController>();
       }
 
       private void OnTriggerEnter(Collider other)
@@ -55,7 +60,7 @@ namespace KeySystem
       {
          if (hasKey)
          {
-            OpenDoor();
+            StartCoroutine(OpenDoor(false));
          }
          else
          {
@@ -63,11 +68,16 @@ namespace KeySystem
          }
       }
 
-      private void OpenDoor()
+      public IEnumerator OpenDoor(bool needPause)
       {
+         while (pauseInteraction && needPause)
+         {
+            yield return null;
+         }
          if (!doorOpen && !pauseInteraction)
          {
-            showDoorLockedUI.SetActive(false);
+            foreach(var go in showDoorLockedUI)
+               go.gameObject.SetActive(false);
             MiniMapUI.unlockedRoom = room;
             MiniMapUI.isNeedUpdate = true;
             doorAnim.Play(openAnimationName, 0, 0.0f);
@@ -87,9 +97,21 @@ namespace KeySystem
       {
          if (!pauseInteraction)
          {
-            showDoorLockedUI.SetActive(true);
-            MiniMapUI.lockedRoom = room;
-            MiniMapUI.isNeedUpdate = true;
+            foreach (var go in showDoorLockedUI)
+            {
+               switch (itemController.objectType)
+               {
+                  case KeyItemController.ObjectType.RedDoor:
+                     go.material = lockMaterials[1];
+                     MiniMapUI.lockedRoom = room;
+                     MiniMapUI.isNeedUpdate = true;
+                     break;
+                  case KeyItemController.ObjectType.LockDoor:
+                     go.material = lockMaterials[0];
+                     break;
+               }
+               go.gameObject.SetActive(true);
+            }
             doorAnim.Play(lockedAnimationName, 0, 0.0f);
             StartCoroutine(PauseDoorInteraction(false));
          }
