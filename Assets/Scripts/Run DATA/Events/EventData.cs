@@ -57,8 +57,8 @@ public class EventData : ScriptableObject
    public int agilityRewardMin;
    public int agilityRewardMax;
 
-   public int winsdowRewardMin;
-   public int winsdowRewardMax;
+   public int wisdowRewardMin;
+   public int wisdowRewardMax;
 
    public int constitutionRewardMin;
    public int constitutionRewardMax;
