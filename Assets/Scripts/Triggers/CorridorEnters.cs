@@ -29,14 +29,14 @@ public class CorridorEnters : MonoBehaviour
       var triggerDirection = (partnerTrigger.position - transform.position).normalized;
 
       //Сейчас в комнате, переходим в коридор
-      if (MiniMapUI.currentRoom != null)
+      if (SaveLoadController.runInfo.currentRoom != null)
       {
          if (Vector3.Dot(moveDirection, triggerDirection) < 0) return;
-         MiniMapUI.currentCorridor = corridor3d.corridor;
-         MiniMapUI.currentRoom = null;
+         SaveLoadController.runInfo.currentCorridor = corridor3d.corridor;
+         SaveLoadController.runInfo.currentRoom = null;
       }
       //Сейчас в коридоре, переход в комнату
-      else if(MiniMapUI.currentCorridor != null)
+      else if(SaveLoadController.runInfo.currentCorridor != null)
       {
          if (Vector3.Dot(moveDirection, triggerDirection) > 0) return;
 
@@ -44,18 +44,18 @@ public class CorridorEnters : MonoBehaviour
             corridor3d.corridor.room1.Coords.y < corridor3d.corridor.room2.Coords.y)
          {
             if (numberRoom == 0)
-               MiniMapUI.currentRoom = corridor3d.corridor.room1;
+               SaveLoadController.runInfo.currentRoom = corridor3d.corridor.room1;
             else
-               MiniMapUI.currentRoom = corridor3d.corridor.room2;
+               SaveLoadController.runInfo.currentRoom = corridor3d.corridor.room2;
          }
          else
          {
             if (numberRoom == 0)
-               MiniMapUI.currentRoom = corridor3d.corridor.room2;
+               SaveLoadController.runInfo.currentRoom = corridor3d.corridor.room2;
             else
-               MiniMapUI.currentRoom = corridor3d.corridor.room1;
+               SaveLoadController.runInfo.currentRoom = corridor3d.corridor.room1;
          }
-         MiniMapUI.currentCorridor = null;
+         SaveLoadController.runInfo.currentCorridor = null;
       }
       MiniMapUI.isNeedUpdate = true;
       isPlayerInTrigger = false;

@@ -18,16 +18,39 @@ public class PlayerMovement : MonoBehaviour
    float speedBoost = 1f;
    Vector3 velocity;
    float timer = 0f;
+
+   private float timerSave = 0f;
+   private float intervalSave = 5f;
+
    Vector3 initialCameraPosition;
 
    void Start()
    {
       cameraTransform = transform;
+      var runInfo = SaveLoadController.runInfo;
+      controller.transform.position = new (runInfo.positionX, runInfo.positionY, runInfo.positionZ);
+      controller.transform.rotation = Quaternion.Euler(0f, runInfo.rotationY, 0f); ;
+      cameraTransform.rotation = Quaternion.Euler(runInfo.rotationX, 0f, 0f);
       initialCameraPosition = cameraTransform.localPosition; // Сохраняем изначальную позицию камеры
    }
 
    void FixedUpdate()
    {
+      //Записываем координаты в файл сохранения
+      timerSave += Time.fixedDeltaTime;
+
+      if (timerSave >= intervalSave)
+      {
+         Debug.Log("Save Position");
+         timerSave = 0f; // сброс
+         SaveLoadController.runInfo.positionX = controller.transform.position.x;
+         SaveLoadController.runInfo.positionY = controller.transform.position.y;
+         SaveLoadController.runInfo.positionZ = controller.transform.position.z;
+         SaveLoadController.runInfo.rotationX = cameraTransform.eulerAngles.x;
+         SaveLoadController.runInfo.rotationY = controller.transform.eulerAngles.y;
+
+         SaveLoadController.Save();
+      }
       // Гравитация
       if (controller.isGrounded && velocity.y < 0)
       {

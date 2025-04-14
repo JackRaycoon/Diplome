@@ -13,8 +13,6 @@ public class MiniMapUI : MonoBehaviour
    [SerializeField] GameObject horizontalCorridorMiniMapPrefab, verticalCorridorMiniMapPrefab;
    [SerializeField] private float distanceBetweenRooms;
 
-   public static Room currentRoom = null; // Где наш герой на данный момент находится в 3d
-   public static Corridor currentCorridor = null;
    public static bool isNeedUpdate = false;
    private Vector3 shift = new(0,0,0);
    private GameObject ZeroRoom;
@@ -83,7 +81,9 @@ public class MiniMapUI : MonoBehaviour
 
    private void ShiftMap()
    {
-      if (currentRoom != null)
+      var currentRoom = SaveLoadController.runInfo.currentRoom;
+      var currentCorridor = SaveLoadController.runInfo.currentCorridor;
+      if (SaveLoadController.runInfo.currentRoom != null)
       {
          shift = new(currentRoom.Coords.x * distanceBetweenRooms, currentRoom.Coords.y * distanceBetweenRooms);
       }
@@ -111,6 +111,7 @@ public class MiniMapUI : MonoBehaviour
 
    private void FogOfWar()
    {
+      var currentRoom = SaveLoadController.runInfo.currentRoom;
       //Открываем новые клетки
       if (currentRoom != null)
       {

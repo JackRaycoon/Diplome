@@ -45,7 +45,8 @@ public class Room3D : MonoBehaviour
    public void FillEvent()
    {
 
-      if (data.eventType == EventData.EventType.EnteranceEvent && MiniMapUI.currentRoom != room)
+      if (data.eventType == EventData.EventType.EnteranceEvent && 
+         SaveLoadController.runInfo.currentRoom != room)
       {
          eventCG.alpha = 0;
          eventCG.interactable = false;
@@ -290,13 +291,15 @@ public class Room3D : MonoBehaviour
          SaveLoadController.Save();
          room.eventData = data.choices[0];
          data = room.eventData;
+         room.eventName = $"{data.eventID}-{data.eventID_Part}";
          SaveLoadController.StartFight(enemiesForFight);
-         FillEvent();
+         //FillEvent();
       }
       else
       {
          room.eventData = data.choices[choiceID];
          data = room.eventData;
+         room.eventName = $"{data.eventID}-{data.eventID_Part}";
          SaveLoadController.Save();
          FillEvent();
       }

@@ -30,9 +30,23 @@ public class DungeonGenerator : MonoBehaviour
 
    private Dungeon dungeon;
 
+   private void Awake()
+   {
+      SaveLoadController.Load();
+   }
    private void Start()
    {
-      dungeon = CreateDungeon(settings);
+      isNeedUpdate = false;
+      var structure = SaveLoadController.runInfo.dungeonStructure;
+      if (SaveLoadController.runInfo.dungeonStructure == null)
+      {
+         CreateDungeon(settings);
+      }
+      else
+      {
+         structure.roomToConnectedRooms = ConnectRooms(structure.rooms);
+      }
+      dungeon = new Dungeon(structure);
       BuildDungeonMap();
       miniMap.CreateDungeonMiniMapUI(dungeon);
    }
@@ -49,12 +63,14 @@ public class DungeonGenerator : MonoBehaviour
    //Строит подземелье вокруг currentRoom и очищает всё остальное
    private void BuildDungeonMap()
    {
-      if (MiniMapUI.currentRoom == null) return;
+      var currentRoom = SaveLoadController.runInfo.currentRoom;
+
+      if (currentRoom == null) return;
       foreach (var room in dungeon.rooms)
       {
          if (createdRooms.Contains(room)) continue;
-         if (Math.Abs(MiniMapUI.currentRoom.Coords.x - room.Coords.x) > 2
-               || Math.Abs(MiniMapUI.currentRoom.Coords.y - room.Coords.y) > 2) continue;
+         if (Math.Abs(currentRoom.Coords.x - room.Coords.x) > 2
+               || Math.Abs(currentRoom.Coords.y - room.Coords.y) > 2) continue;
          //Создаём комнаты, которые в пределах пары комнат от текущей
          RoomBehaviour roomBeh = Instantiate(roomPrefab, new Vector3(offsetRoom * room.Coords.x, -0.01f, offsetRoom * room.Coords.y),
             Quaternion.identity,
@@ -94,8 +110,8 @@ public class DungeonGenerator : MonoBehaviour
       for(int i = 0; i<createdRoomsGO.Count; i++)
       {
          Room room = createdRoomsGO[i].GetComponent<Room3D>().room;
-         if (Math.Abs(MiniMapUI.currentRoom.Coords.x - room.Coords.x) > 2
-               || Math.Abs(MiniMapUI.currentRoom.Coords.y - room.Coords.y) > 2)
+         if (Math.Abs(currentRoom.Coords.x - room.Coords.x) > 2
+               || Math.Abs(currentRoom.Coords.y - room.Coords.y) > 2)
          {
             var roomBeh = createdRoomsGO[i].GetComponent<RoomBehaviour>();
             bool[] bmas = { 
@@ -116,10 +132,10 @@ public class DungeonGenerator : MonoBehaviour
       foreach (var corridor in dungeon.corridors)
       {
          if (createdCorridors.Contains(corridor)) continue;
-         if (Math.Abs(MiniMapUI.currentRoom.Coords.x - corridor.room1.Coords.x) > 2
-               || Math.Abs(MiniMapUI.currentRoom.Coords.y - corridor.room1.Coords.y) > 2
-               || Math.Abs(MiniMapUI.currentRoom.Coords.x - corridor.room2.Coords.x) > 2
-               || Math.Abs(MiniMapUI.currentRoom.Coords.y - corridor.room2.Coords.y) > 2) continue;
+         if (Math.Abs(currentRoom.Coords.x - corridor.room1.Coords.x) > 2
+               || Math.Abs(currentRoom.Coords.y - corridor.room1.Coords.y) > 2
+               || Math.Abs(currentRoom.Coords.x - corridor.room2.Coords.x) > 2
+               || Math.Abs(currentRoom.Coords.y - corridor.room2.Coords.y) > 2) continue;
          float xMax = Mathf.Max(corridor.room2.Coords.x, corridor.room1.Coords.x);
          float xOffset = Mathf.Abs(corridor.room2.Coords.x - corridor.room1.Coords.x);
          float xFinalOffset = offsetRoom * xMax - offsetCorridor * xOffset;
@@ -148,10 +164,10 @@ public class DungeonGenerator : MonoBehaviour
       for (int i = 0; i < createdCorridorsGO.Count; i++)
       {
          Corridor corridor = createdCorridorsGO[i].GetComponent<Corridor3D>().corridor;
-         if (Math.Abs(MiniMapUI.currentRoom.Coords.x - corridor.room1.Coords.x) > 2
-               || Math.Abs(MiniMapUI.currentRoom.Coords.y - corridor.room1.Coords.y) > 2
-               || Math.Abs(MiniMapUI.currentRoom.Coords.x - corridor.room2.Coords.x) > 2
-               || Math.Abs(MiniMapUI.currentRoom.Coords.y - corridor.room2.Coords.y) > 2)
+         if (Math.Abs(currentRoom.Coords.x - corridor.room1.Coords.x) > 2
+               || Math.Abs(currentRoom.Coords.y - corridor.room1.Coords.y) > 2
+               || Math.Abs(currentRoom.Coords.x - corridor.room2.Coords.x) > 2
+               || Math.Abs(currentRoom.Coords.y - corridor.room2.Coords.y) > 2)
          {
             if (deletedCorridors.Keys.Contains(corridor)) deletedCorridors.Remove(corridor);
             deletedCorridors.Add(corridor, new());
@@ -163,14 +179,14 @@ public class DungeonGenerator : MonoBehaviour
       }
    }
 
-   public Dungeon CreateDungeon(DungeonSettings settings)
+   public void CreateDungeon(DungeonSettings settings)
    {
       DungeonStructure structure = new();
       structure.rooms = CreateRooms();
       structure.roomToConnectedRooms = ConnectRooms(structure.rooms);
       structure.corridors = CreateCorridors(structure.roomToConnectedRooms);
 
-      return new Dungeon(structure);
+      SaveLoadController.runInfo.dungeonStructure = structure;
    }
 
    private List<Corridor> CreateCorridors(Dictionary<Room, List<Room>> roomToConnectedRooms)
@@ -225,16 +241,22 @@ public class DungeonGenerator : MonoBehaviour
          Room room = new(rooms.Count + 1, nextCoords);
          if (room.Coords.x == 0 && room.Coords.y == 0) 
          {
-            string path = $"EventData/Start Events/{(int)SaveLoadController.runInfo.PlayerTeam[0].charClass - 2}-0";
-            room.eventData = Resources.Load<EventData>(path);
-            MiniMapUI.currentRoom = room; 
+            string path = $"EventData/Start Events/";
+            string name = $"{(int)SaveLoadController.runInfo.PlayerTeam[0].charClass - 2}-0";
+            room.eventData = Resources.Load<EventData>(path + name);
+            room.eventPath = path;
+            room.eventName = name;
+            SaveLoadController.runInfo.currentRoom = room; 
          }
          else
          {
             //Генератор ивента будет тут
             int eventID = 0;
-            room.eventData = Resources.Load<EventData>(
-               $"EventData/{eventID}-0");
+            string path = $"EventData/";
+            string name = $"{eventID}-0";
+            room.eventData = Resources.Load<EventData>(path + name);
+            room.eventPath = path;
+            room.eventName = name;
          }
          rooms.Add(room);
          usedCoords.Add(nextCoords);

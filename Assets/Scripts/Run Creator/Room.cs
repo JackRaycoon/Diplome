@@ -1,19 +1,38 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+[Serializable]
 public class Room
 {
-   private int roomId;
-   private Vector2Int coords;
-   public EventData eventData;
+   public int roomId;
+   private int coordX,coordY;
+   public string eventPath;
+   public string eventName;
+   [NonSerialized]
+   private EventData _eventData = null;
+   public EventData eventData 
+   { 
+      get 
+      {
+         if(_eventData == null)
+            _eventData = Resources.Load<EventData>(eventPath + eventName);
+         return _eventData;
+      }
+      set
+      {
+         _eventData = value;
+      }
+   }
 
 
    public Room(int id, Vector2Int roomCoords)
    {
       roomId = id;
-      coords = roomCoords;
+      coordX = roomCoords.x;
+      coordY = roomCoords.y;
    }
 
-   public Vector2Int Coords { get => coords; }
+   public Vector2Int Coords { get => new(coordX,coordY); }
 }
