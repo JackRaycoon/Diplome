@@ -45,6 +45,8 @@ public class Fight : MonoBehaviour
    private bool isWin, isLose, isAllDoTurn;
    public static bool endFight = false;
    public static bool isEnemyTurn = false;
+
+   public static Room eventRoom; //Откуда запустилась битва
    private void Start()
    {
       Cursor.lockState = CursorLockMode.None;
@@ -496,6 +498,9 @@ public class Fight : MonoBehaviour
       WinLosePanel.SetActive(true);
       if (isLose) WinLoseText.text = "К сожалению, вы проиграли";
       else if (isWin) WinLoseText.text = "Поздравляю с победой";
+      var data = eventRoom.eventData;
+      eventRoom.eventData = data.choices[0];
+      eventRoom.eventName = $"{data.eventID}-{data.eventID_Part}";
       SaveLoadController.Save();
    }
 

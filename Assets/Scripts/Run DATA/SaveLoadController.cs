@@ -25,16 +25,20 @@ public class SaveLoadController
    public static void Save()
    {
       //Заполняем save data
+      //Debug.Log($"Before Save: HP: {runInfo.PlayerTeam[0].hp}, A: {runInfo.PlayerTeam[0].armor}");
       runInfo.saveTeam = new();
       foreach(PlayableCharacter chara in runInfo.PlayerTeam)
       {
          runInfo.saveTeam.Add(new(chara));
       }
       PlayerMovement.SavePosition();
+      //Debug.Log($"In Save: HP: {runInfo.saveTeam[0].hp}, A: {runInfo.saveTeam[0].armor}");
       BinaryFormatter bf = new BinaryFormatter();
       FileStream file = File.Create(Application.persistentDataPath + $"/saveRun{slot}.corrupted");
       bf.Serialize(file, runInfo);
       file.Close();
+      //Debug.Log($"After Save: HP: {runInfo.PlayerTeam[0].hp}, A: {runInfo.PlayerTeam[0].armor}");
+
    }
 
    public static void Load()

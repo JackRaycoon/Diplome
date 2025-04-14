@@ -62,7 +62,7 @@ public class Room3D : MonoBehaviour
       string text = data.eventText;
 
       //Награды
-      if(data.choices.Count == 0)
+      if(data.choices.Count == 0 && !room.eventRewardClaim)
       {
          //Добавляем информацию о награде
          text += "\n\n";
@@ -222,6 +222,7 @@ public class Room3D : MonoBehaviour
          }
          if (!isNext) text += "Ничего";
          text += ".";
+         room.eventRewardClaim = true;
       }
 
       eventText.text = text;
@@ -316,19 +317,16 @@ public class Room3D : MonoBehaviour
       if(choiceID == 3)
       {
          SaveLoadController.Save();
-         room.eventData = data.choices[0];
-         data = room.eventData;
-         room.eventName = $"{data.eventID}-{data.eventID_Part}";
+         Fight.eventRoom = room;
          SaveLoadController.StartFight(enemiesForFight);
-         //FillEvent();
       }
       else
       {
          room.eventData = data.choices[choiceID];
          data = room.eventData;
          room.eventName = $"{data.eventID}-{data.eventID_Part}";
-         SaveLoadController.Save();
          FillEvent();
+         SaveLoadController.Save();
       }
    }
 }
