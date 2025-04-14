@@ -115,7 +115,7 @@ public class SkillDB
       var max_characteristic = Mathf.Max(caster.strengh + caster.bonus_strengh, 
          caster.agility + caster.bonus_agility, 
          caster.wisdow + caster.bonus_wisdow);
-      return new List<int> { 1 + max_characteristic / 3 };
+      return new List<int> { 1 + max_characteristic / 2 };
    }
    public void FireWaveCast(List<Fighter> targets)
    {
@@ -129,7 +129,9 @@ public class SkillDB
    public List<int> FireWaveCalc(List<Fighter> targets)
    {
       var caster = targets[0];
-      return new List<int> { caster.wisdow + caster.bonus_wisdow };
+      var sum = caster.strengh + caster.bonus_strengh + 
+         caster.wisdow + caster.bonus_wisdow;
+      return new List<int> { sum / 2 };
    }
    public void WolfPassive(Fighter caster, List<Fighter> targets)
    {

@@ -497,8 +497,8 @@ public class Fight : MonoBehaviour
       WinLosePanel.SetActive(true);
       if (isLose) WinLoseText.text = "К сожалению, вы проиграли";
       else if (isWin) WinLoseText.text = "Поздравляю с победой";
+      eventRoom.eventData = eventRoom.eventData.choices[0];
       var data = eventRoom.eventData;
-      eventRoom.eventData = data.choices[0];
       eventRoom.eventName = $"{data.eventID}-{data.eventID_Part}";
       SaveLoadController.Save();
    }
