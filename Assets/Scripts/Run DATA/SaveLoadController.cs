@@ -30,6 +30,7 @@ public class SaveLoadController
       {
          runInfo.saveTeam.Add(new(chara));
       }
+      PlayerMovement.SavePosition();
       BinaryFormatter bf = new BinaryFormatter();
       FileStream file = File.Create(Application.persistentDataPath + $"/saveRun{slot}.corrupted");
       bf.Serialize(file, runInfo);
@@ -68,6 +69,12 @@ public class SaveLoadController
                data.PlayerTeam.Add(new(chara));
             }
             runInfoSlots[i - 1] = data;
+
+            var runInfo = data;
+         }
+         else
+         {
+            runInfoSlots[i - 1] = new((short)i);
          }
       }
    }

@@ -10,6 +10,8 @@ public class Corridor
    public Room room2;
    public CorridorOrientation orientation;
 
+   public bool isFogOfWar = true; //Рассеивается когда проходишь на соседней клетке, не обязательно соединённой
+
    public Corridor(Room room1, Room room2)
    {
       this.room1 = room1;

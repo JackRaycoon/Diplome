@@ -24,7 +24,6 @@ public class PlayableCharacter : Fighter
    public PlayableCharacter(CharacterSaveData charSD) : base(charSD.nameClass)
    {
       hp = charSD.hp;
-      max_hp = charSD.max_hp;
       armor = charSD.armor;
       strengh = charSD.strengh;
       agility = charSD.agility;

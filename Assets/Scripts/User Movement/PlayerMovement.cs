@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.UIElements;
 
 public class PlayerMovement : MonoBehaviour
 {
@@ -24,14 +25,32 @@ public class PlayerMovement : MonoBehaviour
 
    Vector3 initialCameraPosition;
 
+   public static CharacterController controllerStatic = null;
+   public static Transform cameraTransformStatic;
+
    void Start()
    {
+      controllerStatic = controller;
       cameraTransform = transform;
+      cameraTransformStatic = transform;
       var runInfo = SaveLoadController.runInfo;
-      controller.transform.position = new (runInfo.positionX, runInfo.positionY, runInfo.positionZ);
-      controller.transform.rotation = Quaternion.Euler(0f, runInfo.rotationY, 0f); ;
+
+      controller.enabled = false;
+      controller.transform.SetPositionAndRotation(new(runInfo.positionX, runInfo.positionY, runInfo.positionZ), 
+         Quaternion.Euler(0f, runInfo.rotationY, 0f));
+      controller.enabled = true;
       cameraTransform.rotation = Quaternion.Euler(runInfo.rotationX, 0f, 0f);
       initialCameraPosition = cameraTransform.localPosition; // Сохраняем изначальную позицию камеры
+   }
+
+   public static void SavePosition()
+   {
+      if (controllerStatic == null) return;
+      SaveLoadController.runInfo.positionX = controllerStatic.transform.position.x;
+      SaveLoadController.runInfo.positionY = controllerStatic.transform.position.y;
+      SaveLoadController.runInfo.positionZ = controllerStatic.transform.position.z;
+      SaveLoadController.runInfo.rotationX = cameraTransformStatic.eulerAngles.x;
+      SaveLoadController.runInfo.rotationY = controllerStatic.transform.eulerAngles.y;
    }
 
    void FixedUpdate()
@@ -41,14 +60,7 @@ public class PlayerMovement : MonoBehaviour
 
       if (timerSave >= intervalSave)
       {
-         Debug.Log("Save Position");
          timerSave = 0f; // сброс
-         SaveLoadController.runInfo.positionX = controller.transform.position.x;
-         SaveLoadController.runInfo.positionY = controller.transform.position.y;
-         SaveLoadController.runInfo.positionZ = controller.transform.position.z;
-         SaveLoadController.runInfo.rotationX = cameraTransform.eulerAngles.x;
-         SaveLoadController.runInfo.rotationY = controller.transform.eulerAngles.y;
-
          SaveLoadController.Save();
       }
       // Гравитация

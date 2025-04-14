@@ -272,6 +272,8 @@ public class Buttons : MonoBehaviour
       if (isNewGame)
       {
          //Новая игра
+         SaveLoadController.ClearSave(SaveLoadController.slot);
+         SaveLoadController.Load();
          SaveLoadController.runInfo.PlayerTeam = new List<PlayableCharacter>() { selectedCharacter };
          SaveLoadController.Save();
       }

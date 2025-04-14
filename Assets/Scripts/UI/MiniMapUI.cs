@@ -50,14 +50,16 @@ public class MiniMapUI : MonoBehaviour
    {
       foreach (Transform child in mapContent.transform)
       {
-         var fog = child.GetComponent<FogOfWarUI>();
-         if (fog.room == lockedRoom)
+         var fullUI = child.GetComponent<MiniMapFullUI>();
+         if (fullUI.room == null) continue;
+         if (fullUI.room == lockedRoom)
             child.GetChild(1).gameObject.SetActive(true);
       }
       foreach (Transform child in fullMapContent.transform)
       {
-         var fog = child.GetComponent<FogOfWarUI>();
-         if (fog.room == lockedRoom)
+         var fullUI = child.GetComponent<MiniMapFullUI>();
+         if (fullUI.room == null) continue;
+         if (fullUI.room == lockedRoom)
             child.GetChild(1).gameObject.SetActive(true);
       }
       lockedRoom = null;
@@ -66,14 +68,16 @@ public class MiniMapUI : MonoBehaviour
    {
       foreach (Transform child in mapContent.transform)
       {
-         var fog = child.GetComponent<FogOfWarUI>();
-         if (fog.room == unlockedRoom)
+         var fullUI = child.GetComponent<MiniMapFullUI>();
+         if (fullUI.room == null) continue;
+         if (fullUI.room == unlockedRoom)
             child.GetChild(1).gameObject.SetActive(false);
       }
       foreach (Transform child in fullMapContent.transform)
       {
-         var fog = child.GetComponent<FogOfWarUI>();
-         if (fog.room == unlockedRoom)
+         var fullUI = child.GetComponent<MiniMapFullUI>();
+         if (fullUI.room == null) continue;
+         if (fullUI.room == unlockedRoom)
             child.GetChild(1).gameObject.SetActive(false);
       }
       unlockedRoom = null;
@@ -112,54 +116,83 @@ public class MiniMapUI : MonoBehaviour
    private void FogOfWar()
    {
       var currentRoom = SaveLoadController.runInfo.currentRoom;
-      //Открываем новые клетки
-      if (currentRoom != null)
+      if(currentRoom == null)
       {
-         List<Room> allRoomList_WithoutFogOfWar = new();
-         //Открываем комнаты
-         foreach (Transform child in mapContent.transform)
-         {
-            var fog = child.GetComponent<FogOfWarUI>();
-            if (fog.room == null) continue;
+         currentRoom = SaveLoadController.runInfo.currentCorridor.room1;
+         if (!currentRoom.isUnlocked) currentRoom = SaveLoadController.runInfo.currentCorridor.room2;
+      }
+      //Открываем новые клетки
+      List<Room> allRoomList_WithoutFogOfWar = new();
+      //Открываем комнаты
+      foreach (Room room in SaveLoadController.runInfo.dungeonStructure.rooms)
+      {
+         if (Math.Abs(currentRoom.Coords.x - room.Coords.x) < 2
+            && Math.Abs(currentRoom.Coords.y - room.Coords.y) < 2)
+            room.isFogOfWar = false;
+         if (currentRoom.Coords.x == room.Coords.x
+            && currentRoom.Coords.y == room.Coords.y)
+            room.isUnlocked = true;
+         if (!room.isFogOfWar)
+            allRoomList_WithoutFogOfWar.Add(room);
+      }
+      /*foreach (Transform child in mapContent.transform)
+      {
+         var fog = child.GetComponent<FogOfWarUI>();
+         if (fog.room == null) continue;
 
-            if (Math.Abs(currentRoom.Coords.x - fog.room.Coords.x) < 2
-               && Math.Abs(currentRoom.Coords.y - fog.room.Coords.y) < 2)
+         if (Math.Abs(currentRoom.Coords.x - fog.room.Coords.x) < 2
+            && Math.Abs(currentRoom.Coords.y - fog.room.Coords.y) < 2)
+            fog.isFogOfWar = false;
+         if (currentRoom.Coords.x == fog.room.Coords.x
+            && currentRoom.Coords.y == fog.room.Coords.y)
+            fog.isUnlocked = true;
+         if(!fog.isFogOfWar) 
+            allRoomList_WithoutFogOfWar.Add(fog.room);
+      }*/
+      //Открываем коридоры
+      foreach (Corridor corridor in SaveLoadController.runInfo.dungeonStructure.corridors)
+      {
+         if (allRoomList_WithoutFogOfWar.Contains(corridor.room1)
+               && allRoomList_WithoutFogOfWar.Contains(corridor.room2))
+         {
+            corridor.isFogOfWar = false;
+         }
+      }
+      /*
+      foreach (Transform child in mapContent.transform)
+      {
+         var fog = child.GetComponent<FogOfWarUI>();
+         if (fog.corridor == null) continue;
+            
+         if(allRoomList_WithoutFogOfWar.Contains(fog.corridor.room1) 
+               && allRoomList_WithoutFogOfWar.Contains(fog.corridor.room2))
+            {
                fog.isFogOfWar = false;
-            if (currentRoom.Coords.x == fog.room.Coords.x
-               && currentRoom.Coords.y == fog.room.Coords.y)
-               fog.isUnlocked = true;
-            if(!fog.isFogOfWar) 
-               allRoomList_WithoutFogOfWar.Add(fog.room);
-         }
-         //Открываем коридоры
-         foreach (Transform child in mapContent.transform)
+            }
+      }*/
+      //Если туман войны есть, то скрываем клетку
+      foreach (Transform child in mapContent.transform)
+      {
+         var fullUI = child.GetComponent<MiniMapFullUI>();
+         if (fullUI.room == null) 
          {
-            var fog = child.GetComponent<FogOfWarUI>();
-            if (fog.corridor == null) continue;
-               
-            if(allRoomList_WithoutFogOfWar.Contains(fog.corridor.room1) 
-                  && allRoomList_WithoutFogOfWar.Contains(fog.corridor.room2))
-               {
-                  fog.isFogOfWar = false;
-               }
+            child.gameObject.SetActive(!fullUI.corridor.isFogOfWar);
+            fullUI.fullMapAnalogue.SetActive(!fullUI.corridor.isFogOfWar);
          }
+         else
+         {
+            child.gameObject.SetActive(!fullUI.room.isFogOfWar);
+            fullUI.fullMapAnalogue.SetActive(!fullUI.room.isFogOfWar);
+         }
+      }
 
-         //Если туман войны есть, то скрываем клетку
-         foreach (Transform child in mapContent.transform)
-         {
-            var fog = child.GetComponent<FogOfWarUI>();
-            child.gameObject.SetActive(!fog.isFogOfWar);
-            fog.fullMapAnalogue.SetActive(!fog.isFogOfWar);
-         }
-
-         //Открываем картинку анлока
-         foreach (Transform child in mapContent.transform)
-         {
-            var fog = child.GetComponent<FogOfWarUI>();
-            if (fog.room == null) continue;
-            child.GetChild(0).gameObject.SetActive(fog.isUnlocked);
-            fog.fullMapAnalogue.transform.GetChild(0).gameObject.SetActive(fog.isUnlocked);
-         }
+      //Открываем картинку анлока
+      foreach (Transform child in mapContent.transform)
+      {
+         var fullUI = child.GetComponent<MiniMapFullUI>();
+         if (fullUI.room == null) continue;
+         child.GetChild(0).gameObject.SetActive(fullUI.room.isUnlocked);
+         fullUI.fullMapAnalogue.transform.GetChild(0).gameObject.SetActive(fullUI.room.isUnlocked);
       }
    }
 
@@ -169,7 +202,7 @@ public class MiniMapUI : MonoBehaviour
       foreach (var room in dungeon.rooms)
       {
          //if (room.Coords.x == 0 && room.Coords.y == 0) currentRoom = room;
-         CreateFogOfWarUI(room);
+         CreateMiniMapFullUI(room);
       }
       foreach (var corridor in dungeon.corridors)
       {
@@ -202,12 +235,12 @@ public class MiniMapUI : MonoBehaviour
       }
 
       goInstance.transform.localPosition = centralPos;
-      goInstance.GetComponent<FogOfWarUI>().corridor = corridor;
+      goInstance.GetComponent<MiniMapFullUI>().corridor = corridor;
       goInstanceFullMap.transform.localPosition = centralPos;
-      goInstance.GetComponent<FogOfWarUI>().fullMapAnalogue = goInstanceFullMap;
+      goInstance.GetComponent<MiniMapFullUI>().fullMapAnalogue = goInstanceFullMap;
    }
 
-   private void CreateFogOfWarUI(Room room)
+   private void CreateMiniMapFullUI(Room room)
    {
       GameObject go = Instantiate(roomMiniMapPrefab, mapContent.transform);
       GameObject goFullMap = Instantiate(roomMiniMapPrefab, fullMapContent.transform);
@@ -216,8 +249,8 @@ public class MiniMapUI : MonoBehaviour
       goFullMap.transform.localPosition = position;
 
       if (room.Coords.x == 0 && room.Coords.y == 0) ZeroRoom = go;
-      go.GetComponent<FogOfWarUI>().room = room;
-      go.GetComponent<FogOfWarUI>().fullMapAnalogue = goFullMap;
+      go.GetComponent<MiniMapFullUI>().room = room;
+      go.GetComponent<MiniMapFullUI>().fullMapAnalogue = goFullMap;
    }
 
    private void ClearMiniMap()

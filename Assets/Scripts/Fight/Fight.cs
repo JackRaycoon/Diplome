@@ -70,6 +70,8 @@ public class Fight : MonoBehaviour
       foreach (Fighter character in PlayerTeam) AllCharacter.Add(character);
       foreach (Fighter character in EnemyTeam) AllCharacter.Add(character);
 
+      foreach (Fighter character in AllCharacter) character.armor_current = character.armor;
+
       UpdatePortrait();
 
       FightStart();

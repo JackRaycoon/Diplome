@@ -11,9 +11,16 @@ public class Fighter
 
    //Боевые характеристики
    public int hp;
-   public int max_hp;
+   public int max_hp
+   {
+      get
+      {
+         return constitution * 5;
+      }
+   }
    public int bonus_hp; //если в бою чьи-то хп повысили или понизили
    public int armor; //дополнительное здоровье, которое может превышать максимум
+   public int armor_current; //дополнительное здоровье, которое может превышать максимум
    public Skill Intension = null; //Намерение использовать скилл
    public Skill prevIntension = null;
 
@@ -44,13 +51,13 @@ public class Fighter
 
    private void Fill(CharacterSO Data)
    {
-      max_hp = Data.constitution * 5;
+      constitution = Data.constitution;
       hp = max_hp;
       strengh = Data.strengh;
       agility = Data.agility;
       wisdow = Data.wisdow;
-      constitution = Data.constitution;
       armor = Data.armor;
+      armor_current = armor;
 
       if (Data.isEnemy)
       {
@@ -126,12 +133,12 @@ public class Fighter
 
    public void TakeDmg(int dmg)
    {
-      if(armor > 0)
+      if(armor_current > 0)
       { 
-         var armor_cur = armor;
-         armor -= dmg;
+         var armor_cur = armor_current;
+         armor_current -= dmg;
          dmg -= armor_cur;
-         if (armor < 0) armor = 0;
+         if (armor_current < 0) armor_current = 0;
       }
       if (dmg >= 0)
       {

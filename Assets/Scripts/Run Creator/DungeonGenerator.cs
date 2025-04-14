@@ -41,13 +41,14 @@ public class DungeonGenerator : MonoBehaviour
       if (SaveLoadController.runInfo.dungeonStructure == null)
       {
          CreateDungeon(settings);
+         structure = SaveLoadController.runInfo.dungeonStructure;
       }
       else
       {
          structure.roomToConnectedRooms = ConnectRooms(structure.rooms);
       }
       dungeon = new Dungeon(structure);
-      BuildDungeonMap();
+      BuildDungeonMap(true);
       miniMap.CreateDungeonMiniMapUI(dungeon);
    }
 
@@ -56,14 +57,18 @@ public class DungeonGenerator : MonoBehaviour
       if (isNeedUpdate)
       {
          isNeedUpdate = false;
-         BuildDungeonMap();
+         BuildDungeonMap(false);
       }
    }
 
    //Строит подземелье вокруг currentRoom и очищает всё остальное
-   private void BuildDungeonMap()
+   private void BuildDungeonMap(bool firstBuild)
    {
       var currentRoom = SaveLoadController.runInfo.currentRoom;
+      if(currentRoom == null && firstBuild)
+      {
+         currentRoom = SaveLoadController.runInfo.currentCorridor.room1;
+      }
 
       if (currentRoom == null) return;
       foreach (var room in dungeon.rooms)

@@ -72,90 +72,117 @@ public class Room3D : MonoBehaviour
          if(data.minGold != 0)
          {
             int rewardCountGold = Random.Range(data.minGold, data.maxGold + 1);
-            if (isNext)
+            if(rewardCountGold != 0)
             {
-               text += ", ";
-            }
-            text += $"{rewardCountGold} золота";
-            isNext = true;
+               if (isNext)
+               {
+                  text += ", ";
+               }
+               text += $"{rewardCountGold} золота";
+               isNext = true;
 
-            SaveLoadController.runInfo.goldCount += rewardCountGold;
+               SaveLoadController.runInfo.goldCount += rewardCountGold;
+            }
          }
          if (data.strengthRewardMax != 0)
          {
             int rewardCountStrength = Random.Range(data.strengthRewardMin, data.strengthRewardMax + 1);
-            if (isNext)
+            if(rewardCountStrength != 0)
             {
-               text += ", ";
-            }
-            text += $"{rewardCountStrength} силы";
-            isNext = true;
+               if (isNext)
+               {
+                  text += ", ";
+               }
+               text += $"{rewardCountStrength} силы";
+               isNext = true;
 
-            SaveLoadController.runInfo.PlayerTeam[0].strengh += rewardCountStrength;
+               SaveLoadController.runInfo.PlayerTeam[0].strengh += rewardCountStrength;
+            }
          }
          if (data.agilityRewardMax != 0)
          {
             int rewardCountAgility = Random.Range(data.agilityRewardMin, data.agilityRewardMax + 1);
-            if (isNext)
+            if(rewardCountAgility != 0)
             {
-               text += ", ";
-            }
-            text += $"{rewardCountAgility} ловкости";
-            isNext = true;
+               if (isNext)
+               {
+                  text += ", ";
+               }
+               text += $"{rewardCountAgility} ловкости";
+               isNext = true;
 
-            SaveLoadController.runInfo.PlayerTeam[0].agility += rewardCountAgility;
+               SaveLoadController.runInfo.PlayerTeam[0].agility += rewardCountAgility;
+            }
          }
          if (data.wisdowRewardMax != 0)
          {
             int rewardCountWisdow = Random.Range(data.wisdowRewardMin, data.wisdowRewardMax + 1);
-            if (isNext)
+            if(rewardCountWisdow != 0)
             {
-               text += ", ";
-            }
-            text += $"{rewardCountWisdow} мудрости";
-            isNext = true;
+               if (isNext)
+               {
+                  text += ", ";
+               }
+               text += $"{rewardCountWisdow} мудрости";
+               isNext = true;
 
-            SaveLoadController.runInfo.PlayerTeam[0].wisdow += rewardCountWisdow;
+               SaveLoadController.runInfo.PlayerTeam[0].wisdow += rewardCountWisdow;
+            }
          }
          if (data.constitutionRewardMax != 0)
          {
             int rewardCountConstitution = Random.Range(data.constitutionRewardMin, data.constitutionRewardMax + 1);
-            if (isNext)
+            if(rewardCountConstitution != 0)
             {
-               text += ", ";
-            }
-            text += $"{rewardCountConstitution} телосложения";
-            isNext = true;
+               if (isNext)
+               {
+                  text += ", ";
+               }
+               text += $"{rewardCountConstitution} телосложения";
+               isNext = true;
 
-            SaveLoadController.runInfo.PlayerTeam[0].constitution += rewardCountConstitution;
+               var hero = SaveLoadController.runInfo.PlayerTeam[0];
+               hero.constitution += rewardCountConstitution;
+               hero.hp += rewardCountConstitution * 5;
+               if (hero.hp > hero.max_hp)
+               {
+                  hero.hp = hero.max_hp;
+               }
+            }
          }
          if (data.armorRewardMax != 0)
          {
             int rewardCountArmor = Random.Range(data.armorRewardMin, data.armorRewardMax + 1);
-            if (isNext)
+            if(rewardCountArmor != 0)
             {
-               text += ", ";
-            }
-            text += $"{rewardCountArmor} брони";
-            isNext = true;
+               if (isNext)
+               {
+                  text += ", ";
+               }
+               text += $"{rewardCountArmor} брони";
+               isNext = true;
 
-            SaveLoadController.runInfo.PlayerTeam[0].armor += rewardCountArmor;
+               SaveLoadController.runInfo.PlayerTeam[0].armor += rewardCountArmor;
+            }
          }
          if (data.healRewardMax != 0)
          {
             int rewardCountHeal = Random.Range(data.healRewardMin, data.healRewardMax + 1);
-            if (isNext)
+            if(rewardCountHeal != 0)
             {
-               text += ", ";
-            }
-            text += $"{rewardCountHeal} здоровья";
-            isNext = true;
+               if (isNext)
+               {
+                  text += ", ";
+               }
+               text += $"{rewardCountHeal} здоровья";
+               isNext = true;
 
-            var hero = SaveLoadController.runInfo.PlayerTeam[0];
-            hero.hp += rewardCountHeal;
-            if(hero.hp > hero.max_hp)
-            {
-               hero.hp = hero.max_hp;
+               var hero = SaveLoadController.runInfo.PlayerTeam[0];
+               hero.hp += rewardCountHeal;
+               if (hero.hp > hero.max_hp)
+               {
+                  hero.hp = hero.max_hp;
+               }
             }
          }
 

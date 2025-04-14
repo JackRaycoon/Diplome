@@ -31,6 +31,7 @@ MonoBehaviour:
   maxGold: 0
   rewardSkillList: []
   allSkillsFromList: 0
+  chanceToReceiveSkill: []
   randomRewardTarget: 0
   strengthRewardMin: 0
   strengthRewardMax: 0

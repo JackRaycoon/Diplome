@@ -8,6 +8,10 @@ public class Room
 {
    public int roomId;
    private int coordX,coordY;
+
+   public bool isFogOfWar = true; //Рассеивается когда проходишь на соседней клетке, не обязательно соединённой
+   public bool isUnlocked; //Открывается когда прошёл непосредственно по этой клетке (был там)
+
    public string eventPath;
    public string eventName;
    [NonSerialized]

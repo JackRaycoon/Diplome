@@ -8,7 +8,6 @@ public class CharacterSaveData
 {
    public string nameClass;
    public int hp;
-   public int max_hp;
    public int armor;
    public int strengh, agility, wisdow, constitution;
 
@@ -23,7 +22,6 @@ public class CharacterSaveData
    {
       nameClass = chara.Data.name;
       hp = chara.hp;
-      max_hp = chara.max_hp;
       armor = chara.armor;
       strengh = chara.strengh;
       agility = chara.agility;

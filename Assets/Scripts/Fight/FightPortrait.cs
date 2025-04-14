@@ -81,7 +81,7 @@ public class FightPortrait : MonoBehaviour
          hearth_icon.color = new Color32(224, 43, 41, 255);
          slider_filler.color = new Color32(154, 22, 29, 255);
       }
-      if (character.armor > 0)
+      if (character.armor_current > 0)
       {
          hearth_icon.color = new Color32(85, 123, 126, 255);
          slider_filler.color = new Color32(78, 104, 106, 255);
@@ -95,6 +95,6 @@ public class FightPortrait : MonoBehaviour
 
       hp_text.text = character.hp.ToString() +
          "/" + (character.max_hp + character.bonus_hp).ToString() +
-         ((character.armor > 0) ? ("\n" + character.armor + " A") : "");
+         ((character.armor_current > 0) ? ("\n" + character.armor_current + " A") : "");
    }
 }
