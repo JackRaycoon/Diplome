@@ -10,6 +10,13 @@
       public List<CharacterSaveData> saveTeam = new();
       public Locations currentLocation = Locations.Dungeon;
 
+      public short slotID;
+
+      public RunInfo(short slotID)
+      {
+         this.slotID = slotID;
+      }
+
       public int goldCount = 0;
 
       [NonSerialized]

@@ -8,7 +8,7 @@ using UnityEngine.SceneManagement;
 
 public class SaveLoadController
 {
-   public static RunInfo[] runInfoSlots = { new(), new(), new() };
+   public static RunInfo[] runInfoSlots = { new(1), new(2), new(3) };
    public static bool[] corruptedSlots = { false, false, false };
    public static short slot = 0;
 
@@ -52,9 +52,16 @@ public class SaveLoadController
             catch
             {
                corruptedSlots[i - 1] = true;
+               file.Close();
                continue;
             }
             file.Close();
+            if (data.slotID != i)
+            {
+               corruptedSlots[i - 1] = true;
+               continue;
+            }
+
             data.PlayerTeam = new();
             foreach (var chara in data.saveTeam)
             {
