@@ -15,6 +15,7 @@ public class Room
    public string eventPath;
    public string eventName;
    public bool eventRewardClaim = false;
+   public string eventRewardText = "";
    [NonSerialized]
    private EventData _eventData = null;
    public EventData eventData 

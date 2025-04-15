@@ -34,7 +34,16 @@ public class Skill
       private set { }
    }
 
-   public string Description
+   public string Name
+   {
+      get
+      {
+         return $"<b><size=55>{skillData._name}</size></b>";
+      }
+      private set { }
+   }
+
+   /*public string Description
    {
       get
       {
@@ -44,6 +53,16 @@ public class Skill
             return string.Format(skillData.description, calc(new List<Fighter> { Fight.SelectedCharacter() })[0]);
       }
       private set { }
+   }*/
+   public string Description(Fighter fighter = null)
+   {
+      if (fighter != null) 
+         return string.Format(skillData.description, calc(new List<Fighter> { fighter })[0]);
+
+      if (Fight.isEnemyTurn)
+         return string.Format(skillData.description, calc(new List<Fighter> { Fight.EnemyUITeam[0] })[0]);
+      else
+         return string.Format(skillData.description, calc(new List<Fighter> { Fight.SelectedCharacter() })[0]);
    }
 
    public void Cast(Fighter caster, List<Fighter> targets)

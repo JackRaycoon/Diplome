@@ -65,8 +65,9 @@ public class Room3D : MonoBehaviour
       if(data.choices.Count == 0 && !room.eventRewardClaim)
       {
          //Добавляем информацию о награде
-         text += "\n\n";
-         text += "Получено: ";
+         room.eventRewardText = "";
+         room.eventRewardText += "\n\n";
+         room.eventRewardText += "Получено: ";
          bool isNext = false;
 
          if(data.minGold != 0)
@@ -76,9 +77,9 @@ public class Room3D : MonoBehaviour
             {
                if (isNext)
                {
-                  text += ", ";
+                  room.eventRewardText += ", ";
                }
-               text += $"{rewardCountGold} золота";
+               room.eventRewardText += $"{rewardCountGold} золота";
                isNext = true;
 
                SaveLoadController.runInfo.goldCount += rewardCountGold;
@@ -91,9 +92,9 @@ public class Room3D : MonoBehaviour
             {
                if (isNext)
                {
-                  text += ", ";
+                  room.eventRewardText += ", ";
                }
-               text += $"{rewardCountStrength} силы";
+               room.eventRewardText += $"{rewardCountStrength} силы";
                isNext = true;
 
                SaveLoadController.runInfo.PlayerTeam[0].strengh += rewardCountStrength;
@@ -106,9 +107,9 @@ public class Room3D : MonoBehaviour
             {
                if (isNext)
                {
-                  text += ", ";
+                  room.eventRewardText += ", ";
                }
-               text += $"{rewardCountAgility} ловкости";
+               room.eventRewardText += $"{rewardCountAgility} ловкости";
                isNext = true;
 
                SaveLoadController.runInfo.PlayerTeam[0].agility += rewardCountAgility;
@@ -121,9 +122,9 @@ public class Room3D : MonoBehaviour
             {
                if (isNext)
                {
-                  text += ", ";
+                  room.eventRewardText += ", ";
                }
-               text += $"{rewardCountWisdow} мудрости";
+               room.eventRewardText += $"{rewardCountWisdow} мудрости";
                isNext = true;
 
                SaveLoadController.runInfo.PlayerTeam[0].wisdow += rewardCountWisdow;
@@ -136,9 +137,9 @@ public class Room3D : MonoBehaviour
             {
                if (isNext)
                {
-                  text += ", ";
+                  room.eventRewardText += ", ";
                }
-               text += $"{rewardCountConstitution} телосложения";
+               room.eventRewardText += $"{rewardCountConstitution} телосложения";
                isNext = true;
 
                var hero = SaveLoadController.runInfo.PlayerTeam[0];
@@ -157,9 +158,9 @@ public class Room3D : MonoBehaviour
             {
                if (isNext)
                {
-                  text += ", ";
+                  room.eventRewardText += ", ";
                }
-               text += $"{rewardCountArmor} брони";
+               room.eventRewardText += $"{rewardCountArmor} брони";
                isNext = true;
 
                SaveLoadController.runInfo.PlayerTeam[0].armor += rewardCountArmor;
@@ -172,9 +173,9 @@ public class Room3D : MonoBehaviour
             {
                if (isNext)
                {
-                  text += ", ";
+                  room.eventRewardText += ", ";
                }
-               text += $"{rewardCountHeal} здоровья";
+               room.eventRewardText += $"{rewardCountHeal} здоровья";
                isNext = true;
 
                var hero = SaveLoadController.runInfo.PlayerTeam[0];
@@ -186,17 +187,25 @@ public class Room3D : MonoBehaviour
             }
          }
 
+         bool isPool = false;
          List<SkillSO> rewardSkills = new(data.rewardSkillList);
+         if (data.rewardSkillPool != null) 
+         {
+            rewardSkills = new(data.rewardSkillPool.skillList);
+            isPool = true;
+         }
+
          List<float> rewardChances = new(data.chanceToReceiveSkill);
          if (!data.allSkillsFromList && rewardSkills.Count != 1) 
          {
-            Shuffle(rewardSkills, rewardChances);
+            Shuffle(rewardSkills, rewardChances, isPool);
          }
 
         for(int j = 0; j < rewardSkills.Count; j++)
          {
             var skillData = rewardSkills[j];
-            if (!DidSkillDrop(rewardChances[j]))
+            var skill = SkillDB.Instance.GetSkillByName(skillData.name);
+            if (!isPool && !DidSkillDrop(rewardChances[j]))
             {
                continue;
             }
@@ -212,19 +221,19 @@ public class Room3D : MonoBehaviour
             if (availableCharacters.Count == 0) continue;
             PlayableCharacter target = availableCharacters[Random.Range(0, availableCharacters.Count)];
 
-            text += "\n";
-            text += (skillData.skill_type == SkillSO.SkillType.Passive) ? "Пассивный" : "Активный";
-            text += $" навык \"{skillData._name}\" - {skillData.description}.\n«{skillData.quote}»";
+            room.eventRewardText += "\n";
+            room.eventRewardText += (skillData.skill_type == SkillSO.SkillType.Passive) ? "Пассивный" : "Активный";
+            room.eventRewardText += $" навык \"{skillData._name}\" – {skill.Description(target)}.\n«{skillData.quote}»";
 
-            target.AddSkill(skillData);
+            target.AddSkill(skill);
             isNext = true;
             if (!data.allSkillsFromList) break;
          }
-         if (!isNext) text += "Ничего";
-         text += ".";
+         if (!isNext) room.eventRewardText += "Ничего";
+         room.eventRewardText += ".";
          room.eventRewardClaim = true;
       }
-
+      text += room.eventRewardText;
       eventText.text = text;
 
       if (data.isLockableEvent) 
@@ -267,9 +276,9 @@ public class Room3D : MonoBehaviour
    }
 
 
-   private void Shuffle(List<SkillSO> list, List<float> list2)
+   private void Shuffle(List<SkillSO> list, List<float> list2, bool ignoreList2)
    {
-      if (list.Count != list2.Count)
+      if (list.Count != list2.Count && !ignoreList2)
       {
          Debug.LogError("Списки разной длины! Shuffle невозможен.");
          return;
@@ -287,6 +296,7 @@ public class Room3D : MonoBehaviour
          list[k] = list[n];
          list[n] = tempSkill;
 
+         if (ignoreList2) continue;
          // Меняем соответствующие элементы во втором списке
          float tempValue = list2[k];
          list2[k] = list2[n];
