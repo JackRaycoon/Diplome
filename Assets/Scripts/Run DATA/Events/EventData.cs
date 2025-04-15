@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-[CreateAssetMenu(fileName = "EventData", menuName = "Event Data", order = 4)]
+[CreateAssetMenu(fileName = "EventData", menuName = "Event Data", order = 5)]
 public class EventData : ScriptableObject
 {
    [Tooltip("Глобальный номер самого ивента, у всех частей он один")]
@@ -59,6 +59,8 @@ public class EventData : ScriptableObject
    public int maxGold;
 
    public List<SkillSO> rewardSkillList = new();
+   [Tooltip("Пулл скиллов которые могут быть выданы, обычно выдаётся только 1 отсюда, список выше игнорируется")]
+   public SkillPool rewardSkillPool = null;
    [Tooltip("Если включено, то в награду будут выданы все скиллы из списка\n" +
       "Иначе будет выдан случайный")]
    public bool allSkillsFromList;

@@ -74,6 +74,11 @@ public class Fighter
       if (!skills.Contains(skill))
          skills.Add(skill);
    }
+   public void AddSkill(Skill skill)
+   {
+      if (!skills.Contains(skill))
+         skills.Add(skill);
+   }
    public void AddSkill(string skillName)
    {
       var skill = SkillDB.Instance.GetSkillByName(skillName);
