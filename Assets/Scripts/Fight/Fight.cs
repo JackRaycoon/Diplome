@@ -331,10 +331,14 @@ public class Fight : MonoBehaviour
       isEnemyTurn = true;
       UpdatePortrait();
       FightUIController.allDisable = true;
+      FightUIController.hardUpdate = true;
 
       yield return new WaitForSeconds(2f);
 
       var selectedEnemy = notTurnEnemies[Random.Range(0, notTurnEnemies.Count)];
+
+      //EnemyUITeam = new List<Fighter>() { selectedEnemy };
+      //UpdatePortrait();
       //Реализовать логику выбора цели
       Fighter target;
       do

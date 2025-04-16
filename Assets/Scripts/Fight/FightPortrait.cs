@@ -35,7 +35,6 @@ public class FightPortrait : MonoBehaviour
    private void Update()
    {
       //Для обновления хп
-      //Добавить изменение цвета в зависимости от % хп
       Fighter character = null;
       if (id < 6)
       {

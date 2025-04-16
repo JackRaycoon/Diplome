@@ -44,10 +44,11 @@ MonoBehaviour:
   portrait_monster: {fileID: 21300000, guid: e0fe12e35ffa8334fae15161e2424857, type: 3}
   other_portraits:
   - {fileID: 21300000, guid: 5909af7027b3c0648ae5654fc450d1b6, type: 3}
-  skills: []
+  skills:
+  - {fileID: 11400000, guid: f087d4d62c8a93944ac2b8a15273a5a8, type: 2}
   strengh: 1
   agility: 1
   wisdow: 4
   constitution: 4
-  armor: 0
+  defence: 0
   isEnemy: 0

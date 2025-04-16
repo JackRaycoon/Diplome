@@ -44,6 +44,7 @@ public class SkillDB
       AddSkillCast("Basic Attack", BasicAttackCast, BasicAttackCalc);
       AddSkillCast("Raise Shields", RaiseShieldsCast, RaiseShieldsCalc);
       AddSkillCast("Fire Wave", FireWaveCast, FireWaveCalc);
+      AddSkillCast("Healing Wounds", HealingWoundsCast, HealingWoundsCalc);
 
       AddSkillPassive("Call of the Pack", CallPackPassive, CallPackReverse);
       //Заглушка
@@ -119,6 +120,18 @@ public class SkillDB
          caster.agility + caster.bonus_agility, 
          caster.wisdow + caster.bonus_wisdow);
       return new List<int> { 1 + max_characteristic / 2 };
+   }
+
+   //Healing Wounds
+   public void HealingWoundsCast(List<Fighter> targets)
+   {
+      int heal = HealingWoundsCalc(targets)[0];
+      if (!targets[0].isDead) targets[0].TakeHeal(heal);
+   }
+   public List<int> HealingWoundsCalc(List<Fighter> targets)
+   {
+      var caster = targets[0];
+      return new List<int> { caster.wisdow + caster.bonus_wisdow };
    }
 
    //Raise Shields

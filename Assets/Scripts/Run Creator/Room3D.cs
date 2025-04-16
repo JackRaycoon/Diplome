@@ -144,11 +144,7 @@ public class Room3D : MonoBehaviour
 
                var hero = SaveLoadController.runInfo.PlayerTeam[0];
                hero.constitution += rewardCountConstitution;
-               hero.hp += rewardCountConstitution * 5;
-               if (hero.hp > hero.max_hp)
-               {
-                  hero.hp = hero.max_hp;
-               }
+               hero.TakeHeal(rewardCountConstitution * 5);
             }
          }
          if (data.armorRewardMax != 0)
@@ -160,7 +156,7 @@ public class Room3D : MonoBehaviour
                {
                   room.eventRewardText += ", ";
                }
-               room.eventRewardText += $"{rewardCountArmor} брони";
+               room.eventRewardText += $"{rewardCountArmor} защиты";
                isNext = true;
 
                SaveLoadController.runInfo.PlayerTeam[0].defence += rewardCountArmor;
@@ -179,11 +175,7 @@ public class Room3D : MonoBehaviour
                isNext = true;
 
                var hero = SaveLoadController.runInfo.PlayerTeam[0];
-               hero.hp += rewardCountHeal;
-               if (hero.hp > hero.max_hp)
-               {
-                  hero.hp = hero.max_hp;
-               }
+               hero.TakeHeal(rewardCountHeal);
             }
          }
 

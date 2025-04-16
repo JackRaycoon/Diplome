@@ -156,5 +156,15 @@ public class Fighter
       }
    }
 
-
+   public void TakeHeal(int heal)
+   {
+      if (heal >= 0)
+      {
+         hp += heal;
+         if (hp > max_hp)
+         {
+            hp = max_hp;
+         }
+      }
+   }
 }

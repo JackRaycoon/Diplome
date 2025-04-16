@@ -112,8 +112,6 @@ public class FightUIController : MonoBehaviour
       //ENEMIES
       if (commandNum == 2)
       {
-         //if (one_enemies != null && _countEnemies != 1)
-         //   one_enemies = null;
          foreach (Transform child in enemies.transform)
          {
             Destroy(child.gameObject);
@@ -123,23 +121,14 @@ public class FightUIController : MonoBehaviour
             var go = Instantiate(portraitPrefab, enemies.transform);
             var fp = go.GetComponent<FightPortrait>();
             go.transform.GetChild(0).GetComponent<RawImage>().texture = enemiesRenderTextures[i];
-            fp.id = i + 6;
+
+            //fp.id = i + 6;
             fp.isInteractable = false;
-            /*if (one_enemies != null)
-            {
-               if (Fight.EnemyTeam.Contains(one_enemies))
-                  fp.id = Fight.EnemyTeam.IndexOf(one_enemies) + 6;
-               else
-               {
-                  fp.id = Fight.PlayerTeam.IndexOf(one_enemies as PlayableCharacter);
-               }
-            }; */
+
             if (Fight.EnemyTeam.Contains(Fight.EnemyUITeam[i]))
                fp.id = Fight.EnemyTeam.IndexOf(Fight.EnemyUITeam[i]) + 6;
             else
-            {
                fp.id = Fight.PlayerTeam.IndexOf(Fight.EnemyUITeam[i] as PlayableCharacter);
-            }
          }
          switch (_countEnemies)
          {
