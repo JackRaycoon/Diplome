@@ -25,6 +25,8 @@ public class SkillSO : ScriptableObject
       Random_Enemy, //Случайный враг
       Random_Ally,//Случайный союзник
       Random_Target, //Случайный персонаж
-      Passive
+      Caster, //На себя 
+      Passive_Battle,
+      Passive_Global
    };
 }

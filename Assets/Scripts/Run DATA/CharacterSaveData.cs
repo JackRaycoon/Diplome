@@ -8,7 +8,7 @@ public class CharacterSaveData
 {
    public string nameClass;
    public int hp;
-   public int armor;
+   public int defence;
    public int strengh, agility, wisdow, constitution;
 
    public byte currentPhase; //1 - человек, 2 - получеловек, 3 - монстр
@@ -22,7 +22,7 @@ public class CharacterSaveData
    {
       nameClass = chara.Data.name;
       hp = chara.hp;
-      armor = chara.armor;
+      defence = chara.defence;
       strengh = chara.strengh;
       agility = chara.agility;
       wisdow = chara.wisdow;

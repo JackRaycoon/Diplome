@@ -19,8 +19,8 @@ public class Fighter
       }
    }
    public int bonus_hp; //если в бою чьи-то хп повысили или понизили
+   public int defence; //дополнительное здоровье, которое может превышать максимум
    public int armor; //дополнительное здоровье, которое может превышать максимум
-   public int armor_current; //дополнительное здоровье, которое может превышать максимум
    public Skill Intension = null; //Намерение использовать скилл
    public Skill prevIntension = null;
 
@@ -56,8 +56,8 @@ public class Fighter
       strengh = Data.strengh;
       agility = Data.agility;
       wisdow = Data.wisdow;
-      armor = Data.armor;
-      armor_current = armor;
+      defence = Data.defence;
+      armor = defence * 2;
 
       if (Data.isEnemy)
       {
@@ -138,12 +138,12 @@ public class Fighter
 
    public void TakeDmg(int dmg)
    {
-      if(armor_current > 0)
+      if(armor > 0)
       { 
-         var armor_cur = armor_current;
-         armor_current -= dmg;
+         var armor_cur = armor;
+         armor -= dmg;
          dmg -= armor_cur;
-         if (armor_current < 0) armor_current = 0;
+         if (armor < 0) armor = 0;
       }
       if (dmg >= 0)
       {

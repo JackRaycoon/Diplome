@@ -13,4 +13,5 @@ MonoBehaviour:
   m_Name: WarriorSkills
   m_EditorClassIdentifier: 
   skillList:
+  - {fileID: 11400000, guid: 7f6a00a3d8378e54e99a0679cd85765a, type: 2}
   - {fileID: 11400000, guid: 9f006076cd1e7fd4785e00e1b8cc6c39, type: 2}

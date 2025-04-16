@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System;
+using static UnityEngine.GraphicsBuffer;
 
 public class SkillDB
 {
@@ -41,11 +42,12 @@ public class SkillDB
    private void InitializeSkillDatabase()
    {
       AddSkillCast("Basic Attack", BasicAttackCast, BasicAttackCalc);
+      AddSkillCast("Raise Shields", RaiseShieldsCast, RaiseShieldsCalc);
       AddSkillCast("Fire Wave", FireWaveCast, FireWaveCalc);
 
-      AddSkillPassive("Passive Wolf", WolfPassive, WolfReverse);
+      AddSkillPassive("Call of the Pack", CallPackPassive, CallPackReverse);
       //Заглушка
-      AddSkillPassive("Old Fighter's Plate", WolfPassive, WolfReverse);
+      AddSkillPassive("Old Fighter's Plate", CallPackPassive, CallPackReverse);
       //AddSkillPassive(KeyWord.Gigachad, "Test Skill", GigachadEveryTurn);
       //AddSkillPassive(KeyWord.Gigachad, "Gigachad", GigachadPassive, GigachadReverse, "Гигачад своим видом вдохновляет каждого союзника. Все союзники получают +1 к атаке.");
    }
@@ -100,6 +102,7 @@ public class SkillDB
       //}
    }
 
+   //Basic Attack
    public void BasicAttackCast(List<Fighter> targets)
    {
       int dmg = BasicAttackCalc(targets)[0];
@@ -117,6 +120,20 @@ public class SkillDB
          caster.wisdow + caster.bonus_wisdow);
       return new List<int> { 1 + max_characteristic / 2 };
    }
+
+   //Raise Shields
+   public void RaiseShieldsCast(List<Fighter> targets)
+   {
+      int armor = RaiseShieldsCalc(targets)[0];
+      if (!targets[0].isDead) targets[0].armor += armor;
+   }
+   public List<int> RaiseShieldsCalc(List<Fighter> targets)
+   {
+      var caster = targets[0];
+      return new List<int> { caster.defence };
+   }
+
+   //Fire Wave
    public void FireWaveCast(List<Fighter> targets)
    {
       int dmg = FireWaveCalc(targets)[0];
@@ -133,7 +150,9 @@ public class SkillDB
          caster.wisdow + caster.bonus_wisdow;
       return new List<int> { sum / 2 };
    }
-   public void WolfPassive(Fighter caster, List<Fighter> targets)
+
+   //Call of the Pack
+   public void CallPackPassive(Fighter caster, List<Fighter> targets)
    {
       foreach(Fighter wolf in targets)
       {
@@ -147,7 +166,7 @@ public class SkillDB
          }
       }
    }
-   public void WolfReverse(Fighter caster, List<Fighter> targets)
+   public void CallPackReverse(Fighter caster, List<Fighter> targets)
    {
       foreach (Fighter wolf in targets)
       {

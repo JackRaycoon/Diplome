@@ -71,7 +71,7 @@ public class Fight : MonoBehaviour
       foreach (Fighter character in PlayerTeam) AllCharacter.Add(character);
       foreach (Fighter character in EnemyTeam) AllCharacter.Add(character);
 
-      foreach (Fighter character in AllCharacter) character.armor_current = character.armor;
+      foreach (Fighter character in AllCharacter) character.armor = character.defence * 2;
 
       UpdatePortrait();
 
@@ -152,7 +152,7 @@ public class Fight : MonoBehaviour
       UpdatePortrait();
       while (selectedSkill == null) yield return null;
 
-      //Сделать чтобы менялось в зависимости от целей каста, менять EnemyUITeam
+      //Кто отображается в списке персонажей справа
       PlayerUITeam = new List<Fighter>() { SelectedCharacter() };
       switch (selectedSkill.skillData.skill_type)
       {
@@ -169,6 +169,9 @@ public class Fight : MonoBehaviour
          case SkillSO.SkillType.Mass_Allies:
          case SkillSO.SkillType.Random_Ally:
             EnemyUITeam = new List<Fighter>(PlayerTeam);
+            break;
+         case SkillSO.SkillType.Caster:
+            EnemyUITeam = new List<Fighter>() { SelectedCharacter() };
             break;
             
       }
@@ -195,12 +198,16 @@ public class Fight : MonoBehaviour
             goto ChangeSkill;
          }
       }
+      //Выбираем цели для каста
       var selectedTargets = new List<Fighter>();
       switch (selectedSkill.skillData.skill_type)
       {
          case SkillSO.SkillType.Solo_Enemy:
          case SkillSO.SkillType.Solo_Ally:
             selectedTargets.Add(selectedTarget);
+            break;
+         case SkillSO.SkillType.Caster:
+            selectedTargets.Add(SelectedCharacter());
             break;
          case SkillSO.SkillType.Mass_Enemies:
             selectedTargets = new List<Fighter>(EnemyTeam);
@@ -341,6 +348,10 @@ public class Fight : MonoBehaviour
          case SkillSO.SkillType.Solo_Enemy:
          case SkillSO.SkillType.Solo_Ally:
             selectedTargets.Add(target);
+            break;
+
+         case SkillSO.SkillType.Caster:
+            selectedTargets.Add(selectedEnemy);
             break;
          case SkillSO.SkillType.Mass_Enemies:
             selectedTargets = new List<Fighter>(PlayerTeam);
@@ -527,17 +538,20 @@ public class Fight : MonoBehaviour
          int skillCount = 0;
          foreach(Skill skill in figh.skills)
          {
-            if (skill.skillData.skill_type != SkillSO.SkillType.Passive) skillCount++;
+            if (skill.skillData.skill_type != SkillSO.SkillType.Passive_Battle
+               && skill.skillData.skill_type != SkillSO.SkillType.Passive_Global) skillCount++;
          }
          bool reroll;
          do
          {
             var skills = figh.skills;
             figh.Intension = skills[Random.Range(0, skills.Count)];
-            if(figh.prevIntension != null)
-               reroll = figh.Intension.skillData.skill_type == SkillSO.SkillType.Passive ||
+            if (figh.prevIntension != null)
+               reroll = figh.Intension.skillData.skill_type == SkillSO.SkillType.Passive_Battle ||
+                  figh.Intension.skillData.skill_type == SkillSO.SkillType.Passive_Global ||
                         (skillCount > 1 && figh.Intension == figh.prevIntension);
-            else reroll = figh.Intension.skillData.skill_type == SkillSO.SkillType.Passive;
+            else reroll = figh.Intension.skillData.skill_type == SkillSO.SkillType.Passive_Battle ||
+                  figh.Intension.skillData.skill_type == SkillSO.SkillType.Passive_Global;
          } while (reroll);
       }
    }
@@ -562,7 +576,8 @@ public class Fight : MonoBehaviour
          {
             foreach (Skill skill in PlayerUITeam[0].skills)
             {
-               if (skill.skillData.skill_type == SkillSO.SkillType.Passive) continue;
+               if (skill.skillData.skill_type == SkillSO.SkillType.Passive_Battle ||
+                  skill.skillData.skill_type == SkillSO.SkillType.Passive_Global) continue;
                var SkCard = SkillsCards[i];
                SkCard.GetComponent<Graphic>().enabled = true;
                Show(SkCard);

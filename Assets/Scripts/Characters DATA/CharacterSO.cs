@@ -16,6 +16,6 @@ public class CharacterSO : ScriptableObject
    public List<SkillSO> skills;
 
    //Стартовые характеристики
-   public int strengh, agility, wisdow, constitution, armor;
+   public int strengh, agility, wisdow, constitution, defence;
    public bool isEnemy;
 }
