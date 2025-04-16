@@ -12,4 +12,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9807ccf0c390d974b9520e60e841da4f, type: 3}
   m_Name: ArcherSkills
   m_EditorClassIdentifier: 
-  skillList: []
+  skillList:
+  - {fileID: 11400000, guid: d3e9dc8105e1bab4aa5c9e74350ae2c4, type: 2}

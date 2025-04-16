@@ -214,12 +214,18 @@ public class Room3D : MonoBehaviour
             PlayableCharacter target = availableCharacters[Random.Range(0, availableCharacters.Count)];
 
             room.eventRewardText += "\n";
-            room.eventRewardText += skillData.skill_type switch
+            room.eventRewardText += skillData.skill_target switch
             {
-               SkillSO.SkillType.Passive_Battle => "ѕассивный (бой)",
-               SkillSO.SkillType.Passive_Global => "ѕассивный (глобальный)",
+               SkillSO.SkillTarget.Passive => "ѕассивный",
                _ => "јктивный"
             };
+            if(skillData.skill_target == SkillSO.SkillTarget.Passive &&
+               skillData.skill_type == SkillSO.SkillType.Global)
+                  room.eventRewardText += " (глобальный)";
+            else if (skillData.skill_target == SkillSO.SkillTarget.Passive)
+                  room.eventRewardText += " (боевой)";
+
+     
             room.eventRewardText += $" навык \"{skillData._name}\" Ц {skill.Description(target)}.\nЂ{skillData.quote}ї";
 
             target.AddSkill(skill);

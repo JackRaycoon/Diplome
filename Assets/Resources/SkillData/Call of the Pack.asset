@@ -19,6 +19,7 @@ MonoBehaviour:
   quote: "\u0422\u044B \u0441\u043B\u044B\u0448\u0438\u0448\u044C \u0432\u043E\u0439
     \u2013 \u0437\u043D\u0430\u0447\u0438\u0442 \u0431\u0435\u0436\u0430\u0442\u044C
     \u0443\u0436\u0435 \u043F\u043E\u0437\u0434\u043D\u043E."
-  skill_type: 9
+  skill_target: 9
+  skill_type: 2
   availableClasses: 
   isCorpseTargetToo: 0

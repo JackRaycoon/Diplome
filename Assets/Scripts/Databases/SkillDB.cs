@@ -45,17 +45,18 @@ public class SkillDB
       AddSkillCast("Raise Shields", RaiseShieldsCast, RaiseShieldsCalc);
       AddSkillCast("Fire Wave", FireWaveCast, FireWaveCalc);
       AddSkillCast("Healing Wounds", HealingWoundsCast, HealingWoundsCalc);
+      AddSkillCast("Waiting", WaitingCast);
 
       AddSkillPassive("Call of the Pack", CallPackPassive, CallPackReverse);
       //Заглушка
-      AddSkillPassive("Old Fighter's Plate", CallPackPassive, CallPackReverse);
+      AddSkillPassive("Old Fighter's Plate", CallPackPassive, CallPackReverse, CallPackCalc);
       //AddSkillPassive(KeyWord.Gigachad, "Test Skill", GigachadEveryTurn);
       //AddSkillPassive(KeyWord.Gigachad, "Gigachad", GigachadPassive, GigachadReverse, "Гигачад своим видом вдохновляет каждого союзника. Все союзники получают +1 к атаке.");
    }
 
    //Кастер всегда на самой первой позиции листа целей.
    private void AddSkillCast(string name, Action<List<Fighter>> cast,
-      Func<List<Fighter>, List<int>> calc)
+      Func<List<Fighter>, List<int>> calc = null)
    {
       Skill skill = new Skill(name);
       skill.cast = cast;
@@ -76,11 +77,12 @@ public class SkillDB
       skillDatabase.Add(name, skill);
    }
 
-   private void AddSkillPassive(string name, Action<Fighter, List<Fighter>> passive, Action<Fighter, List<Fighter>> reverse)
+   private void AddSkillPassive(string name, Action<Fighter, List<Fighter>> passive, Action<Fighter, List<Fighter>> reverse, Func<List<Fighter>, List<int>> calc = null)
    {
       Skill skill = new Skill(name);
       skill.passive = passive;
       skill.reverse = reverse;
+      skill.calc = calc;
       skillDatabase.Add(name, skill);
    }
 
@@ -132,6 +134,14 @@ public class SkillDB
    {
       var caster = targets[0];
       return new List<int> { caster.wisdow + caster.bonus_wisdow };
+   }
+
+   //Waiting
+   public void WaitingCast(List<Fighter> targets)
+   {
+      //Будем вешать бафф
+      var caster = targets[0];
+      caster.buffs.Add(Fighter.Buff.DoubleNextAttack);
    }
 
    //Raise Shields
@@ -192,6 +202,11 @@ public class SkillDB
             wolf.bonus_wisdow--;
          }
       }
+   }
+
+   public List<int> CallPackCalc(List<Fighter> targets)
+   {
+      return new List<int> { (int)SaveLoadController.runInfo.currentLocation + 1 };
    }
    public void GigachadDeath()
    {

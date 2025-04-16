@@ -33,7 +33,14 @@ public class CardShower : MonoBehaviour
    // Поднимаем карту
    public void RaiseCard()
    {
-      //if (move != null) return;
+      if (Fight.endFight && (isActive || isActualActive)) 
+      {
+         if(!isFirstMove)
+            LowerCard();
+         isActive = false;
+         isActualActive = false;
+         return;
+      }
       if (!isFirstMove) startPos = new Vector3(transform.position.x, transform.position.y, transform.position.z);
        targetPosition =  startPos + new Vector3(0f, 4f, 0f);
        move = StartCoroutine(MoveCard( startPos,  targetPosition, 0.1f));

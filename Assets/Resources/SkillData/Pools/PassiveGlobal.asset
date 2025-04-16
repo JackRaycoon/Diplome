@@ -10,7 +10,6 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 9807ccf0c390d974b9520e60e841da4f, type: 3}
-  m_Name: PriestSkills
+  m_Name: PassiveGlobal
   m_EditorClassIdentifier: 
-  skillList:
-  - {fileID: 11400000, guid: f087d4d62c8a93944ac2b8a15273a5a8, type: 2}
+  skillList: []

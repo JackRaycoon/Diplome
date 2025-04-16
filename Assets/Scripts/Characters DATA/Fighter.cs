@@ -30,6 +30,8 @@ public class Fighter
    public int strengh, agility, wisdow, constitution;
    public int bonus_strengh, bonus_agility, bonus_wisdow; //боевые изменения хар-тик
 
+   public List<Buff> buffs = new();
+
    public bool isSpawn;
 
    //Умения персонажа
@@ -84,6 +86,33 @@ public class Fighter
       var skill = SkillDB.Instance.GetSkillByName(skillName);
       if (!skills.Contains(skill))
          skills.Add(skill);
+   }
+
+   public void CastSkill(List<Fighter> targets, Skill skill = null)
+   {
+      skill ??= Intension;
+
+      bool isDoubleNextAttack = false;
+
+      //Проверка на баффы
+      for (int i = 0; i < buffs.Count; i++)
+      {
+         switch (buffs[i])
+         {
+            case Buff.DoubleNextAttack:
+               if (skill.skillData.skill_type != SkillSO.SkillType.Attack) continue;
+               isDoubleNextAttack = true;
+               buffs.RemoveAt(i);
+               i--;
+               break;
+         }
+      }
+      skill.Cast(this, targets);
+
+      if (isDoubleNextAttack)
+      {
+         CastSkill(Fight.ChooseTarget(skill, this, Fight.RandomEnemy(this)), skill);
+      }
    }
 
    public Sprite Portrait
@@ -166,5 +195,10 @@ public class Fighter
             hp = max_hp;
          }
       }
+   }
+
+   public enum Buff
+   {
+      DoubleNextAttack
    }
 }

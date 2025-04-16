@@ -10,12 +10,13 @@ public class SkillSO : ScriptableObject
    public Sprite icon;
    [TextArea] public string description;
    [TextArea] public string quote;
+   public SkillTarget skill_target;
    public SkillType skill_type;
    [Tooltip("Каким классам доступен скилл, враги по дефолту входят в доступные")]
    public List<PlayableCharacter.Class> availableClasses;
    public bool isCorpseTargetToo = false;
 
-   public enum SkillType
+   public enum SkillTarget
    {
       Solo_Enemy, //По одному врагу
       Mass_Enemies, //По всем врагам
@@ -26,7 +27,14 @@ public class SkillSO : ScriptableObject
       Random_Ally,//Случайный союзник
       Random_Target, //Случайный персонаж
       Caster, //На себя 
-      Passive_Battle,
-      Passive_Global
+      Passive
    };
+   public enum SkillType
+   {
+      Attack,
+      Defence,
+      Buff,
+      Heal,
+      Global //для пассивок
+   }
 }
