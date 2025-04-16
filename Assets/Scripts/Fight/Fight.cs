@@ -24,6 +24,7 @@ public class Fight : MonoBehaviour
 
    public List<SpriteRenderer> HeroesSprites;
    public List<SpriteRenderer> EnemiesSprites;
+   public List<SpriteRenderer> AddictSprites;
 
    public List<GameObject> SkillsCards;
 
@@ -509,11 +510,17 @@ public class Fight : MonoBehaviour
 
       for (int i = 0; i < PlayerUITeam.Count; i++)
       {
-         HeroesSprites[i].sprite = PlayerUITeam[i].Portrait;
+         if(i > 5)
+            AddictSprites[i - 6].sprite = PlayerUITeam[i].Portrait;
+         else
+            HeroesSprites[i].sprite = PlayerUITeam[i].Portrait;
       }
       for (int i = 0; i < EnemyUITeam.Count; i++)
       {
-         EnemiesSprites[i].sprite = EnemyUITeam[i].Portrait;
+         if (i > 5)
+            AddictSprites[i - 6].sprite = EnemyUITeam[i].Portrait;
+         else
+            EnemiesSprites[i].sprite = EnemyUITeam[i].Portrait;
       }
       if(PlayerUITeam.Count == 1)
       {

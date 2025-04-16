@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -14,6 +15,7 @@ public class FightUIController : MonoBehaviour
    public GameObject portraitPrefab;
    public List<RenderTexture> heroesRenderTextures;
    public List<RenderTexture> enemiesRenderTextures;
+   public List<RenderTexture> addictsRenderTextures;
 
    public static bool allInteractable, allDisable;
    private bool _allInteractable, _allDisable;
@@ -74,7 +76,9 @@ public class FightUIController : MonoBehaviour
          {
             var go = Instantiate(portraitPrefab, heroes.transform);
             var fp = go.GetComponent<FightPortrait>();
-            go.transform.GetChild(0).GetComponent<RawImage>().texture = heroesRenderTextures[i];
+            List<RenderTexture> renderTextures = new(heroesRenderTextures);
+            foreach (var rt in addictsRenderTextures) renderTextures.Add(rt);
+            go.transform.GetChild(0).GetComponent<RawImage>().texture = renderTextures[i];
             //fp.id = (_oneID_heroes != -1) ? _oneID_heroes : i;
             //_oneID_heroes = -1;
             //oneID_heroes = -1;
@@ -90,23 +94,7 @@ public class FightUIController : MonoBehaviour
             if (allDisable) go.GetComponent<FightPortrait>().isInteractable = false;
             if (_countHeroes == 1 && Fight.selectedSkill != null) fp.isInteractable = false;
          }
-         switch (_countHeroes)
-         {
-            case 1:
-               CharacterUpdate(heroes, 400, 480, 80, 80, 68, 50, 70, 1, 10, 80);
-               break;
-            case 2:
-               CharacterUpdate(heroes, 300, 360, 60, 70, 51, 40, 50, 1, 5, 70);
-               break;
-            case 3:
-            case 4:
-               CharacterUpdate(heroes, 250, 300, 50, 65, 34, 30, 40, 2, 0, 60);
-               break;
-            case 5:
-            case 6:
-               CharacterUpdate(heroes, 200, 240, 40, 60, 23, 15, 30, 2, 0, 50);
-               break;
-         }
+         UpdateSize(_countHeroes, heroes);
       }
 
       //ENEMIES
@@ -120,7 +108,9 @@ public class FightUIController : MonoBehaviour
          {
             var go = Instantiate(portraitPrefab, enemies.transform);
             var fp = go.GetComponent<FightPortrait>();
-            go.transform.GetChild(0).GetComponent<RawImage>().texture = enemiesRenderTextures[i];
+            List<RenderTexture> renderTextures = new(enemiesRenderTextures);
+            foreach (var rt in addictsRenderTextures) renderTextures.Add(rt);
+            go.transform.GetChild(0).GetComponent<RawImage>().texture = renderTextures[i];
 
             //fp.id = i + 6;
             fp.isInteractable = false;
@@ -130,27 +120,37 @@ public class FightUIController : MonoBehaviour
             else
                fp.id = Fight.PlayerTeam.IndexOf(Fight.EnemyUITeam[i] as PlayableCharacter);
          }
-         switch (_countEnemies)
-         {
-            case 1:
-               CharacterUpdate(enemies, 400, 480, 80, 80, 68, 50, 70, 1, 10, 80);
-               break;
-            case 2:
-               CharacterUpdate(enemies, 300, 360, 60, 70, 51, 40, 50, 1, 5, 70);
-               break;
-            case 3:
-            case 4:
-               CharacterUpdate(enemies, 250, 300, 50, 65, 34, 30, 40, 2, 0, 60);
-               break;
-            case 5:
-            case 6:
-               CharacterUpdate(enemies, 200, 240, 40, 60, 23, 15, 30, 2, 0, 50);
-               break;
-         }
+         UpdateSize(_countEnemies, enemies);
       }
    }
 
-   private void CharacterUpdate(GridLayoutGroup grid, float sizeX, float sizeY, float bottomImage, float heightSlider, float sliderPosY, float sliderRightMove, float sliderLeftMove, int ColumnCount, float iconPosX, float iconSize)
+   public void UpdateSize(int count, GridLayoutGroup grid)
+   {
+      switch (count)
+      {
+         case 1:
+            CharacterUpdate(grid, 400, 480, 80, 80, 68, 50, 70, 1, 10, 80);
+            break;
+         case 2:
+            CharacterUpdate(grid, 300, 360, 60, 70, 51, 40, 50, 1, 5, 70);
+            break;
+         case 3:
+         case 4:
+            CharacterUpdate(grid, 250, 300, 50, 65, 34, 30, 40, 2, 0, 60);
+            break;
+         case 5:
+         case 6:
+            CharacterUpdate(grid, 200, 240, 40, 60, 23, 15, 30, 2, 0, 50);
+            break;
+         default: //more then 6
+            CharacterUpdate(grid, 150, 180, 30, 55, 23, 15, 30, 3, 0, 45);
+            break;
+      }
+}
+
+   private void CharacterUpdate(GridLayoutGroup grid, float sizeX, float sizeY, float bottomImage,
+      float heightSlider, float sliderPosY, float sliderRightMove, float sliderLeftMove, 
+      int ColumnCount, float iconPosX, float iconSize)
    {
       grid.cellSize = new Vector2(sizeX, sizeY);
       grid.constraintCount = ColumnCount;
