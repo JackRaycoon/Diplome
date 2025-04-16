@@ -38,7 +38,8 @@ MonoBehaviour:
   portrait_halfhuman: {fileID: 21300000, guid: 7e991dcfdb9a6d84a93791dcf8c01424, type: 3}
   portrait_monster: {fileID: 21300000, guid: a963d4744799f534481ad688af9e8bac, type: 3}
   other_portraits: []
-  skills: []
+  skills:
+  - {fileID: 11400000, guid: 7f6a00a3d8378e54e99a0679cd85765a, type: 2}
   strengh: 3
   agility: 1
   wisdow: 0
