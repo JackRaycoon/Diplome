@@ -43,5 +43,5 @@ MonoBehaviour:
   agility: 1
   wisdow: 0
   constitution: 5
-  armor: 1
+  defence: 1
   isEnemy: 0

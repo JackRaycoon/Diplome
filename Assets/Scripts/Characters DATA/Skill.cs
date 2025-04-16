@@ -56,6 +56,7 @@ public class Skill
    }*/
    public string Description(Fighter fighter = null)
    {
+      if (calc == null) return skillData.description;
       if (fighter != null) 
          return string.Format(skillData.description, calc(new List<Fighter> { fighter })[0]);
 

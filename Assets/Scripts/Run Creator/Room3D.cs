@@ -163,7 +163,7 @@ public class Room3D : MonoBehaviour
                room.eventRewardText += $"{rewardCountArmor} брони";
                isNext = true;
 
-               SaveLoadController.runInfo.PlayerTeam[0].armor += rewardCountArmor;
+               SaveLoadController.runInfo.PlayerTeam[0].defence += rewardCountArmor;
             }
          }
          if (data.healRewardMax != 0)
@@ -222,7 +222,12 @@ public class Room3D : MonoBehaviour
             PlayableCharacter target = availableCharacters[Random.Range(0, availableCharacters.Count)];
 
             room.eventRewardText += "\n";
-            room.eventRewardText += (skillData.skill_type == SkillSO.SkillType.Passive) ? "ѕассивный" : "јктивный";
+            room.eventRewardText += skillData.skill_type switch
+            {
+               SkillSO.SkillType.Passive_Battle => "ѕассивный (бой)",
+               SkillSO.SkillType.Passive_Global => "ѕассивный (глобальный)",
+               _ => "јктивный"
+            };
             room.eventRewardText += $" навык \"{skillData._name}\" Ц {skill.Description(target)}.\nЂ{skillData.quote}ї";
 
             target.AddSkill(skill);

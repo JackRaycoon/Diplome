@@ -65,7 +65,7 @@ public class FightPortrait : MonoBehaviour
       hp_slider.value = character.hp;
 
       float ratio = hp_slider.value / hp_slider.maxValue;
-      //armor 557B7E(4F686A) green 40CF30(1B6714) yellow CBCD35(AEB00B) red E02B29(9A171D)
+      //defence 557B7E(4F686A) green 40CF30(1B6714) yellow CBCD35(AEB00B) red E02B29(9A171D)
       if (ratio > 0.6)
       {
          hearth_icon.color = new Color32(64, 207, 48, 255);
@@ -81,11 +81,11 @@ public class FightPortrait : MonoBehaviour
          hearth_icon.color = new Color32(224, 43, 41, 255);
          slider_filler.color = new Color32(154, 22, 29, 255);
       }
-      if (character.armor_current > 0)
+      if (character.armor > 0)
       {
          hearth_icon.color = new Color32(85, 123, 126, 255);
          slider_filler.color = new Color32(78, 104, 106, 255);
-         //hp_slider.value = character.armor;
+         //hp_slider.value = character.defence;
       }
       if (character.hp <= 0)
       {
@@ -95,6 +95,6 @@ public class FightPortrait : MonoBehaviour
 
       hp_text.text = character.hp.ToString() +
          "/" + (character.max_hp + character.bonus_hp).ToString() +
-         ((character.armor_current > 0) ? ("\n" + character.armor_current + " A") : "");
+         ((character.armor > 0) ? ("\n" + character.armor + " A") : "");
    }
 }
