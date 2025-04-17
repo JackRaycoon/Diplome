@@ -192,6 +192,7 @@ public class Buttons : MonoBehaviour
 
    public void BeginNewRun()
    {
+      if (PlatformMove.is_Block) return;
       StartCoroutine(LoadScene(true));
    }
    public void ContinueBtn(int slot)
