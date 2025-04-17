@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: Wolf
   m_EditorClassIdentifier: 
   character_name: Wolf
+  character_description: 
   portrait_human: {fileID: 0}
   portrait_halfhuman: {fileID: 0}
   portrait_monster: {fileID: 21300000, guid: 919caf1349544634d83066809c3d89b4, type: 3}
@@ -24,5 +25,5 @@ MonoBehaviour:
   agility: 3
   wisdow: 1
   constitution: 1
-  armor: 1
+  defence: 0
   isEnemy: 1

@@ -5,7 +5,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public class Skill_Image : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IPointerClickHandler
+public class Skill_Image : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 {
    public static Skill externalSkill = null;
    public static bool isDisableExSkill;
@@ -65,7 +65,7 @@ public class Skill_Image : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
 
    public void Action()
    {
-      if (!isClickable) { return; }
+      if (!isClickable || Fight.cast) { return; }
 
       Fight.selectedSkill = skill;
       isEnabled = false;
@@ -99,7 +99,7 @@ public class Skill_Image : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
 
       if (move1 != null) { StopCoroutine(move1); StopCoroutine(move2); }
       move1 = StartCoroutine(MoveToPosition(part1, startPos_part1, 200f));
-      move2 = StartCoroutine(MoveToPosition(part2, startPos_part2, 200f, null, ""));
+      move2 = StartCoroutine(MoveToPosition(part2, startPos_part2, 200f));
    }
 
    public IEnumerator Open(bool external)
@@ -129,13 +129,9 @@ public class Skill_Image : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
 
       isEnabled = true;
       Exit();
-      //if (move3 != null) StopCoroutine(move3);
-      //move3 = StartCoroutine(MoveToPosition(Veil, startPosVeil, 200f));
-      //wait = null;
-      //Debug.Log("Veil move to start");
    }
 
-   public IEnumerator MoveToPosition(GameObject moveObj, Vector3 targetPosition, float moveSpeed)
+   public IEnumerator MoveToPosition(GameObject moveObj, Vector3 targetPosition, float moveSpeed, Sprite sprite = null, string description = "")
    {
       Vector3 startPosition = moveObj.transform.position;
       float distance = Vector3.Distance(startPosition, targetPosition);
@@ -151,30 +147,10 @@ public class Skill_Image : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
       }
 
       moveObj.transform.position = targetPosition;
-   }
-
-   public IEnumerator MoveToPosition(GameObject moveObj, Vector3 targetPosition, float moveSpeed, Sprite sprite, string description)
-   {
-      Vector3 startPosition = moveObj.transform.position;
-      float distance = Vector3.Distance(startPosition, targetPosition);
-
-      while (distance > 0.01f)
+      if(sprite != null)
       {
-         float step = moveSpeed * Time.deltaTime;
-         moveObj.transform.position = Vector3.MoveTowards(moveObj.transform.position, targetPosition, step);
-
-         distance = Vector3.Distance(moveObj.transform.position, targetPosition);
-
-         yield return null;
+         CenterSkill.sprite = sprite;
+         Description.text = description;
       }
-
-      moveObj.transform.position = targetPosition;
-      CenterSkill.sprite = sprite;
-      Description.text = description;
-   }
-
-   public void OnPointerClick(PointerEventData eventData)
-   {
-      return;
    }
 }

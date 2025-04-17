@@ -10,6 +10,8 @@ public class Fight : MonoBehaviour
 {
    public GridLayoutGroup heroes, enemies;
 
+   public CanvasGroup playerHand;
+
    public static List<Fighter> AllCharacter;
 
    public static List<PlayableCharacter> PlayerTeam;
@@ -50,6 +52,8 @@ public class Fight : MonoBehaviour
    private void Start()
    {
       Cursor.lockState = CursorLockMode.None;
+
+      playerHand.alpha = 1f;
 
       SelectedCharacterID = -1;
       _selected = false;
@@ -350,7 +354,9 @@ public class Fight : MonoBehaviour
    {
       StopAllCoroutines();
       endFight = true;
+      Skill_Image.isNeedClose = true;
       WinLosePanel.SetActive(true);
+      playerHand.alpha = 0f;
       if (isLose) WinLoseText.text = "К сожалению, вы проиграли";
       else if (isWin) WinLoseText.text = "Поздравляю с победой";
       eventRoom.eventData = eventRoom.eventData.choices[0];
@@ -594,14 +600,14 @@ public class Fight : MonoBehaviour
 
    public void ContinueBtn()
    {
-      if (isWin)
-      {
-         SceneManager.LoadScene(1);
-      }
-      else
+      if (isLose)
       {
          SaveLoadController.ClearSave(SaveLoadController.slot);
          SceneManager.LoadScene(0);
+      }
+      else
+      {
+         SceneManager.LoadScene(1);
       }
    }
 }
