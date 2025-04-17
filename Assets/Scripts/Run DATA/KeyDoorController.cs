@@ -112,6 +112,9 @@ namespace KeySystem
                }
                go.gameObject.SetActive(true);
             }
+            AnimatorStateInfo stateInfo = doorAnim.GetCurrentAnimatorStateInfo(0);
+            bool isPlaying = !doorAnim.IsInTransition(0) && stateInfo.normalizedTime < 1f;
+            if (isPlaying) return;
             doorAnim.Play(lockedAnimationName, 0, 0.0f);
             StartCoroutine(PauseDoorInteraction(false));
          }
