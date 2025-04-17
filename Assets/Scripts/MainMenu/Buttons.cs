@@ -61,8 +61,13 @@ public class Buttons : MonoBehaviour
          if (isChangedMenu)
          {
             isChangedMenu = false;
+            isSure = false;
             selectedCharacter = null;
             StartCoroutine(ChangeMenuBack());
+         }
+         else if (isSureMenu)
+         {
+            DontSureBtn();
          }
          else
             CloseAllPanels();
@@ -74,9 +79,10 @@ public class Buttons : MonoBehaviour
    }
    public void ButtonClick(int id)
    {
-      if (cm.isMoving || openID == id) return;
       if (cm.currentIndex == id)
       {
+         if (cm.isMoving || openID == id) return;
+
          if (id == 1 && (newGameSlots[0] && newGameSlots[1] && newGameSlots[2])) return;
          if (animate != null) StopCoroutine(animate);
          if (isOpened)
@@ -151,10 +157,37 @@ public class Buttons : MonoBehaviour
       selectedCharacter = null;
    }
 
+   bool isSure = false;
+   bool isSureMenu = false;
    public void NewRunBtn(int slot)
    {
       SaveLoadController.slot = (short)slot;
-      StartCoroutine(ChangeMenu());
+      if (!newGameSlots[slot - 1] && !isSure)
+      {
+         if (animate != null) StopCoroutine(animate);
+         animate = StartCoroutine(AnimatePanel(panels[0], false, true, panels[6]));
+         isSureMenu = true;
+      }
+      else
+      {
+         StartCoroutine(ChangeMenu());
+      }
+   }
+
+   public void SureBtn()
+   {
+      isSure = true;
+      NewRunBtn(SaveLoadController.slot);
+      if (animate != null) StopCoroutine(animate);
+      animate = StartCoroutine(AnimatePanel(panels[6], false, false));
+      isSureMenu = false;
+   } 
+   public void DontSureBtn()
+   {
+      isSure = false;
+      if (animate != null) StopCoroutine(animate);
+      animate = StartCoroutine(AnimatePanel(panels[6], false, true, panels[0]));
+      isSureMenu = false;
    }
 
    public void BeginNewRun()
@@ -166,6 +199,8 @@ public class Buttons : MonoBehaviour
       SaveLoadController.slot = (short)slot;
       StartCoroutine(LoadScene(false));
    }
+
+   
 
    IEnumerator ChangeMenu()
    {
