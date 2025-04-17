@@ -23,8 +23,10 @@ public class DungeonGenerator : MonoBehaviour
    private List<GameObject> createdRoomsGO = new();
    private List<Corridor> createdCorridors = new();
    private List<GameObject> createdCorridorsGO = new();
-   private Dictionary<Vector2Int, RoomState> deletedRooms = new();
-   private Dictionary<Corridor, CorridorState> deletedCorridors = new();
+   //private Dictionary<Vector2Int, RoomState> deletedRooms = new();
+   private List<Room> deletedRooms = new();
+   //private Dictionary<Corridor, CorridorState> deletedCorridors = new();
+   private List<Corridor> deletedCorridors = new();
 
    public static bool isNeedUpdate = false;
 
@@ -105,11 +107,12 @@ public class DungeonGenerator : MonoBehaviour
          }
          roomBeh.UpdateRoom(status);
 
-         //¬осстанавливаем состо€ние
-         if (deletedRooms.Keys.Contains(room.Coords))
+         //¬осстанавливаем состо€ние (пока только двери)
+         roomBeh.LoadDoorState(room.doorOpened);
+         /*if (deletedRooms.Contains(room))
          {
-            Debug.Log("«десь как-то сделаем восстановление дверей");
-         }
+            roomBeh.LoadDoorState(room.doorOpened);
+         }*/
       }
       //”дал€ем комнаты, которые слишком далеко от игрока
       for(int i = 0; i<createdRoomsGO.Count; i++)
@@ -118,14 +121,8 @@ public class DungeonGenerator : MonoBehaviour
          if (Math.Abs(currentRoom.Coords.x - room.Coords.x) > 2
                || Math.Abs(currentRoom.Coords.y - room.Coords.y) > 2)
          {
-            var roomBeh = createdRoomsGO[i].GetComponent<RoomBehaviour>();
-            bool[] bmas = { 
-               roomBeh.doors[0].GetComponent<KeyDoorController>().doorOpen, 
-               roomBeh.doors[1].GetComponent<KeyDoorController>().doorOpen,
-               roomBeh.doors[2].GetComponent<KeyDoorController>().doorOpen,
-               roomBeh.doors[3].GetComponent<KeyDoorController>().doorOpen };
-            if (deletedRooms.Keys.Contains(room.Coords)) deletedRooms.Remove(room.Coords);
-            deletedRooms.Add(room.Coords, new(bmas));
+            if (deletedRooms.Contains(room)) deletedRooms.Remove(room);
+            deletedRooms.Add(room);
             createdRooms.Remove(createdRoomsGO[i].GetComponent<Room3D>().room);
             Destroy(createdRoomsGO[i]);
             createdRoomsGO.Remove(createdRoomsGO[i]);
@@ -159,7 +156,7 @@ public class DungeonGenerator : MonoBehaviour
          createdCorridorsGO.Add(go);
          go.GetComponent<Corridor3D>().corridor = corridor;
          //¬осстанавливаем состо€ние
-         if (deletedCorridors.Keys.Contains(corridor))
+         if (deletedCorridors.Contains(corridor))
          {
             Debug.Log("«десь как-то сделаем восстановление коридоров");
          }
@@ -174,8 +171,8 @@ public class DungeonGenerator : MonoBehaviour
                || Math.Abs(currentRoom.Coords.x - corridor.room2.Coords.x) > 2
                || Math.Abs(currentRoom.Coords.y - corridor.room2.Coords.y) > 2)
          {
-            if (deletedCorridors.Keys.Contains(corridor)) deletedCorridors.Remove(corridor);
-            deletedCorridors.Add(corridor, new());
+            if (deletedCorridors.Contains(corridor)) deletedCorridors.Remove(corridor);
+            deletedCorridors.Add(corridor);
             createdCorridors.Remove(createdCorridorsGO[i].GetComponent<Corridor3D>().corridor);
             Destroy(createdCorridorsGO[i]);
             createdCorridorsGO.Remove(createdCorridorsGO[i]);

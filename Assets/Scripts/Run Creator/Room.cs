@@ -16,6 +16,7 @@ public class Room
    public string eventName;
    public bool eventRewardClaim = false;
    public string eventRewardText = "";
+   public bool[] doorOpened = { false, false, false, false };
    [NonSerialized]
    private EventData _eventData = null;
    public EventData eventData 

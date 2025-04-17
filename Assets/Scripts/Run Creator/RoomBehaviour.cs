@@ -27,9 +27,10 @@ public class RoomBehaviour : MonoBehaviour
       eventCanvasCG.alpha = 1;
       eventCanvas.worldCamera = Camera.main;
 
-      foreach(GameObject go in doors)
+      for(short i = 0; i < doors.Length; i++)
       {
-         doorsObjectTypes.Add(go.GetComponent<KeyItemController>().objectType);
+         doorsObjectTypes.Add(doors[i].GetComponent<KeyItemController>().objectType);
+         doors[i].GetComponent<KeyDoorController>().roomSide = i;
       }
    }
    public void UpdateRoom(bool[] status) //true for doors
@@ -102,6 +103,20 @@ public class RoomBehaviour : MonoBehaviour
       for(int i = 0; i< doors.Length; i++)
       {
          doors[i].GetComponent<KeyItemController>().objectType = doorsObjectTypes[i];
+      }
+   }
+
+   public void LoadDoorState(bool[] doorStates)
+   {
+      for (int i = 0; i < doors.Length; i++)
+      {
+         var door = doors[i].GetComponent<KeyDoorController>();
+         if (doorStates[i])
+            door.doorAnim.Play("DoorOpen", 0, 1f);
+         else
+            door.doorAnim.Play("DoorClose", 0, 1f);
+         door.doorAnim.Update(0f);
+         door.doorOpen = doorStates[i];
       }
    }
 }
