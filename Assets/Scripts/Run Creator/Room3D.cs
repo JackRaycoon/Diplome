@@ -40,6 +40,10 @@ public class Room3D : MonoBehaviour
          isFilled = true;
          FillEvent();
       }
+      if(data.eventType == EventData.EventType.BossWin && SaveLoadController.runInfo.currentRoom != room)
+      {
+         Debug.Log("Меню победы в забеге, можно кидать на сцену статистики например и удалять сейв сразу.");
+      }
    }
 
    public void FillEvent()
