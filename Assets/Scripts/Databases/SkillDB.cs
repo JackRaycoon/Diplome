@@ -49,7 +49,7 @@ public class SkillDB
       AddSkillCast("Waiting", WaitingCast);
 
       AddSkillPassive("Call of the Pack", CallPackPassive, CallPackReverse);
-      AddSkillPassive("Old Fighter's Plate", OldFightersPlateCalc);
+      AddSkillPassive("Old Fighter's Chest", OldFightersChestCalc);
       AddSkillPassive("Quick Rebuff");
       AddSkillPassive("Silent Blood");
       //AddSkillPassive(KeyWord.Gigachad, "Test Skill", GigachadEveryTurn);
@@ -217,8 +217,8 @@ public class SkillDB
       }
    }
 
-   //Old Fighter's Plate
-   public List<int> OldFightersPlateCalc(List<Fighter> targets)
+   //Old Fighter's Chest
+   public List<int> OldFightersChestCalc(List<Fighter> targets)
    {
       return new List<int> { (int)SaveLoadController.runInfo.currentLocation + 1 };
    }
