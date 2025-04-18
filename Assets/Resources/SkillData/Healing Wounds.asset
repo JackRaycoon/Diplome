@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Healing Wounds
   m_EditorClassIdentifier: 
   _name: "\u0418\u0441\u0446\u0435\u043B\u0435\u043D\u0438\u0435 \u0440\u0430\u043D"
-  icon: {fileID: 21300000, guid: da815ac9f8d9fd34490a9154e89b26eb, type: 3}
+  icon: {fileID: 21300000, guid: a922d7948f0c76c44905d575ca6a22b9, type: 3}
   description: "\u0412\u044B \u0438\u0441\u0446\u0435\u043B\u044F\u0435\u0442\u0435
     \u0441\u043E\u044E\u0437\u043D\u0438\u043A\u0430 \u043D\u0430 {0}"
   quote: "<i>\u0414\u0430\u0440\u0443\u0439 \u043C\u043D\u0435 \u0441\u0432\u0435\u0442,
@@ -24,3 +24,4 @@ MonoBehaviour:
   availableClasses: 04000000
   isCorpseTargetToo: 0
   passiveBuff: 0
+  globalPassiveBuff: 0

@@ -68,7 +68,8 @@ public class Room3D : MonoBehaviour
          switch (buff)
          {
             case RunInfo.GlobalBuff:
-               if (data.eventType == EventData.EventType.FightEvent &&
+               if ((data.eventType == EventData.EventType.FightEvent
+                  || data.eventType == EventData.EventType.BossEvent)  &&
                   data.isLockableEvent && 
                   SaveLoadController.runInfo.PlayerTeam.Count == 1)
                   unlock = true;
@@ -266,7 +267,8 @@ public class Room3D : MonoBehaviour
       text += room.eventRewardText;
 
       //Описание врагов для боя
-      if(data.eventType == EventData.EventType.FightEvent)
+      if(data.eventType == EventData.EventType.FightEvent ||
+         data.eventType == EventData.EventType.BossEvent)
       {
          text += "\n\n";
          text += "Враги: ";
@@ -305,8 +307,10 @@ public class Room3D : MonoBehaviour
 
 
          //Битва
-         fightBtn.SetActive(data.eventType == EventData.EventType.FightEvent);
-      if (data.eventType == EventData.EventType.FightEvent)
+         fightBtn.SetActive(data.eventType == EventData.EventType.FightEvent 
+            || data.eventType == EventData.EventType.BossEvent);
+      if (data.eventType == EventData.EventType.FightEvent 
+         || data.eventType == EventData.EventType.BossEvent)
       {
          foreach (var go in eventBtns) go.SetActive(false);
          enemiesForFight = new();
