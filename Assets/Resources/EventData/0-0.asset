@@ -23,10 +23,12 @@ MonoBehaviour:
   - {fileID: 11400000, guid: a166038a09f7a27418deb1301a5546a7, type: 2}
   enemies:
   - {fileID: 11400000, guid: d7ec80e4941c95a4397043c4da0ef60e, type: 2}
+  enemiesCount: 0300
   isFog: 0
   randomEnemies: 0
   minEnemyCount: 0
   maxEnemyCount: 0
+  enemiesChances: []
   minGold: 0
   maxGold: 0
   rewardSkillList: []

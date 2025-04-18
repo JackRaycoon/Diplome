@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fe0d30022cbdbdc469fd8a301de89b48, type: 3}
   m_Name: Wolf
   m_EditorClassIdentifier: 
-  character_name: Wolf
+  character_name: "\u0412\u043E\u043B\u043A"
   character_description: 
   portrait_human: {fileID: 0}
   portrait_halfhuman: {fileID: 0}

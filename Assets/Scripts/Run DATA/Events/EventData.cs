@@ -46,6 +46,9 @@ public class EventData : ScriptableObject
    [Tooltip("Если никого нет, то ивент обычный, но если есть хоть 1, то все выборы заменяются на кнопку Начать Бой" +
       "\nНе может быть финальным! Требует ровно 1 ивент для перехода дальше (после победы в бою)")]
    public List<CharacterSO> enemies;
+   [Tooltip("Количество врагов конкретного типа. В сумме не больше 6." +
+   "\nНе нужно для randomEnemies.")]
+   public List<short> enemiesCount;
    [Tooltip("При включении игрок не будет видеть врагов до боя.")]
    public bool isFog;
    [Tooltip("При включении список выше станет пулом из которого могут сгенерироваться враги.")]
@@ -54,6 +57,9 @@ public class EventData : ScriptableObject
    public int minEnemyCount;
    [Tooltip("Нужно только для randomEnemies.")]
    public int maxEnemyCount;
+   [Tooltip("Шанс на спавн конкретного врага из списка, от 0 до 100. Сумма должна быть 100." +
+      "\nНужно только для randomEnemies.")]
+   public List<float> enemiesChances;
 
 
    [Header("Награда")]

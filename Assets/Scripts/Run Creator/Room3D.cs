@@ -199,7 +199,7 @@ public class Room3D : MonoBehaviour
          {
             var skillData = rewardSkills[j];
             var skill = SkillDB.Instance.GetSkillByName(skillData.name);
-            if (!isPool && !DidSkillDrop(rewardChances[j]))
+            if (!isPool && !DidChanceDrop(rewardChances[j]))
             {
                continue;
             }
@@ -239,6 +239,27 @@ public class Room3D : MonoBehaviour
          room.eventRewardClaim = true;
       }
       text += room.eventRewardText;
+
+      //Описание врагов для боя
+      if(data.enemies.Count > 0)
+      {
+         text += "\n\n";
+         text += "Враги: ";
+         if (data.randomEnemies || data.isFog)
+         {
+            text += "скрыты за пеленой тумана.";
+         }
+         else
+         {
+            var enemies = data.enemies;
+            for (int j = 0; j < enemies.Count; j++)
+            {
+               text += enemies[j].character_name + $"(x{data.enemiesCount[j]})";
+               if (j != enemies.Count - 1) text += ", ";
+            }
+            text += ".";
+         }
+      }
       eventText.text = text;
 
       if (data.isLockableEvent) 
@@ -257,18 +278,64 @@ public class Room3D : MonoBehaviour
          roomB.FogOff();
       }
 
-         //Битва, потом дополнить
+
+         //Битва
          fightBtn.SetActive(data.enemies.Count > 0);
       if (data.enemies.Count > 0)
       {
          foreach (var go in eventBtns) go.SetActive(false);
          enemiesForFight = new();
-         foreach (CharacterSO enemy in data.enemies)
+
+         if (data.randomEnemies)
          {
-            enemiesForFight.Add(new Fighter(enemy));
+            int count = Random.Range(data.minEnemyCount, data.maxEnemyCount + 1);
+
+            // Проверка на корректность данных
+            if (data.enemies.Count != data.enemiesChances.Count)
+            {
+               Debug.LogError("Количество врагов и количество шансов не совпадает!");
+               return;
+            }
+
+            for (int j = 0; j < count; j++)
+            {
+               int roll = Random.Range(0, 10000);
+               int cumulative = 0;
+               CharacterSO selectedEnemy = null;
+
+               for (int k = 0; k < data.enemies.Count; k++)
+               {
+                  cumulative += (int)(data.enemiesChances[k] * 100);
+                  if (roll < cumulative)
+                  {
+                     selectedEnemy = data.enemies[k];
+                     break;
+                  }
+               }
+
+               if (selectedEnemy != null)
+               {
+                  enemiesForFight.Add(new Fighter(selectedEnemy));
+               }
+               else
+               {
+                  Debug.LogWarning("Не удалось выбрать врага, возможно сумма шансов < 100?");
+               }
+            }
+         }
+         else
+         {
+            for (int j = 0; j < data.enemies.Count; j++)
+            {
+               for(int k = 0; k < data.enemiesCount[j]; k++)
+                  enemiesForFight.Add(new Fighter(data.enemies[j]));
+            }
          }
          return;
       }
+
+      
+      //Кнопки выбора
       int i = 0;
       foreach (var eventData in data.choices)
       {
@@ -276,16 +343,15 @@ public class Room3D : MonoBehaviour
          eventBtnsText[i].text = eventData.textChoice;
          i++;
       }
-
       for (; i < eventBtns.Count; i++)
       {
          eventBtns[i].SetActive(false);
       }
    }
 
-   bool DidSkillDrop(float chanceToReceiveSkill)
+   bool DidChanceDrop(float chance)
    {
-      int scaledChance = Mathf.RoundToInt(chanceToReceiveSkill * 100);
+      int scaledChance = Mathf.RoundToInt(chance * 100);
       int roll = UnityEngine.Random.Range(0, 10000);
       return roll < scaledChance;
    }
