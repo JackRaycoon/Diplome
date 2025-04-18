@@ -50,7 +50,8 @@ public class Room3D : MonoBehaviour
    {
 
       if ((data.eventType == EventData.EventType.EnteranceEvent ||
-         data.eventType == EventData.EventType.BossEvent) && 
+         data.eventType == EventData.EventType.FightEvent ||
+         data.eventType == EventData.EventType.BossEvent) &&
          SaveLoadController.runInfo.currentRoom != room)
       {
          eventCG.alpha = 0;
@@ -58,6 +59,21 @@ public class Room3D : MonoBehaviour
          eventCG.blocksRaycasts = false;
          isFilled = false;
          return;
+      }
+
+      bool unlock = false;
+      //GlobalBuffs
+      foreach (var buff in SaveLoadController.runInfo.globalBuffs)
+      {
+         switch (buff)
+         {
+            case RunInfo.GlobalBuff:
+               if (data.eventType == EventData.EventType.FightEvent &&
+                  data.isLockableEvent && 
+                  SaveLoadController.runInfo.PlayerTeam.Count == 1)
+                  unlock = true;
+               break;
+         }
       }
 
       eventCG.alpha = 1;
@@ -235,6 +251,11 @@ public class Room3D : MonoBehaviour
             room.eventRewardText += $" навык \"{skillData._name}\" Ц {skill.Description(target)}.\nЂ{skillData.quote}ї";
 
             target.AddSkill(skill);
+            if(skillData.skill_target == SkillSO.SkillTarget.Passive &&
+               skillData.skill_type == SkillSO.SkillType.Global)
+            {
+               SaveLoadController.GlobalBuffsUpdate();
+            }
             isNext = true;
             if (!data.allSkillsFromList) break;
          }
@@ -245,7 +266,7 @@ public class Room3D : MonoBehaviour
       text += room.eventRewardText;
 
       //ќписание врагов дл€ бо€
-      if(data.enemies.Count > 0)
+      if(data.eventType == EventData.EventType.FightEvent)
       {
          text += "\n\n";
          text += "¬раги: ";
@@ -266,7 +287,7 @@ public class Room3D : MonoBehaviour
       }
       eventText.text = text;
 
-      if (data.isLockableEvent) 
+      if (data.isLockableEvent && !unlock) 
       {
          StartCoroutine(LockRoom());
       }
@@ -284,8 +305,8 @@ public class Room3D : MonoBehaviour
 
 
          //Ѕитва
-         fightBtn.SetActive(data.enemies.Count > 0);
-      if (data.enemies.Count > 0)
+         fightBtn.SetActive(data.eventType == EventData.EventType.FightEvent);
+      if (data.eventType == EventData.EventType.FightEvent)
       {
          foreach (var go in eventBtns) go.SetActive(false);
          enemiesForFight = new();

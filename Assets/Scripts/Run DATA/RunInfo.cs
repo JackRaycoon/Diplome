@@ -8,8 +8,11 @@
    public class RunInfo
    {
       public List<CharacterSaveData> saveTeam = new();
-      public Locations currentLocation = Locations.Dungeon;
 
+      [NonSerialized]
+      public List<GlobalBuff> globalBuffs = new();
+
+      public Locations currentLocation = Locations.Dungeon;
       public DungeonStructure dungeonStructure = null;
       public Room currentRoom = null; // Где наш герой на данный момент находится
       public Corridor currentCorridor = null;
@@ -33,6 +36,11 @@
       public enum Locations
       {
          Dungeon
+      }
+      public enum GlobalBuff
+      {
+         None,
+         SilentBlood
       }
 
       public string RusTranslateLocation()

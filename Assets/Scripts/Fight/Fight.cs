@@ -137,8 +137,36 @@ public class Fight : MonoBehaviour
 
    private void FightStart()
    {
-      foreach (Fighter character in AllCharacter) character.Spawn();
+      foreach (Fighter character in AllCharacter)
+      {
+         foreach(var skill in character.skills)
+         {
+            var skillData = skill.skillData;
+            if (skillData.skill_target == SkillSO.SkillTarget.Passive &&
+               skillData.skill_type != SkillSO.SkillType.Global)
+            {
+               character.buffs.Add(skillData.passiveBuff);
+            }
+         }
+         character.Spawn();
+      }
+
       MakeIntention();
+
+      //StartFight Buffs
+      foreach (Fighter character in AllCharacter)
+      {
+         foreach (var buff in character.buffs)
+         {
+            switch (buff)
+            {
+               case Fighter.Buff.QuickRebuff:
+                  character.CastSkill(new List<Fighter>() { RandomEnemy(character) }, SkillDB.Instance.GetSkillByName("Basic Attack"));
+                  break;
+            }
+         }
+      }
+
       StartCoroutine(PlayerTurn());
    }
 

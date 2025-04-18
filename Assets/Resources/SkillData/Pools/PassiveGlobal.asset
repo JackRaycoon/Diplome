@@ -12,4 +12,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9807ccf0c390d974b9520e60e841da4f, type: 3}
   m_Name: PassiveGlobal
   m_EditorClassIdentifier: 
-  skillList: []
+  skillList:
+  - {fileID: 11400000, guid: 1730de9681b030a48aa4b05b0db0b97a, type: 2}

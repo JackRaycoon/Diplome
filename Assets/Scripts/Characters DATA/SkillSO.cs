@@ -16,6 +16,11 @@ public class SkillSO : ScriptableObject
    public List<PlayableCharacter.Class> availableClasses;
    public bool isCorpseTargetToo = false;
 
+   [Tooltip("Для пассивных скиллов, какой бафф они выдают в начале игры.\n" +
+      "Чисто для того, чтобы программно было проще сделать.")]
+   public Fighter.Buff passiveBuff;
+   public RunInfo.GlobalBuff globalPassiveBuff;
+
    public enum SkillTarget
    {
       Solo_Enemy, //По одному врагу

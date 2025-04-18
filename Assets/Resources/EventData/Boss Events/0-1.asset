@@ -17,15 +17,17 @@ MonoBehaviour:
   eventName: "\u0412\u043E\u043B\u043A-\u0432\u043E\u0436\u0430\u043A! : \u041F\u043E\u0431\u0435\u0434\u0430"
   eventText: "\u0412\u044B \u043F\u043E\u0431\u0435\u0434\u0438\u043B\u0438 \u0432\u043E\u0436\u0430\u043A\u0430
     \u0432\u043E\u043B\u043A\u043E\u0432, \u043F\u043E\u0437\u0434\u0440\u0430\u0432\u043B\u044F\u044E!"
-  eventType: 4
+  eventType: 5
   isLockableEvent: 0
   textChoice: 
   choices: []
   enemies: []
+  enemiesCount: 
   isFog: 0
   randomEnemies: 0
   minEnemyCount: 0
   maxEnemyCount: 0
+  enemiesChances: []
   minGold: 1
   maxGold: 10
   rewardSkillList: []

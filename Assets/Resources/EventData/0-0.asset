@@ -16,8 +16,8 @@ MonoBehaviour:
   eventID_Part: 0
   eventName: "\u0412\u043E\u043B\u043A\u0438!"
   eventText: "\u0412\u0441\u0442\u0440\u0435\u0447\u0430 \u0441 \u0432\u043E\u043B\u043A\u0430\u043C\u0438"
-  eventType: 2
-  isLockableEvent: 0
+  eventType: 3
+  isLockableEvent: 1
   textChoice: 
   choices:
   - {fileID: 11400000, guid: a166038a09f7a27418deb1301a5546a7, type: 2}

@@ -165,8 +165,30 @@ public class Fighter
       }
    }
 
+   public Skill GetPassiveSkill(Buff buff)
+   {
+      foreach(var skill in skills)
+      {
+         if (skill.skillData.passiveBuff == buff)
+            return skill;
+      }
+      return null;
+   }
+
    public void TakeDmg(int dmg)
    {
+      //Buffs
+      foreach(var buff in buffs)
+      {
+         switch (buff)
+         {
+            case Buff.OldFightersPlate:
+               dmg -= GetPassiveSkill(buff).calc(new List<Fighter> { this })[0];
+               break;
+         }
+      }
+
+      if (dmg < 0) return;
       if(armor > 0)
       { 
          var armor_cur = armor;
@@ -199,6 +221,9 @@ public class Fighter
 
    public enum Buff
    {
-      DoubleNextAttack
+      None,
+      DoubleNextAttack,
+      OldFightersPlate,
+      QuickRebuff
    }
 }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 using static UnityEngine.GraphicsBuffer;
+using Unity.VisualScripting;
 
 public class SkillDB
 {
@@ -48,8 +49,9 @@ public class SkillDB
       AddSkillCast("Waiting", WaitingCast);
 
       AddSkillPassive("Call of the Pack", CallPackPassive, CallPackReverse);
-      //Заглушка
-      AddSkillPassive("Old Fighter's Plate", CallPackPassive, CallPackReverse, CallPackCalc);
+      AddSkillPassive("Old Fighter's Plate", OldFightersPlateCalc);
+      AddSkillPassive("Quick Rebuff");
+      AddSkillPassive("Silent Blood");
       //AddSkillPassive(KeyWord.Gigachad, "Test Skill", GigachadEveryTurn);
       //AddSkillPassive(KeyWord.Gigachad, "Gigachad", GigachadPassive, GigachadReverse, "Гигачад своим видом вдохновляет каждого союзника. Все союзники получают +1 к атаке.");
    }
@@ -83,6 +85,17 @@ public class SkillDB
       skill.passive = passive;
       skill.reverse = reverse;
       skill.calc = calc;
+      skillDatabase.Add(name, skill);
+   }
+   private void AddSkillPassive(string name, Func<List<Fighter>, List<int>> calc)
+   {
+      Skill skill = new Skill(name);
+      skill.calc = calc;
+      skillDatabase.Add(name, skill);
+   }
+   private void AddSkillPassive(string name)
+   {
+      Skill skill = new Skill(name);
       skillDatabase.Add(name, skill);
    }
 
@@ -179,7 +192,7 @@ public class SkillDB
    {
       foreach(Fighter wolf in targets)
       {
-         if (wolf.Data.character_name.ToLower().Contains("wolf") && wolf != caster)
+         if (wolf.Data.name.ToLower().Contains("wolf") && wolf != caster)
          {
             wolf.bonus_hp += 1;
             wolf.hp += 1;
@@ -204,7 +217,8 @@ public class SkillDB
       }
    }
 
-   public List<int> CallPackCalc(List<Fighter> targets)
+   //Old Fighter's Plate
+   public List<int> OldFightersPlateCalc(List<Fighter> targets)
    {
       return new List<int> { (int)SaveLoadController.runInfo.currentLocation + 1 };
    }

@@ -70,11 +70,13 @@ public class SaveLoadController
             data.PlayerTeam = new();
             foreach (var chara in data.saveTeam)
             {
-               data.PlayerTeam.Add(new(chara));
+               PlayableCharacter fighter = new(chara);
+               data.PlayerTeam.Add(fighter);
             }
             runInfoSlots[i - 1] = data;
 
             var runInfo = data;
+            GlobalBuffsUpdate(i);
          }
          else
          {
@@ -99,5 +101,24 @@ public class SaveLoadController
    {
       enemies = new(enemiesForFight);
       SceneManager.LoadScene(2);
+   }
+   public static void GlobalBuffsUpdate(int slot = -1)
+   {
+      var _runInfo = runInfo;
+      if (slot != -1)
+         _runInfo = runInfoSlots[slot - 1];
+      foreach(var fighter in _runInfo.PlayerTeam)
+      {
+         _runInfo.globalBuffs = new();
+         foreach (var skill in fighter.skills)
+         {
+            var skillData = skill.skillData;
+            if (skillData.skill_type == SkillSO.SkillType.Global &&
+               skillData.skill_target == SkillSO.SkillTarget.Passive)
+            {
+               _runInfo.globalBuffs.Add(skillData.globalPassiveBuff);
+            }
+         }
+      }
    }
 }
