@@ -45,7 +45,8 @@ public class Room3D : MonoBehaviour
    public void FillEvent()
    {
 
-      if (data.eventType == EventData.EventType.EnteranceEvent && 
+      if ((data.eventType == EventData.EventType.EnteranceEvent ||
+         data.eventType == EventData.EventType.BossEvent) && 
          SaveLoadController.runInfo.currentRoom != room)
       {
          eventCG.alpha = 0;
@@ -54,6 +55,7 @@ public class Room3D : MonoBehaviour
          isFilled = false;
          return;
       }
+
       eventCG.alpha = 1;
       eventCG.interactable = true;
       eventCG.blocksRaycasts = true;
@@ -245,8 +247,18 @@ public class Room3D : MonoBehaviour
       }
       else roomB.LockDoors(true);
 
-      //Битва, потом дополнить
-      fightBtn.SetActive(data.enemies.Count > 0);
+      if (data.eventType == EventData.EventType.BossEvent)
+      {
+         roomB.WallUp();
+      }
+      if(data.eventType == EventData.EventType.BossWin)
+      {
+         roomB.UnWallUp();
+         roomB.FogOff();
+      }
+
+         //Битва, потом дополнить
+         fightBtn.SetActive(data.enemies.Count > 0);
       if (data.enemies.Count > 0)
       {
          foreach (var go in eventBtns) go.SetActive(false);

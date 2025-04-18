@@ -12,6 +12,8 @@ public class Room
    public bool isFogOfWar = true; //Рассеивается когда проходишь на соседней клетке, не обязательно соединённой
    public bool isUnlocked; //Открывается когда прошёл непосредственно по этой клетке (был там)
 
+   public RoomType roomType = RoomType.Common;
+
    public string eventPath;
    public string eventName;
    public bool eventRewardClaim = false;
@@ -42,4 +44,11 @@ public class Room
    }
 
    public Vector2Int Coords { get => new(coordX,coordY); }
+
+   public enum RoomType
+   {
+      Common,
+      Shop,
+      Boss
+   }
 }

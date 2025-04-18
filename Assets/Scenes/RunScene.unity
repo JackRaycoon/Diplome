@@ -557,6 +557,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   settings: {fileID: 11400000, guid: 6205c3b968386d043a4a5477e69a9ef5, type: 2}
   roomPrefab: {fileID: 5665379724908677799, guid: f8cc98167132a7648a4419ba2aa33f35, type: 3}
+  bossRoomPrefab: {fileID: 4938240384892173143, guid: f317fcdfaa53bbf45af1838d975676dd, type: 3}
   corridorPrefab: {fileID: 4554449291699510155, guid: fe4e83ad66b03a74aae16aca6434e84a, type: 3}
   offsetRoom: 18.5
   offsetCorridor: 6
@@ -990,7 +991,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1903148465}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -5449,7 +5450,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 62222807b4494104a81b183ac490bcbd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  rayLength: 2
   layerMaskInteract:
     serializedVersion: 2
     m_Bits: 256

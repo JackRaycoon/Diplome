@@ -10,11 +10,15 @@ public class RoomBehaviour : MonoBehaviour
    public GameObject[] doors;
    public GameObject[] lampOn;
    public GameObject[] lampOff;
+   public GameObject[] particles; 
+
    private Room3D room3d;
 
    public GameObject eventCanvasGO;
    private Canvas eventCanvas;
    private CanvasGroup eventCanvasCG;
+
+   public bool[] status;
 
    public List<KeyItemController.ObjectType> doorsObjectTypes = new();
 
@@ -29,18 +33,21 @@ public class RoomBehaviour : MonoBehaviour
 
       for(short i = 0; i < doors.Length; i++)
       {
-         doorsObjectTypes.Add(doors[i].GetComponent<KeyItemController>().objectType);
+         var key = doors[i].GetComponent<KeyItemController>();
+         doorsObjectTypes.Add(key.objectType);
          doors[i].GetComponent<KeyDoorController>().roomSide = i;
       }
    }
-   public void UpdateRoom(bool[] status) //true for doors
+   public void UpdateRoom() //true for doors
    {
       for (int i = 0; i < status.Length; i++)
       {
+         var key = doors[i].GetComponent<KeyItemController>();
          entrances[i].SetActive(status[i]);
          walls[i].SetActive(!status[i]);
          lampOn[i].SetActive(status[i]);
          lampOff[i].SetActive(!status[i]);
+         doors[i].SetActive(key.objectType != KeyItemController.ObjectType.FogDoor);
       }
    }
    bool isFilled = false;
@@ -118,5 +125,25 @@ public class RoomBehaviour : MonoBehaviour
          door.doorAnim.Update(0f);
          door.doorOpen = doorStates[i];
       }
+   }
+
+   public void WallUp()
+   {
+      for(int i = 0; i<doors.Length; i++)
+      {
+         entrances[i].SetActive(false);
+         doors[i].SetActive(false);
+         walls[i].SetActive(true);
+      }
+   }
+   public void UnWallUp()
+   {
+      UpdateRoom();
+   }
+
+   public void FogOff()
+   {
+      foreach (var go in particles)
+         go.SetActive(false);
    }
 }

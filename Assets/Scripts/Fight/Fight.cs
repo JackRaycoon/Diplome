@@ -54,6 +54,8 @@ public class Fight : MonoBehaviour
       Cursor.lockState = CursorLockMode.None;
 
       playerHand.alpha = 1f;
+      playerHand.interactable = true;
+      playerHand.blocksRaycasts = true;
 
       SelectedCharacterID = -1;
       _selected = false;
@@ -356,7 +358,11 @@ public class Fight : MonoBehaviour
       endFight = true;
       Skill_Image.isNeedClose = true;
       WinLosePanel.SetActive(true);
+
       playerHand.alpha = 0f;
+      playerHand.interactable = false;
+      playerHand.blocksRaycasts = false;
+
       if (isLose) WinLoseText.text = "К сожалению, вы проиграли";
       else if (isWin) WinLoseText.text = "Поздравляю с победой";
       eventRoom.eventData = eventRoom.eventData.choices[0];

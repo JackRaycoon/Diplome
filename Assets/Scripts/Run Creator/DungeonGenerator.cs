@@ -12,6 +12,7 @@ public class DungeonGenerator : MonoBehaviour
 {
    [SerializeField] DungeonSettings settings;
    [SerializeField] GameObject roomPrefab;
+   [SerializeField] GameObject bossRoomPrefab;
    [SerializeField] GameObject corridorPrefab;
    [SerializeField] float offsetRoom;
    [SerializeField] float offsetCorridor;
@@ -79,9 +80,20 @@ public class DungeonGenerator : MonoBehaviour
          if (Math.Abs(currentRoom.Coords.x - room.Coords.x) > 2
                || Math.Abs(currentRoom.Coords.y - room.Coords.y) > 2) continue;
          //Создаём комнаты, которые в пределах пары комнат от текущей
-         RoomBehaviour roomBeh = Instantiate(roomPrefab, new Vector3(offsetRoom * room.Coords.x, -0.01f, offsetRoom * room.Coords.y),
+         RoomBehaviour roomBeh;
+         roomBeh = room.roomType switch
+         {
+            Room.RoomType.Common => Instantiate(roomPrefab, new Vector3(offsetRoom * room.Coords.x, -0.01f, offsetRoom * room.Coords.y),
             Quaternion.identity,
-            transform).GetComponent<RoomBehaviour>();
+            transform).GetComponent<RoomBehaviour>(),
+            Room.RoomType.Shop => throw new NotImplementedException(),
+            Room.RoomType.Boss => Instantiate(bossRoomPrefab, new Vector3(offsetRoom * room.Coords.x, -0.01f, offsetRoom * room.Coords.y),
+            Quaternion.identity,
+            transform).GetComponent<RoomBehaviour>(),
+         };
+         /*roomBeh = Instantiate(roomPrefab, new Vector3(offsetRoom * room.Coords.x, -0.01f, offsetRoom * room.Coords.y),
+            Quaternion.identity,
+            transform).GetComponent<RoomBehaviour>();*/
          roomBeh.gameObject.GetComponent<Room3D>().room = room;
          createdRooms.Add(room);
          createdRoomsGO.Add(roomBeh.gameObject);
@@ -105,7 +117,8 @@ public class DungeonGenerator : MonoBehaviour
                status[3] = true;
             }
          }
-         roomBeh.UpdateRoom(status);
+         roomBeh.status = status;
+         roomBeh.UpdateRoom();
 
          //Восстанавливаем состояние (пока только двери)
          roomBeh.LoadDoorState(room.doorOpened);
@@ -259,6 +272,17 @@ public class DungeonGenerator : MonoBehaviour
             room.eventData = Resources.Load<EventData>(path + name);
             room.eventPath = path;
             room.eventName = name;
+
+            if (roomsToCreate == 1)
+            {
+               //Также ивент встречи босса
+               room.roomType = Room.RoomType.Boss;
+               string path2 = $"EventData/Boss Events/";
+               string name2 = $"{0}-0";
+               room.eventData = Resources.Load<EventData>(path2 + name2);
+               room.eventPath = path2;
+               room.eventName = name2;
+            }
          }
          rooms.Add(room);
          usedCoords.Add(nextCoords);
