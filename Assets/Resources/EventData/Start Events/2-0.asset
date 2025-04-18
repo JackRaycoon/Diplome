@@ -59,14 +59,16 @@ MonoBehaviour:
   isLockableEvent: 1
   textChoice: 
   choices:
-  - {fileID: 11400000, guid: fe80661951aa76f458fbbe011b7a70f9, type: 2}
   - {fileID: 11400000, guid: 82dc6dd296b4920479f30da3e176aa27, type: 2}
   - {fileID: 11400000, guid: 699880fb07190ae4cbf16466664cb00f, type: 2}
+  - {fileID: 11400000, guid: fe80661951aa76f458fbbe011b7a70f9, type: 2}
   enemies: []
+  enemiesCount: 
   isFog: 0
   randomEnemies: 0
   minEnemyCount: 0
   maxEnemyCount: 0
+  enemiesChances: []
   minGold: 0
   maxGold: 0
   rewardSkillList: []
