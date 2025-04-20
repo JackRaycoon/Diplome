@@ -115,7 +115,7 @@ public class Fighter
 
       bool isDoubleNextAttack = false;
 
-      //Проверка на баффы
+      //Проверка на баффы у кастующего
       for (int i = 0; i < buffs.Count; i++)
       {
          switch (buffs[i])
@@ -125,6 +125,16 @@ public class Fighter
                isDoubleNextAttack = true;
                buffs.RemoveAt(i);
                i--;
+               break;
+            case Buff.BestialInstinct:
+               if (skill.skillData.skill_type == SkillSO.SkillType.Attack) 
+               {
+                  if (buffs.Contains(Buff.BestialInstinctBuff))
+                     buffs.Remove(Buff.BestialInstinctBuff);
+                  continue; 
+               }
+               if (!buffs.Contains(Buff.BestialInstinctBuff))
+                  buffs.Add(Buff.BestialInstinctBuff);
                break;
          }
       }
@@ -245,6 +255,8 @@ public class Fighter
       None,
       DoubleNextAttack,
       OldFightersPlate,
-      QuickRebuff
+      QuickRebuff,
+      BestialInstinct,
+      BestialInstinctBuff // накладывается когда применяешь не атакующий навык
    }
 }

@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 using System.Linq;
+using static Fighter;
+using UnityEditor.Experimental.GraphView;
+using static UnityEngine.GraphicsBuffer;
 
 public class Skill
 {
@@ -73,6 +76,27 @@ public class Skill
 
    public void Cast(Fighter caster, List<Fighter> targets)
    {
+      //Проверка на баффы у целей, на промахи тут, на урон при получении урона
+      for (int i = 0; i < targets.Count; i++)
+      {
+         var target = targets[i];
+         for (int j = 0; j < target.buffs.Count; j++)
+         {
+            var buff = target.buffs[j];
+            switch (buff)
+            {
+               case Buff.BestialInstinctBuff:
+                  if (skillData.skill_type != SkillSO.SkillType.Attack) continue;
+                  if (UnityEngine.Random.Range(1, 101) >
+                     target.GetPassiveSkill(Buff.BestialInstinct).calc(new List<Fighter> { target })[0]) continue;
+
+                  Debug.Log("Промах по: " + target.Data.character_name);
+                  targets.Remove(target);
+                  i--;
+                  break;
+            }
+         }
+      }
       var list = new List<Fighter>(targets);
       list.Insert(0, caster);
       cast?.Invoke(list);

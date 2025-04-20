@@ -57,6 +57,7 @@ public class SkillDB
 
       AddSkillPassive("Call of the Pack", CallPackPassive, CallPackReverse);
       AddSkillPassive("Old Fighter's Chest", OldFightersChestCalc);
+      AddSkillPassive("Bestial Instinct", BestialInstinctCalc);
       AddSkillPassive("Quick Rebuff");
       AddSkillPassive("Silent Blood");
       AddSkillPassive("Amulet of the Wind");
@@ -112,7 +113,7 @@ public class SkillDB
       All_Allies
    }
 
-   public void GigachadEveryTurn(List<Fighter> targets) //первый в targets всегда caster
+   /*public void GigachadEveryTurn(List<Fighter> targets) //первый в targets всегда caster
    {
       //var Board = GameScript.EnemyBoard;
       //foreach (Card card in GameScript.PlayerBoard) if (card == caster) { Board = GameScript.PlayerBoard; break; }
@@ -123,7 +124,7 @@ public class SkillDB
       //      target.ATK++;
       //   }
       //}
-   }
+   }*/
 
    //Basic Attack
    public void BasicAttackCast(List<Fighter> targets)
@@ -255,9 +256,12 @@ public class SkillDB
    {
       return new List<int> { (int)SaveLoadController.runInfo.currentLocation + 1 };
    }
-   public void GigachadDeath()
-   {
-      Debug.Log("Giga Death");
-   }
 
+   //Bestial Instinct
+   public List<int> BestialInstinctCalc(List<Fighter> targets)
+   {
+      var caster = targets[0];
+      var agility = caster.agility + caster.bonus_agility;
+      return new List<int> { 25 + Math.Clamp(agility / 2 - 2, 0, 50) };
+   }
 }
