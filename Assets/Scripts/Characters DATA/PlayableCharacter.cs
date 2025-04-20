@@ -9,7 +9,7 @@ public class PlayableCharacter : Fighter
    public byte currentPhase = 1; //1 - человек, 2 - получеловек, 3 - монстр
    public Class charClass;
 
-   public PlayableCharacter(string name) : base(name)
+   public PlayableCharacter(string name) : base("Playable/" + name)
    {
       /*foreach(SkillSO skillSO in Data.skills)
       {
@@ -18,7 +18,7 @@ public class PlayableCharacter : Fighter
       charClass = StringToClass(name);
    }
 
-   public PlayableCharacter(CharacterSaveData charSD) : base(charSD.nameClass)
+   public PlayableCharacter(CharacterSaveData charSD) : base("Playable/" + charSD.nameClass)
    {
       hp = charSD.hp;
       defence = charSD.defence;
@@ -41,6 +41,7 @@ public class PlayableCharacter : Fighter
    {
       get
       {
+         if (isSummon && Data.portrait_summon != null) return Data.portrait_summon;
          return currentPhase switch
          {
             1 => Data.portrait_human,
@@ -56,9 +57,9 @@ public class PlayableCharacter : Fighter
    {
       return name switch
       {
-         "Playable Warrior" => Class.Warrior,
-         "Playable Archer" => Class.Archer,
-         "Playable Priest" => Class.Priest,
+         "Warrior" => Class.Warrior,
+         "Archer" => Class.Archer,
+         "Priest" => Class.Priest,
          _ => Class.Enemy,
       };
    }

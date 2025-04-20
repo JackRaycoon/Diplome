@@ -36,10 +36,10 @@ public class Fighter
    public bool isSummon;
 
    //Умения персонажа
-   public List<Skill> skills = new List<Skill>
-{
+   public List<Skill> skills = new()
+   {
     SkillDB.Instance.GetSkillByName("Basic Attack")
-};
+   };
 
    public Fighter(string name)
    {

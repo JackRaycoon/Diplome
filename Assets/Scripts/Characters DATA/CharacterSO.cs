@@ -11,6 +11,7 @@ public class CharacterSO : ScriptableObject
    public Sprite portrait_human;
    public Sprite portrait_halfhuman;
    public Sprite portrait_monster;
+   public Sprite portrait_summon;
    public Sprite[] other_portraits;
 
    public List<SkillSO> skills;
@@ -18,4 +19,14 @@ public class CharacterSO : ScriptableObject
    //Стартовые характеристики
    public int strengh, agility, wisdow, constitution, defence;
 
+   public List<Stat> priorityStats;
+
+   public enum Stat
+   {
+      Strengh,
+      Agility,
+      Wisdow,
+      Constitution,
+      Defence
+   }
 }

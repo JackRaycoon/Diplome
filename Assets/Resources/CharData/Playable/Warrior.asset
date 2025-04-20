@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fe0d30022cbdbdc469fd8a301de89b48, type: 3}
-  m_Name: Playable Warrior
+  m_Name: Warrior
   m_EditorClassIdentifier: 
   character_name: "\u0412\u043E\u0438\u043D"
   character_description: "\u0421\u043B\u043E\u0432\u043D\u043E \u0441\u0442\u0435\u043D\u0430
@@ -37,6 +37,7 @@ MonoBehaviour:
   portrait_human: {fileID: 21300000, guid: 2c85eb288d416904e8021ab47f71d3d4, type: 3}
   portrait_halfhuman: {fileID: 21300000, guid: 7e991dcfdb9a6d84a93791dcf8c01424, type: 3}
   portrait_monster: {fileID: 21300000, guid: a963d4744799f534481ad688af9e8bac, type: 3}
+  portrait_summon: {fileID: 21300000, guid: 5bda7691ae9a2fb4fadfa8c54cc44592, type: 3}
   other_portraits: []
   skills:
   - {fileID: 11400000, guid: 7f6a00a3d8378e54e99a0679cd85765a, type: 2}
@@ -45,4 +46,4 @@ MonoBehaviour:
   wisdow: 0
   constitution: 5
   defence: 1
-  isEnemy: 0
+  priorityStats: 000000000400000003000000

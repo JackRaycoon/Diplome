@@ -25,4 +25,4 @@ MonoBehaviour:
   wisdow: 1
   constitution: 1
   defence: 0
-  isEnemy: 1
+  priorityStats: 0000000001000000

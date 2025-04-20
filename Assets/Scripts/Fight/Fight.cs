@@ -82,12 +82,97 @@ public class Fight : MonoBehaviour
                switch (data.passiveBuff)
                {
                   case Fighter.Buff.ScreamIntoVoid:
-                     var ally = new PlayableCharacter("Wolf")
+                     //Призываем 3 духов разного типа стартовых персонажей
+                     //Сумма их статов = сумме параметров жрицы, распределённых с упором на главные характеристики
+                     //Когда сумма параметров Жрицы достигает определённого порога, они получают новые активные навыки из сета персонажа (случайно)
+                     int count = 3;
+                     int sumParam = character.strengh + character.agility + character.wisdow
+                        + character.constitution + character.defence;
+
+                     // Разделяем общее количество параметров между духами
+                     int[] statsPerSpirit = DistributeStats(sumParam, count);
+
+                     for (int k = 0; k < count; k++)
                      {
-                        isSummon = true
-                     };
-                     if (PlayerTeam.Count < 6)
-                        PlayerTeam.Add(ally);
+                        var list = new List<CharacterSO>(Resources.LoadAll<CharacterSO>("CharData/Playable/"));
+                        list.Remove(character.Data);
+                        var randomClass = list[Random.Range(0, list.Count)];
+                        var ally = new PlayableCharacter(randomClass.name)
+                        {
+                           isSummon = true
+                        };
+
+                        int spiritStats = statsPerSpirit[k];
+                        var stats = new Dictionary<CharacterSO.Stat, int>
+                        {
+                            { CharacterSO.Stat.Strengh, 0 },
+                            { CharacterSO.Stat.Agility, 0 },
+                            { CharacterSO.Stat.Wisdow, 0 },
+                            { CharacterSO.Stat.Constitution, 1 }, // Минимум 1
+                            { CharacterSO.Stat.Defence, 0 }
+                        };
+                        int remaining = spiritStats - 1; // уже потратили 1 на constitution
+
+                        var priorities = randomClass.priorityStats;
+                        int priorityShare = Mathf.RoundToInt(remaining * 0.75f);
+                        int nonPriorityShare = remaining - priorityShare;
+
+                        // Распределение приоритетных очков
+                        for (int j = 0; j < priorityShare; j++)
+                        {
+                           CharacterSO.Stat stat = priorities[Random.Range(0, priorities.Count)];
+                           stats[stat]++;
+                        }
+
+                        // Распределение оставшихся очков
+                        var nonPriorities = stats.Keys.Except(priorities).ToList();
+                        for (int j = 0; j < nonPriorityShare; j++)
+                        {
+                           CharacterSO.Stat stat = nonPriorities[Random.Range(0, nonPriorities.Count)];
+                           stats[stat]++;
+                        }
+
+                        // Присваиваем статы
+                        ally.strengh = stats[CharacterSO.Stat.Strengh];
+                        ally.agility = stats[CharacterSO.Stat.Agility];
+                        ally.wisdow = stats[CharacterSO.Stat.Wisdow];
+                        ally.constitution = stats[CharacterSO.Stat.Constitution];
+                        ally.defence = stats[CharacterSO.Stat.Defence];
+
+                        ally.hp = ally.max_hp;
+
+                        while(ally.skills.Count != 1 && sumParam < 25)
+                           ally.skills.RemoveAt(1);
+
+                        if (sumParam >= 50)
+                        {
+                           string poolName = $"{randomClass.name}Skills";
+                           var skillPool = Resources.Load<SkillPool>($"SkillData/Pools/{poolName}");
+
+                           if (skillPool != null && skillPool.skillList.Count > 0)
+                           {
+                              int skillsToAdd = (sumParam - 50) / 25 + 1; // Например: 50 → 1, 75 → 2, 100 → 3
+
+                              var availableSkills = new List<SkillSO>(skillPool.skillList);
+                              availableSkills.Remove(ally.skills[1].skillData);
+
+                              for (int j = 0; j < skillsToAdd && availableSkills.Count > 0; j++)
+                              {
+                                 var skill1 = availableSkills[Random.Range(0, availableSkills.Count)];
+                                 ally.AddSkill(skill1);
+                                 availableSkills.Remove(skill1); // Чтобы не повторялись
+                              }
+                           }
+                           else
+                           {
+                              Debug.LogWarning($"Не найден пул скиллов: {poolName} или он пустой.");
+                           }
+                        }
+
+
+                        if (PlayerTeam.Count < 6)
+                           PlayerTeam.Add(ally);
+                     }
                      break;
                }
             }
@@ -158,6 +243,27 @@ public class Fight : MonoBehaviour
          UpdatePortrait();
       }
       RoundNum.text = "Раунд: " + round_number;
+   }
+
+   int[] DistributeStats(int total, int count)
+   {
+      int[] result = new int[count];
+      int remaining = total;
+
+      for (int i = 0; i < count; i++)
+      {
+         result[i] = total / count;
+         remaining -= result[i];
+      }
+
+      while (remaining > 0)
+      {
+         int index = Random.Range(0, count);
+         result[index]++;
+         remaining--;
+      }
+
+      return result;
    }
 
    public void CardShowerReset()

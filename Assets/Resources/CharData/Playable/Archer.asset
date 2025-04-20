@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fe0d30022cbdbdc469fd8a301de89b48, type: 3}
-  m_Name: Playable Archer
+  m_Name: Archer
   m_EditorClassIdentifier: 
   character_name: "\u041B\u0443\u0447\u043D\u0438\u0446\u0430"
   character_description: "\u0422\u0438\u0445\u0430\u044F, \u043A\u0430\u043A \u0432\u0435\u0442\u0435\u0440
@@ -38,6 +38,7 @@ MonoBehaviour:
   portrait_human: {fileID: 21300000, guid: 10e84b9913e57384bb832a37a46ddf58, type: 3}
   portrait_halfhuman: {fileID: 21300000, guid: 59137f46ec67ace419533f7784c3d91c, type: 3}
   portrait_monster: {fileID: 21300000, guid: 2676ed64d12354444b07b9a411abb22d, type: 3}
+  portrait_summon: {fileID: 21300000, guid: 6c221df543ed6ff47840a76bcc66e505, type: 3}
   other_portraits: []
   skills:
   - {fileID: 11400000, guid: d3e9dc8105e1bab4aa5c9e74350ae2c4, type: 2}
@@ -46,4 +47,4 @@ MonoBehaviour:
   wisdow: 1
   constitution: 3
   defence: 0
-  isEnemy: 0
+  priorityStats: 0100000002000000

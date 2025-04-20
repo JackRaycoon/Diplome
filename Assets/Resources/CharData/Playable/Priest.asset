@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fe0d30022cbdbdc469fd8a301de89b48, type: 3}
-  m_Name: Playable Priest
+  m_Name: Priest
   m_EditorClassIdentifier: 
   character_name: "\u0416\u0440\u0438\u0446\u0430"
   character_description: "\u041E\u043D\u0430 \u0438\u0434\u0451\u0442 \u0442\u0443\u0434\u0430,
@@ -42,6 +42,7 @@ MonoBehaviour:
   portrait_human: {fileID: 21300000, guid: da815ac9f8d9fd34490a9154e89b26eb, type: 3}
   portrait_halfhuman: {fileID: 21300000, guid: 95d967905968565488e137ac8ca046a0, type: 3}
   portrait_monster: {fileID: 21300000, guid: e0fe12e35ffa8334fae15161e2424857, type: 3}
+  portrait_summon: {fileID: 21300000, guid: 3f45e56e8ca1e1944bb8087ffc127443, type: 3}
   other_portraits:
   - {fileID: 21300000, guid: 5909af7027b3c0648ae5654fc450d1b6, type: 3}
   skills:
@@ -51,4 +52,4 @@ MonoBehaviour:
   wisdow: 4
   constitution: 4
   defence: 0
-  isEnemy: 0
+  priorityStats: 0200000003000000
