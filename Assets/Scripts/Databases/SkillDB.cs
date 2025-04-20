@@ -62,6 +62,7 @@ public class SkillDB
       AddSkillPassive("Silent Blood");
       AddSkillPassive("Amulet of the Wind");
       AddSkillPassive("Trace of Ancient Route");
+      AddSkillPassive("Quiet Blessing");
       //AddSkillPassive(KeyWord.Gigachad, "Test Skill", GigachadEveryTurn);
    }
 
@@ -69,28 +70,28 @@ public class SkillDB
    private void AddSkillCast(string name, Action<List<Fighter>> cast,
       Func<List<Fighter>, List<int>> calc = null)
    {
-      Skill skill = new Skill(name);
+      Skill skill = new Skill(name, false);
       skill.cast = cast;
       skill.calc = calc;
       skillDatabase.Add(name, skill);
    }
    private void AddSkillDeath(string name, Action death)
    {
-      Skill skill = new Skill(name);
+      Skill skill = new Skill(name, true);
       skill.death = death;
       skillDatabase.Add(name, skill);
    }
 
    private void AddSkillEvTurn(string name, Action<List<Fighter>> everyTurn)
    {
-      Skill skill = new Skill(name);
+      Skill skill = new Skill(name, true);
       skill.every_turn = everyTurn;
       skillDatabase.Add(name, skill);
    }
 
    private void AddSkillPassive(string name, Action<Fighter, List<Fighter>> passive, Action<Fighter, List<Fighter>> reverse, Func<List<Fighter>, List<int>> calc = null)
    {
-      Skill skill = new Skill(name);
+      Skill skill = new Skill(name, true);
       skill.passive = passive;
       skill.reverse = reverse;
       skill.calc = calc;
@@ -98,13 +99,13 @@ public class SkillDB
    }
    private void AddSkillPassive(string name, Func<List<Fighter>, List<int>> calc)
    {
-      Skill skill = new Skill(name);
+      Skill skill = new Skill(name, true);
       skill.calc = calc;
       skillDatabase.Add(name, skill);
    }
    private void AddSkillPassive(string name)
    {
-      Skill skill = new Skill(name);
+      Skill skill = new Skill(name, true);
       skillDatabase.Add(name, skill);
    }
 

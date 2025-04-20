@@ -20,9 +20,9 @@ public class Skill
    public Action<Fighter, List<Fighter>> passive; //Пассивный эффект "пока я жив вы получаете то-то"
    public Action<Fighter, List<Fighter>> reverse; //Отмена пассивного эффекта, когда его источник пропадает
 
-   public Skill(string name)
+   public Skill(string name, bool isPassive)
    {
-      skillData = Resources.Load<SkillSO>("SkillData/" + name);
+      skillData = Resources.Load<SkillSO>($"SkillData/{(isPassive ? "Passive" : "Active")}/" + name);
    }
    /*public Skill(SkillSO skillSO, Fighter _skillOwner)
    {

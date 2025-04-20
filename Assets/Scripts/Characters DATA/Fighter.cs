@@ -257,6 +257,8 @@ public class Fighter
       OldFightersPlate,
       QuickRebuff,
       BestialInstinct,
-      BestialInstinctBuff // накладывается когда применяешь не атакующий навык
+      BestialInstinctBuff, // накладывается когда применяешь не атакующий навык
+      QuietBlessing,
+
    }
 }

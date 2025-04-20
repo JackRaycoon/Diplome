@@ -12,7 +12,7 @@ public class SaveLoadController
    public static bool[] corruptedSlots = { false, false, false };
    public static short slot = 0;
 
-   public static List<Fighter> enemies;
+   public static List<Fighter> enemies = null;
 
    public static RunInfo runInfo {
       get
@@ -101,6 +101,24 @@ public class SaveLoadController
    {
       enemies = new(enemiesForFight);
       SceneManager.LoadScene(2);
+   }
+
+   public static void EndFight()
+   {
+      //Проверка скиллов
+      foreach(var chara in runInfo.PlayerTeam)
+      {
+         foreach(var buff in chara.buffs)
+         {
+            switch (buff)
+            {
+               case Fighter.Buff.QuietBlessing:
+                  chara.hp = chara.max_hp;
+                  break;
+            }
+         }
+      }
+      enemies = null;
    }
    public static void GlobalBuffsUpdate(int slot = -1)
    {

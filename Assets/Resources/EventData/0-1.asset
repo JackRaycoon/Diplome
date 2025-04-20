@@ -22,14 +22,18 @@ MonoBehaviour:
   textChoice: 
   choices: []
   enemies: []
+  enemiesCount: 
   isFog: 0
   randomEnemies: 0
   minEnemyCount: 0
   maxEnemyCount: 0
+  enemiesChances: []
   minGold: 1
   maxGold: 10
   rewardSkillList: []
+  rewardSkillPool: {fileID: 0}
   allSkillsFromList: 0
+  chanceToReceiveSkill: []
   randomRewardTarget: 0
   strengthRewardMin: 0
   strengthRewardMax: 1
@@ -38,9 +42,9 @@ MonoBehaviour:
   wisdowRewardMin: 0
   wisdowRewardMax: 1
   constitutionRewardMin: 0
-  constitutionRewardMax: 1
+  constitutionRewardMax: 0
   armorRewardMin: 0
   armorRewardMax: 1
   healRewardMin: 0
-  healRewardMax: 5
+  healRewardMax: 0
   isStatsPackReward: 0

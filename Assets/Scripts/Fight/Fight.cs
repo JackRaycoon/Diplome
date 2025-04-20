@@ -78,7 +78,17 @@ public class Fight : MonoBehaviour
       foreach (Fighter character in PlayerTeam) AllCharacter.Add(character);
       foreach (Fighter character in EnemyTeam) AllCharacter.Add(character);
 
-      foreach (Fighter character in AllCharacter) character.armor = character.defence * 2;
+
+      //Подготовка персонажей
+      foreach (Fighter character in AllCharacter)
+      {
+         character.armor = character.defence * 2;
+         character.bonus_hp = 0;
+         character.bonus_strengh = 0;
+         character.bonus_wisdow = 0;
+         character.bonus_agility = 0;
+         character.buffs = new();
+      }
 
       UpdatePortrait();
 
@@ -396,6 +406,7 @@ public class Fight : MonoBehaviour
       eventRoom.eventData = eventRoom.eventData.choices[0];
       var data = eventRoom.eventData;
       eventRoom.eventName = $"{data.eventID}-{data.eventID_Part}";
+      SaveLoadController.EndFight();
       SaveLoadController.Save();
    }
 
