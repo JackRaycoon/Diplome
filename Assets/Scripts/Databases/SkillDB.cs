@@ -61,6 +61,7 @@ public class SkillDB
       AddSkillPassive("Quick Rebuff");
       AddSkillPassive("Silent Blood");
       AddSkillPassive("Amulet of the Wind");
+      AddSkillPassive("Trace of Ancient Route");
       //AddSkillPassive(KeyWord.Gigachad, "Test Skill", GigachadEveryTurn);
    }
 

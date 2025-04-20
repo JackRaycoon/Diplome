@@ -67,7 +67,7 @@ public class Room3D : MonoBehaviour
       {
          switch (buff)
          {
-            case RunInfo.GlobalBuff:
+            case RunInfo.GlobalBuff.SilentBlood:
                if ((data.eventType == EventData.EventType.FightEvent
                   || data.eventType == EventData.EventType.BossEvent)  &&
                   data.isLockableEvent && 
@@ -230,6 +230,7 @@ public class Room3D : MonoBehaviour
             {
                if (
                   skillData.availableClasses.Contains(character.charClass) ||
+                  skillData.availableClasses.Contains(PlayableCharacter.Class.All) ||
                   (character.charClass == PlayableCharacter.Class.Archer && 
                   SaveLoadController.runInfo.globalBuffs.Contains(RunInfo.GlobalBuff.AmuletWind))
                   )
@@ -380,6 +381,8 @@ public class Room3D : MonoBehaviour
       {
          eventBtns[i].SetActive(false);
       }
+
+      MiniMapUI.isNeedUpdate = true;
    }
 
    bool DidChanceDrop(float chance)

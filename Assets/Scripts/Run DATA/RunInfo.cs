@@ -41,8 +41,9 @@
       {
          None,
          SilentBlood,
-         AmuletWind
-      }
+         AmuletWind,
+         TraceAncientRoute
+   }
 
       public string RusTranslateLocation()
       {
