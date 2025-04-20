@@ -228,7 +228,11 @@ public class Room3D : MonoBehaviour
             List<PlayableCharacter> availableCharacters = new();
             foreach (PlayableCharacter character in SaveLoadController.runInfo.PlayerTeam)
             {
-               if (skillData.availableClasses.Contains(character.charClass))
+               if (
+                  skillData.availableClasses.Contains(character.charClass) ||
+                  (character.charClass == PlayableCharacter.Class.Archer && 
+                  SaveLoadController.runInfo.globalBuffs.Contains(RunInfo.GlobalBuff.AmuletWind))
+                  )
                {
                   availableCharacters.Add(character);
                }

@@ -40,7 +40,8 @@
       public enum GlobalBuff
       {
          None,
-         SilentBlood
+         SilentBlood,
+         AmuletWind
       }
 
       public string RusTranslateLocation()

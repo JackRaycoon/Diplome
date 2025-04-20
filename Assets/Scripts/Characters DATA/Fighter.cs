@@ -74,18 +74,39 @@ public class Fighter
    {
       var skill = SkillDB.Instance.GetSkillByName(skillData.name);
       if (!skills.Contains(skill))
+      {
          skills.Add(skill);
+         CheckAddSkillGlobal(skill);
+      }
    }
    public void AddSkill(Skill skill)
    {
       if (!skills.Contains(skill))
+      {
          skills.Add(skill);
+         CheckAddSkillGlobal(skill);
+      }
    }
    public void AddSkill(string skillName)
    {
       var skill = SkillDB.Instance.GetSkillByName(skillName);
       if (!skills.Contains(skill))
+      {
          skills.Add(skill);
+         CheckAddSkillGlobal(skill);
+      }
+   }
+
+   public void CheckAddSkillGlobal(Skill skill)
+   {
+      switch (skill.skillData.globalPassiveBuff)
+      {
+         case RunInfo.GlobalBuff.AmuletWind:
+            var pool = SkillDB.Instance.GetPoolByName("WindSkills");
+            var list = pool.skillList;
+            AddSkill(list[Random.Range(0, list.Count)]);
+            return;
+      }
    }
 
    public void CastSkill(List<Fighter> targets, Skill skill = null)

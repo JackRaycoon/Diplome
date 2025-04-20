@@ -420,6 +420,14 @@ public class Fight : MonoBehaviour
       {
          enemies = new(PlayerTeam);
       }
+      for (int i = 0; i < enemies.Count; i++)
+      {
+         if(enemies[i].isDead)
+         {
+            enemies.RemoveAt(i);
+            i--;
+         }
+      }
       return enemies[Random.Range(0, enemies.Count)];
    }
 

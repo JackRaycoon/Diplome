@@ -10,10 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 9807ccf0c390d974b9520e60e841da4f, type: 3}
-  m_Name: PassiveAllSkills
+  m_Name: WindSkills
   m_EditorClassIdentifier: 
   skillList:
-  - {fileID: 11400000, guid: be46c839f21fa0042a9bece6406cb419, type: 2}
-  - {fileID: 11400000, guid: ac41a90a055002643b9feb98d22e3380, type: 2}
-  - {fileID: 11400000, guid: 1730de9681b030a48aa4b05b0db0b97a, type: 2}
-  - {fileID: 11400000, guid: c2ae22f4ef5a7fa4599c968652abf761, type: 2}
+  - {fileID: 11400000, guid: d5ccf30221f415341a0b07a6311226b9, type: 2}

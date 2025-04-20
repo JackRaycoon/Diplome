@@ -20,7 +20,6 @@ MonoBehaviour:
   other_portraits: []
   skills:
   - {fileID: 11400000, guid: 3fcab60c463d96c4fbda43d843228794, type: 2}
-  - {fileID: 11400000, guid: 9f006076cd1e7fd4785e00e1b8cc6c39, type: 2}
   strengh: 2
   agility: 3
   wisdow: 1

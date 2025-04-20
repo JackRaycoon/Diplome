@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Raise Shields
   m_EditorClassIdentifier: 
   _name: "\u041F\u043E\u0434\u043D\u044F\u0442\u044C \u0449\u0438\u0442\u044B"
-  icon: {fileID: 21300000, guid: 2c85eb288d416904e8021ab47f71d3d4, type: 3}
+  icon: {fileID: 21300000, guid: 16f36354c9bfccc499f7fe341894028c, type: 3}
   description: "\u0412\u044B \u043F\u043E\u043B\u0443\u0447\u0430\u0435\u0442\u0435
     {0} \u0431\u0440\u043E\u043D\u0438"
   quote: "\u042F \u043D\u0435 \u043F\u0435\u0440\u0432\u044B\u0439, \u043A\u0442\u043E
@@ -21,6 +21,8 @@ MonoBehaviour:
     \u2013 \u0441\u043B\u0435\u0434\u0443\u044E\u0449\u0438\u0439"
   skill_target: 8
   skill_type: 1
+  skill_elem: 0
   availableClasses: 02000000
   isCorpseTargetToo: 0
   passiveBuff: 0
+  globalPassiveBuff: 0

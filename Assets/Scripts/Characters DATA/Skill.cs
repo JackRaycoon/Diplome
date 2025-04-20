@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System;
+using System.Linq;
 
 public class Skill
 {
@@ -57,14 +58,18 @@ public class Skill
    public string Description(Fighter fighter = null)
    {
       if (calc == null) return skillData.description;
-      if (fighter != null) 
-         return string.Format(skillData.description, calc(new List<Fighter> { fighter })[0]);
 
-      if (Fight.isEnemyTurn)
-         return string.Format(skillData.description, calc(new List<Fighter> { Fight.EnemyUITeam[0] })[0]);
+      List<int> values;
+      if (fighter != null)
+         values = calc(new List<Fighter> { fighter });
+      else if (Fight.isEnemyTurn)
+         values = calc(new List<Fighter> { Fight.EnemyUITeam[0] });
       else
-         return string.Format(skillData.description, calc(new List<Fighter> { Fight.SelectedCharacter() })[0]);
+         values = calc(new List<Fighter> { Fight.SelectedCharacter() });
+
+      return string.Format(skillData.description, values.Cast<object>().ToArray());
    }
+
 
    public void Cast(Fighter caster, List<Fighter> targets)
    {

@@ -21,6 +21,7 @@ MonoBehaviour:
     \u0434\u0440\u0443\u0433\u0438\u043C\r</i>"
   skill_target: 2
   skill_type: 3
+  skill_elem: 5
   availableClasses: 04000000
   isCorpseTargetToo: 0
   passiveBuff: 0

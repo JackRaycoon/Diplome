@@ -12,6 +12,7 @@ public class SkillSO : ScriptableObject
    [TextArea] public string quote;
    public SkillTarget skill_target;
    public SkillType skill_type;
+   public SkillElement skill_elem;
    [Tooltip("Каким классам доступен скилл, враги по дефолту входят в доступные")]
    public List<PlayableCharacter.Class> availableClasses;
    public bool isCorpseTargetToo = false;
@@ -41,5 +42,15 @@ public class SkillSO : ScriptableObject
       Buff,
       Heal,
       Global //для пассивок
+   }
+   public enum SkillElement
+   {
+      Physical, //физический урон
+      Fire,
+      Wind,
+      Water,
+      Earth,
+      Light,
+      Dark
    }
 }

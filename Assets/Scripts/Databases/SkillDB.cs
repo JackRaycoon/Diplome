@@ -4,6 +4,7 @@ using UnityEngine;
 using System;
 using static UnityEngine.GraphicsBuffer;
 using Unity.VisualScripting;
+using System.Numerics;
 
 public class SkillDB
 {
@@ -40,6 +41,11 @@ public class SkillDB
       }
    }
 
+   public SkillPool GetPoolByName(string name)
+   {
+      return Resources.Load<SkillPool>("SkillData/Pools/" + name);
+   }
+
    private void InitializeSkillDatabase()
    {
       AddSkillCast("Basic Attack", BasicAttackCast, BasicAttackCalc);
@@ -47,13 +53,14 @@ public class SkillDB
       AddSkillCast("Fire Wave", FireWaveCast, FireWaveCalc);
       AddSkillCast("Healing Wounds", HealingWoundsCast, HealingWoundsCalc);
       AddSkillCast("Waiting", WaitingCast);
+      AddSkillCast("Blade of the Wind", BladeWindCast, BladeWindCalc);
 
       AddSkillPassive("Call of the Pack", CallPackPassive, CallPackReverse);
       AddSkillPassive("Old Fighter's Chest", OldFightersChestCalc);
       AddSkillPassive("Quick Rebuff");
       AddSkillPassive("Silent Blood");
+      AddSkillPassive("Amulet of the Wind");
       //AddSkillPassive(KeyWord.Gigachad, "Test Skill", GigachadEveryTurn);
-      //AddSkillPassive(KeyWord.Gigachad, "Gigachad", GigachadPassive, GigachadReverse, "Гигачад своим видом вдохновляет каждого союзника. Все союзники получают +1 к атаке.");
    }
 
    //Кастер всегда на самой первой позиции листа целей.
@@ -187,6 +194,32 @@ public class SkillDB
       return new List<int> { sum / 2 };
    }
 
+   //Blade of the Wind
+   public void BladeWindCast(List<Fighter> targets)
+   {
+      var list = BladeWindCalc(targets);
+      int dmg = list[0];
+      int count = list[1];
+
+      var target = targets[1];
+      for (int i = 0; i < count; i++)
+      {
+         if (!target.isDead) target.TakeDmg(dmg);
+         else
+         {
+            target = Fight.RandomEnemy(targets[0]);
+            i--;
+         }
+      }
+   }
+   public List<int> BladeWindCalc(List<Fighter> targets)
+   {
+      var caster = targets[0];
+      var sumWisdow = caster.wisdow + caster.bonus_wisdow;
+      var sumAgility = caster.agility + caster.bonus_agility;
+      return new List<int> { sumWisdow, 1 + sumAgility / 5};
+   }
+
    //Call of the Pack
    public void CallPackPassive(Fighter caster, List<Fighter> targets)
    {
@@ -206,7 +239,7 @@ public class SkillDB
    {
       foreach (Fighter wolf in targets)
       {
-         if (wolf.Data.character_name.ToLower().Contains("wolf") && wolf != caster)
+         if (wolf.Data.name.ToLower().Contains("wolf") && wolf != caster)
          {
             wolf.bonus_hp -= 1;
             if(wolf.hp > wolf.max_hp + wolf.bonus_hp) wolf.hp = wolf.max_hp + wolf.bonus_hp;
