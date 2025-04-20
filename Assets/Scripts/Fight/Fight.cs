@@ -68,6 +68,32 @@ public class Fight : MonoBehaviour
 
       PlayerTeam = SaveLoadController.runInfo.PlayerTeam;
       EnemyTeam = SaveLoadController.enemies;
+
+      //Summon Buffs
+      for (int i = 0; i < PlayerTeam.Count; i++)
+      {
+         var character = PlayerTeam[i];
+         foreach (var skill in character.skills)
+         {
+            var data = skill.skillData;
+            if(data.skill_type == SkillSO.SkillType.Summon &&
+               data.skill_target == SkillSO.SkillTarget.Passive)
+            {
+               switch (data.passiveBuff)
+               {
+                  case Fighter.Buff.ScreamIntoVoid:
+                     var ally = new PlayableCharacter("Wolf")
+                     {
+                        isSummon = true
+                     };
+                     if (PlayerTeam.Count < 6)
+                        PlayerTeam.Add(ally);
+                     break;
+               }
+            }
+         }
+      }
+
       PlayerUITeam = new List<Fighter>(PlayerTeam);
       EnemyUITeam = new List<Fighter>(EnemyTeam);
 
@@ -442,6 +468,13 @@ public class Fight : MonoBehaviour
       return enemies[Random.Range(0, enemies.Count)];
    }
 
+   public static bool IsEnemy(Fighter me, Fighter him)
+   {
+      return !(PlayerTeam.Contains(me) && PlayerTeam.Contains(him)
+         ||
+         EnemyTeam.Contains(me) && EnemyTeam.Contains(him));
+   }
+
    public static List<Fighter> ChooseTarget(Skill selectedSkill, Fighter caster, Fighter selectedTarget)
    {
       List<Fighter> allies = new(PlayerTeam);
@@ -550,15 +583,16 @@ public class Fight : MonoBehaviour
             if (skill.skillData.skill_target != SkillSO.SkillTarget.Passive) skillCount++;
          }
          bool reroll;
-         do
-         {
-            var skills = figh.skills;
-            figh.Intension = skills[Random.Range(0, skills.Count)];
-            if (figh.prevIntension != null)
-               reroll = figh.Intension.skillData.skill_target == SkillSO.SkillTarget.Passive ||
-                        (skillCount > 1 && figh.Intension == figh.prevIntension);
-            else reroll = figh.Intension.skillData.skill_target == SkillSO.SkillTarget.Passive;
-         } while (reroll);
+         if(skillCount > 0)
+            do
+            {
+               var skills = figh.skills;
+               figh.Intension = skills[Random.Range(0, skills.Count)];
+               if (figh.prevIntension != null)
+                  reroll = figh.Intension.skillData.skill_target == SkillSO.SkillTarget.Passive ||
+                           (skillCount > 1 && figh.Intension == figh.prevIntension);
+               else reroll = figh.Intension.skillData.skill_target == SkillSO.SkillTarget.Passive;
+            } while (reroll);
       }
    }
 

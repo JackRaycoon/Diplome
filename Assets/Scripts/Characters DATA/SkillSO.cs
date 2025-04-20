@@ -41,7 +41,8 @@ public class SkillSO : ScriptableObject
       Defence,
       Buff,
       Heal,
-      Global //для пассивок
+      Global, //для пассивок
+      Summon
    }
    public enum SkillElement
    {

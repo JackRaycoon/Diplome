@@ -29,7 +29,8 @@ public class SaveLoadController
       runInfo.saveTeam = new();
       foreach(PlayableCharacter chara in runInfo.PlayerTeam)
       {
-         runInfo.saveTeam.Add(new(chara));
+         if(!chara.isSummon)
+            runInfo.saveTeam.Add(new(chara));
       }
       PlayerMovement.SavePosition();
       //Debug.Log($"In Save: HP: {runInfo.saveTeam[0].hp}, A: {runInfo.saveTeam[0].defence}");

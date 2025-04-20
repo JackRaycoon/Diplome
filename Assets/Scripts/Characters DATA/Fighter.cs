@@ -33,6 +33,7 @@ public class Fighter
    public List<Buff> buffs = new();
 
    public bool isSpawn;
+   public bool isSummon;
 
    //Умения персонажа
    public List<Skill> skills = new List<Skill>
@@ -61,12 +62,10 @@ public class Fighter
       defence = Data.defence;
       armor = defence * 2;
 
-      if (Data.isEnemy)
+      //skills = new();
+      foreach (SkillSO skillSO in Data.skills)
       {
-         foreach (SkillSO skillSO in Data.skills)
-         {
-            AddSkill(skillSO);
-         }
+         AddSkill(skillSO);
       }
    }
 
@@ -259,6 +258,6 @@ public class Fighter
       BestialInstinct,
       BestialInstinctBuff, // накладывается когда применяешь не атакующий навык
       QuietBlessing,
-
+      ScreamIntoVoid,
    }
 }

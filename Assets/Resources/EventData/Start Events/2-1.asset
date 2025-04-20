@@ -53,10 +53,12 @@ MonoBehaviour:
   enemiesChances: []
   minGold: 0
   maxGold: 0
-  rewardSkillList: []
+  rewardSkillList:
+  - {fileID: 11400000, guid: 129442e0ac6ee8c4d93d6bb2de6c2d58, type: 2}
   rewardSkillPool: {fileID: 0}
   allSkillsFromList: 0
-  chanceToReceiveSkill: []
+  chanceToReceiveSkill:
+  - 100
   randomRewardTarget: 0
   strengthRewardMin: 0
   strengthRewardMax: 0

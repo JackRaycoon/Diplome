@@ -11,14 +11,11 @@ public class PlayableCharacter : Fighter
 
    public PlayableCharacter(string name) : base(name)
    {
-      //¬ременно, потом это всЄ добавл€ть на ивентах надо будет, а тут только 1-й скилл и + после прокачки случайный
-      foreach(SkillSO skillSO in Data.skills)
+      /*foreach(SkillSO skillSO in Data.skills)
       {
          skills.Add(SkillDB.Instance.GetSkillByName(skillSO.name));
-         if (skills.Count == 5) break;
-      }
+      }*/
       charClass = StringToClass(name);
-      //
    }
 
    public PlayableCharacter(CharacterSaveData charSD) : base(charSD.nameClass)

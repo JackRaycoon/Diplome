@@ -64,6 +64,7 @@ public class SkillDB
       AddSkillPassive("Trace of Ancient Route");
       AddSkillPassive("Quiet Blessing");
       AddSkillPassive("Touching the Mystery");
+      AddSkillPassive("Scream Into the Void");
       //AddSkillPassive(KeyWord.Gigachad, "Test Skill", GigachadEveryTurn);
    }
 
@@ -246,6 +247,7 @@ public class SkillDB
    {
       foreach(Fighter wolf in targets)
       {
+         if (Fight.IsEnemy(caster, wolf)) continue;
          if (wolf.Data.name.ToLower().Contains("wolf") && wolf != caster)
          {
             wolf.bonus_hp += 1;
@@ -260,6 +262,7 @@ public class SkillDB
    {
       foreach (Fighter wolf in targets)
       {
+         if (Fight.IsEnemy(caster, wolf)) continue;
          if (wolf.Data.name.ToLower().Contains("wolf") && wolf != caster)
          {
             wolf.bonus_hp -= 1;

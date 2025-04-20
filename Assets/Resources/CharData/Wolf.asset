@@ -14,8 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   character_name: "\u0412\u043E\u043B\u043A"
   character_description: 
-  portrait_human: {fileID: 0}
-  portrait_halfhuman: {fileID: 0}
+  portrait_human: {fileID: 21300000, guid: 919caf1349544634d83066809c3d89b4, type: 3}
+  portrait_halfhuman: {fileID: 21300000, guid: 919caf1349544634d83066809c3d89b4, type: 3}
   portrait_monster: {fileID: 21300000, guid: 919caf1349544634d83066809c3d89b4, type: 3}
   other_portraits: []
   skills:
