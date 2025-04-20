@@ -22,7 +22,7 @@ MonoBehaviour:
     \u0432\u043E \u043C\u043D\u0435"
   skill_target: 9
   skill_type: 3
-  skill_elem: 0
+  skill_elem: 5
   availableClasses: 04000000
   isCorpseTargetToo: 0
   passiveBuff: 6

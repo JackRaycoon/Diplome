@@ -243,9 +243,9 @@ public class Fighter
       if (heal >= 0)
       {
          hp += heal;
-         if (hp > max_hp)
+         if (hp > max_hp + bonus_hp)
          {
-            hp = max_hp;
+            hp = max_hp + bonus_hp;
          }
       }
    }

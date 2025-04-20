@@ -63,6 +63,7 @@ public class SkillDB
       AddSkillPassive("Amulet of the Wind");
       AddSkillPassive("Trace of Ancient Route");
       AddSkillPassive("Quiet Blessing");
+      AddSkillPassive("Touching the Mystery");
       //AddSkillPassive(KeyWord.Gigachad, "Test Skill", GigachadEveryTurn);
    }
 
@@ -151,7 +152,24 @@ public class SkillDB
    public void HealingWoundsCast(List<Fighter> targets)
    {
       int heal = HealingWoundsCalc(targets)[0];
-      if (!targets[0].isDead) targets[0].TakeHeal(heal);
+      var target = targets[1];
+      if (!target.isDead)
+      {
+         if (SaveLoadController.runInfo.globalBuffs.Contains(RunInfo.GlobalBuff.TouchingMystery))
+         {
+            if (heal >= 0)
+            {
+               var needHP = target.max_hp + target.bonus_hp - target.hp;
+               var excess = heal - needHP;
+               if(excess > 0)
+               {
+                  var armor = excess / 2;
+                  target.armor += (armor == 0) ? 1 : armor;
+               }
+            }
+         }
+         target.TakeHeal(heal);
+      }
    }
    public List<int> HealingWoundsCalc(List<Fighter> targets)
    {

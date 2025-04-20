@@ -60,8 +60,21 @@ public class Skill
    }*/
    public string Description(Fighter fighter = null)
    {
-      if (calc == null) return skillData.description;
+      var description = skillData.description;
+      //Проверка на глобальные баффы, заменяющие описание
+      foreach (var buff in SaveLoadController.runInfo.globalBuffs)
+      {
+         switch (buff)
+         {
+            case RunInfo.GlobalBuff.TouchingMystery:
+               if(skillData.globalPassiveBuff == buff)
+                  description += ". Половина избыточного лечения становится бронёй";
+               break;
+         }
+      }
 
+      if (calc == null) return description;
+      
       List<int> values;
       if (fighter != null)
          values = calc(new List<Fighter> { fighter });
@@ -70,7 +83,7 @@ public class Skill
       else
          values = calc(new List<Fighter> { Fight.SelectedCharacter() });
 
-      return string.Format(skillData.description, values.Cast<object>().ToArray());
+      return string.Format(description, values.Cast<object>().ToArray());
    }
 
 
