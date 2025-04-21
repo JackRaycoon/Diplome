@@ -37,6 +37,8 @@ public class Buttons : MonoBehaviour
       cm = GetComponent<CircularMenu>();
       cg = GetComponent<CanvasGroup>();
 
+      selectedCharacter = null;
+
       //Загрузка здесь
       SaveLoadController.Load();
       for (short i = 1; i <= newGameSlots.Length; i++)
