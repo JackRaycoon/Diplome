@@ -13,8 +13,9 @@ public class SkillSO : ScriptableObject
    public SkillTarget skill_target;
    public SkillType skill_type;
    public SkillElement skill_elem;
-   [Tooltip("Каким классам доступен скилл, враги по дефолту входят в доступные")]
-   public List<PlayableCharacter.Class> availableClasses;
+   //[Tooltip("Каким классам доступен скилл, враги по дефолту входят в доступные")]
+   //public List<PlayableCharacter.Class> availableClasses;
+   public bool isAllAvailable;
    public bool isCorpseTargetToo = false;
 
    [Tooltip("Для пассивных скиллов, какой бафф они выдают в начале игры.\n" +

@@ -7,7 +7,6 @@ using UnityEngine;
 public class PlayableCharacter : Fighter
 {
    public byte currentPhase = 1; //1 - человек, 2 - получеловек, 3 - монстр
-   public Class charClass;
 
    public PlayableCharacter(string name) : base("Playable/" + name)
    {
@@ -15,7 +14,6 @@ public class PlayableCharacter : Fighter
       {
          skills.Add(SkillDB.Instance.GetSkillByName(skillSO.name));
       }*/
-      charClass = StringToClass(name);
    }
 
    public PlayableCharacter(CharacterSaveData charSD) : base("Playable/" + charSD.nameClass)
@@ -34,7 +32,6 @@ public class PlayableCharacter : Fighter
       {
          AddSkill(skillName);
       }
-      charClass = StringToClass(charSD.nameClass);
    }
 
    public new Sprite Portrait
@@ -52,7 +49,7 @@ public class PlayableCharacter : Fighter
       }
       private set { }
    }
-
+   /*
    private Class StringToClass(string name)
    {
       return name switch
@@ -62,14 +59,5 @@ public class PlayableCharacter : Fighter
          "Priest" => Class.Priest,
          _ => Class.Enemy,
       };
-   }
-
-   public enum Class
-   {
-      Enemy,
-      All,
-      Warrior,
-      Archer,
-      Priest
-   }
+   }*/
 }

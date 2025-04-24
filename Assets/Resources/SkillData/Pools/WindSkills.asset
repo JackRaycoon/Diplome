@@ -12,5 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9807ccf0c390d974b9520e60e841da4f, type: 3}
   m_Name: WindSkills
   m_EditorClassIdentifier: 
-  skillList:
+  activeSkillList:
   - {fileID: 11400000, guid: d5ccf30221f415341a0b07a6311226b9, type: 2}
+  passiveSkillList:
+  - {fileID: 11400000, guid: c2ae22f4ef5a7fa4599c968652abf761, type: 2}

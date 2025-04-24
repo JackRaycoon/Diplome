@@ -12,6 +12,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9807ccf0c390d974b9520e60e841da4f, type: 3}
   m_Name: WarriorSkills
   m_EditorClassIdentifier: 
-  skillList:
+  activeSkillList:
+  - {fileID: 11400000, guid: 4c6b2348aae17d548a50c861131cd4ad, type: 2}
   - {fileID: 11400000, guid: 7f6a00a3d8378e54e99a0679cd85765a, type: 2}
   - {fileID: 11400000, guid: 9f006076cd1e7fd4785e00e1b8cc6c39, type: 2}
+  passiveSkillList:
+  - {fileID: 11400000, guid: be46c839f21fa0042a9bece6406cb419, type: 2}
+  - {fileID: 11400000, guid: ac41a90a055002643b9feb98d22e3380, type: 2}
+  - {fileID: 11400000, guid: 1730de9681b030a48aa4b05b0db0b97a, type: 2}

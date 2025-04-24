@@ -257,7 +257,7 @@ public class DungeonGenerator : MonoBehaviour
          if (room.Coords.x == 0 && room.Coords.y == 0) 
          {
             string path = $"EventData/Start Events/";
-            string name = $"{(int)SaveLoadController.runInfo.PlayerTeam[0].charClass - 2}-0";
+            string name = $"{(int)SaveLoadController.runInfo.PlayerTeam[0].Data.charClass - 2}-0";
             room.eventData = Resources.Load<EventData>(path + name);
             room.eventPath = path;
             room.eventName = name;

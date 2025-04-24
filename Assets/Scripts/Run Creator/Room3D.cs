@@ -206,7 +206,7 @@ public class Room3D : MonoBehaviour
          List<SkillSO> rewardSkills = new(data.rewardSkillList);
          if (data.rewardSkillPool != null) 
          {
-            rewardSkills = new(data.rewardSkillPool.skillList);
+            rewardSkills = new(data.rewardSkillPool.allSkillList);
             isPool = true;
          }
 
@@ -224,15 +224,21 @@ public class Room3D : MonoBehaviour
             {
                continue;
             }
-            var classes = skillData.availableClasses;
             List<PlayableCharacter> availableCharacters = new();
             foreach (PlayableCharacter character in SaveLoadController.runInfo.PlayerTeam)
             {
+               bool available = false;
+               foreach(var pool in character.Data.availableSkills)
+               {
+                  if (pool.allSkillList.Contains(skillData))
+                  {
+                     available = true;
+                     break;
+                  }
+               }
                if (
-                  skillData.availableClasses.Contains(character.charClass) ||
-                  skillData.availableClasses.Contains(PlayableCharacter.Class.All) ||
-                  (character.charClass == PlayableCharacter.Class.Archer && 
-                  SaveLoadController.runInfo.globalBuffs.Contains(RunInfo.GlobalBuff.AmuletWind))
+                  available ||
+                  skillData.isAllAvailable
                   )
                {
                   availableCharacters.Add(character);

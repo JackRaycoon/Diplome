@@ -24,7 +24,7 @@ public class Choice :MonoBehaviour
       {
          allCharacters.Add(new PlayableCharacter(data.name));
       }
-      allCharacters = allCharacters.OrderBy(c => c.charClass).ToList();
+      allCharacters = allCharacters.OrderBy(c => c.Data.charClass).ToList();
 
       allCharactersTemp = new(allCharacters);
 

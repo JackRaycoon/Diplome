@@ -102,7 +102,7 @@ public class Fighter
       {
          case RunInfo.GlobalBuff.AmuletWind:
             var pool = SkillDB.Instance.GetPoolByName("WindSkills");
-            var list = pool.skillList;
+            var list = pool.activeSkillList;
             AddSkill(list[Random.Range(0, list.Count)]);
             return;
       }

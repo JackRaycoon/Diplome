@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: Priest
   m_EditorClassIdentifier: 
   character_name: "\u0416\u0440\u0438\u0446\u0430"
+  charClass: 4
   character_description: "\u041E\u043D\u0430 \u0438\u0434\u0451\u0442 \u0442\u0443\u0434\u0430,
     \u0433\u0434\u0435 \u0431\u043E\u043B\u044C, \u0438 \u043F\u0440\u0438\u043D\u043E\u0441\u0438\u0442
     \u0441 \u0441\u043E\u0431\u043E\u0439 \u0441\u0432\u0435\u0442. \u0412\u0441\u0435\u0433\u0434\u0430
@@ -47,6 +48,8 @@ MonoBehaviour:
   - {fileID: 21300000, guid: 5909af7027b3c0648ae5654fc450d1b6, type: 3}
   skills:
   - {fileID: 11400000, guid: f087d4d62c8a93944ac2b8a15273a5a8, type: 2}
+  _availableSkills:
+  - {fileID: 11400000, guid: 3825bbf18d28d4e4aa984409c30414d1, type: 2}
   strengh: 1
   agility: 1
   wisdow: 4

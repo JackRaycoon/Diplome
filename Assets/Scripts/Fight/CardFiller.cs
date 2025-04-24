@@ -9,6 +9,7 @@ public class CardFiller : MonoBehaviour
    public Skill skill = null;
    private Skill _filledSkill = null;
    public Image sprite;
+   public TextMeshProUGUI skillName;
    public TextMeshProUGUI description;
    public GameObject descriptionPanel;
 
@@ -28,9 +29,13 @@ public class CardFiller : MonoBehaviour
       sprite.sprite = skill.skillData.icon;
       if(description != null)
       {
-         description.text = $"<size=15>{skill.skillData._name}</size>\r\n\n<i>{skill.Description(SaveLoadController.runInfo.PlayerTeam[0])}</i>";
+         skillName.text = skill.skillData._name;
+         description.text = $"<i>{skill.Description(SaveLoadController.runInfo.PlayerTeam[0])}</i>";
          if (descriptionUpdate != "")
+         {
+            skillName.text = "";
             description.text = descriptionUpdate;
+         }
       }
    }
 

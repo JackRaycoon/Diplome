@@ -146,26 +146,29 @@ public class Fight : MonoBehaviour
 
                         if (sumParam >= 50)
                         {
-                           string poolName = $"{randomClass.name}Skills";
-                           var skillPool = Resources.Load<SkillPool>($"SkillData/Pools/{poolName}");
+                           var skillPools = ally.Data.availableSkills;
 
-                           if (skillPool != null && skillPool.skillList.Count > 0)
+                           int skillsToAdd = (sumParam - 50) / 25 + 1; // Например: 50 → 1, 75 → 2, 100 → 3
+
+                           List<SkillSO> availableSkills = new();
+                           foreach(SkillPool pool in skillPools)
                            {
-                              int skillsToAdd = (sumParam - 50) / 25 + 1; // Например: 50 → 1, 75 → 2, 100 → 3
-
-                              var availableSkills = new List<SkillSO>(skillPool.skillList);
-                              availableSkills.Remove(ally.skills[1].skillData);
-
-                              for (int j = 0; j < skillsToAdd && availableSkills.Count > 0; j++)
+                              foreach(SkillSO skillSO in pool.activeSkillList)
                               {
-                                 var skill1 = availableSkills[Random.Range(0, availableSkills.Count)];
-                                 ally.AddSkill(skill1);
-                                 availableSkills.Remove(skill1); // Чтобы не повторялись
+                                 if (!availableSkills.Contains(skillSO))
+                                 {
+                                    availableSkills.Add(skillSO);
+                                 }
                               }
                            }
-                           else
+
+                           availableSkills.Remove(ally.skills[1].skillData);
+
+                           for (int j = 0; j < skillsToAdd && availableSkills.Count > 0; j++)
                            {
-                              Debug.LogWarning($"Не найден пул скиллов: {poolName} или он пустой.");
+                              var skill1 = availableSkills[Random.Range(0, availableSkills.Count)];
+                              ally.AddSkill(skill1);
+                              availableSkills.Remove(skill1); // Чтобы не повторялись
                            }
                         }
 
