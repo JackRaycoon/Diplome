@@ -67,7 +67,7 @@ public class Skill
          switch (buff)
          {
             case RunInfo.GlobalBuff.TouchingMystery:
-               if(skillData.globalPassiveBuff == buff)
+               if(skillData._name == "Исцеление ран")
                   description += ". Половина избыточного лечения становится бронёй";
                break;
          }

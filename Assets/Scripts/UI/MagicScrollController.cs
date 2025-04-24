@@ -11,18 +11,17 @@ public class MagicScrollController : MonoBehaviour
    private float showDistance = 1f;
    private float closeDistance = 3f;
 
+   private bool isClosing;
+
    void Update()
    {
-      if (Input.GetKeyDown(KeyCode.I))
+      if (Input.GetKeyDown(KeyCode.I) || Input.GetKeyDown(KeyCode.Mouse1))
       {
          if (currentScroll != null)
          {
             // Закрываем текущий и затем показываем новый
-            if (currentRoutine != null) StopCoroutine(currentRoutine);
-            currentRoutine = StartCoroutine(CloseScroll(() =>
-            {
-               SpawnNewScroll();
-            }));
+            if (currentRoutine != null && !isClosing) StopCoroutine(currentRoutine);
+            currentRoutine = StartCoroutine(CloseScroll());
          }
          else
          {
@@ -33,7 +32,7 @@ public class MagicScrollController : MonoBehaviour
       // Автоматическое закрытие, если игрок отошёл
       if (currentScroll != null && Vector3.Distance(player.position, currentScroll.transform.position) > closeDistance)
       {
-         if (currentRoutine != null) StopCoroutine(currentRoutine);
+         if (currentRoutine != null && !isClosing) StopCoroutine(currentRoutine);
          currentRoutine = StartCoroutine(CloseScroll());
       }
    }
@@ -44,11 +43,14 @@ public class MagicScrollController : MonoBehaviour
       spawnPos += new Vector3(0, 1.58f, 0);
       Quaternion spawnRot = Quaternion.LookRotation(player.forward);
       currentScroll = Instantiate(magicScrollPrefab, spawnPos, spawnRot);
+      currentScroll.GetComponent<MagicScrollFiller>().Initialize();
       currentRoutine = StartCoroutine(OpenScroll(currentScroll));
    }
 
    IEnumerator OpenScroll(GameObject scroll)
    {
+      if (isClosing) yield break;
+
       Transform cube = scroll.transform;
       Transform canvas = cube.GetComponentInChildren<Canvas>().transform;
       CanvasGroup cg = canvas.GetComponent<CanvasGroup>();
@@ -87,7 +89,9 @@ public class MagicScrollController : MonoBehaviour
    IEnumerator CloseScroll(System.Action onComplete = null)
    {
       if (currentScroll == null) yield break;
+      if (isClosing) yield break;
 
+      isClosing = true;
       Transform cube = currentScroll.transform;
       Transform canvas = cube.GetComponentInChildren<Canvas>().transform;
       CanvasGroup cg = canvas.GetComponent<CanvasGroup>();
@@ -125,5 +129,6 @@ public class MagicScrollController : MonoBehaviour
       currentScroll = null;
 
       onComplete?.Invoke();
+      isClosing = false;
    }
 }
