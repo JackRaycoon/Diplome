@@ -247,6 +247,7 @@ public class DungeonGenerator : MonoBehaviour
       List<Room> rooms = new();
       Vector2Int nextCoords = Vector2Int.zero;
       int roomsToCreate = Random.Range(settings.minNumberOfRooms, settings.maxNumberOfRooms);
+      int countRooms = roomsToCreate;
       List<Vector2Int> usedCoords = new();
 
       while(roomsToCreate > 0)
@@ -266,12 +267,13 @@ public class DungeonGenerator : MonoBehaviour
          else
          {
             //Генератор ивента будет тут
-            int eventID = 0;
-            string path = $"EventData/";
-            string name = $"{eventID}-0";
-            room.eventData = Resources.Load<EventData>(path + name);
-            room.eventPath = path;
-            room.eventName = name;
+            GenerateRandomEvent(room, countRooms - 2);
+            //int eventID = 0;
+            //string path = $"EventData/";
+            //string name = $"{eventID}-0";
+            //room.eventData = Resources.Load<EventData>(path + name);
+            //room.eventPath = path;
+            //room.eventName = name;
 
             if (roomsToCreate == 1)
             {
@@ -289,6 +291,75 @@ public class DungeonGenerator : MonoBehaviour
          roomsToCreate--;
       }
       return rooms;
+   }
+
+   public enum EventCategory
+   {
+      Combat,
+      Good,
+      Bad,
+      Class
+   }
+
+   public EventData GenerateRandomEvent(Room room, int totalEventRooms)
+   {
+      string basePath = "EventData/";
+      string[] folders = { "Combat Events", "Good Events", "Bad Events", "Class Events" };
+      Dictionary<EventCategory, string> folderMap = new()
+    {
+        { EventCategory.Combat, "Combat Events" },
+        { EventCategory.Good, "Good Events" },
+        { EventCategory.Bad, "Bad Events" },
+        { EventCategory.Class, $"Class Events/{SaveLoadController.runInfo.PlayerTeam[0].Data.charClass} Events" }
+    };
+
+      // Распределение по весу
+      Dictionary<EventCategory, float> weights = new()
+    {
+        { EventCategory.Combat, 0.4f },
+        { EventCategory.Good, 0.2f },
+        { EventCategory.Bad,  0.2f },
+        { EventCategory.Class, 0.2f }
+    };
+
+      // Выбираем случайную категорию по весам
+      EventCategory chosenCategory = GetRandomCategoryByWeight(weights);
+
+      // Загружаем все ивенты в категории
+      string folderPath = basePath + folderMap[chosenCategory];
+      List<EventData> events = new(Resources.LoadAll<EventData>(folderPath));
+
+      if (events.Count == 0)
+      {
+         Debug.LogWarning($"No events found in folder: {folderPath}");
+         return null;
+      }
+
+      // Выбираем случайный ивент из этой категории
+      EventData chosenEvent = events[UnityEngine.Random.Range(0, events.Count)];
+
+      // Присваиваем данные комнате
+      room.eventData = chosenEvent;
+      room.eventPath = folderPath + "/";
+      room.eventName = chosenEvent.name;
+
+      return chosenEvent;
+   }
+
+   private EventCategory GetRandomCategoryByWeight(Dictionary<EventCategory, float> weights)
+   {
+      float total = weights.Values.Sum();
+      float roll = UnityEngine.Random.value * total;
+      float cumulative = 0f;
+
+      foreach (var pair in weights)
+      {
+         cumulative += pair.Value;
+         if (roll <= cumulative)
+            return pair.Key;
+      }
+
+      return EventCategory.Combat;
    }
 
    private Vector2Int GetNextCoords(Vector2Int nextCoords)

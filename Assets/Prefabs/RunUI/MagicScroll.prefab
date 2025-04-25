@@ -69,7 +69,8 @@ MonoBehaviour:
   m_text: "<size=25><align=center>\u0425\u0430\u0440\u0430\u043A\u0442\u0435\u0440\u0438\u0441\u0442\u0438\u043A\u0438</align></size>\n\n\u0421\u0438\u043B\u0430:
     {0}\n\u041B\u043E\u0432\u043A\u043E\u0441\u0442\u044C: {1}\n\u041C\u0443\u0434\u0440\u043E\u0441\u0442\u044C:
     {2}\n\u0422\u0435\u043B\u043E\u0441\u043B\u043E\u0436\u0435\u043D\u0438\u0435:
-    {3}\n\u0417\u0430\u0449\u0438\u0442\u0430: {4}"
+    {3}\n\u0417\u0430\u0449\u0438\u0442\u0430: {4}\n\u0417\u043E\u043B\u043E\u0442\u043E:
+    {5}"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 9dcbab94ae2a08b4ea57978d64a765e6, type: 2}
   m_sharedMaterial: {fileID: -780465184510917948, guid: 9dcbab94ae2a08b4ea57978d64a765e6, type: 2}
@@ -273,6 +274,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   sprite: {fileID: 4237966840012038592}
+  skillName: {fileID: 0}
   description: {fileID: 0}
   descriptionPanel: {fileID: 0}
 --- !u!114 &676143852645995163
@@ -475,6 +477,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   sprite: {fileID: 8114805018145629889}
+  skillName: {fileID: 0}
   description: {fileID: 0}
   descriptionPanel: {fileID: 0}
 --- !u!114 &7945244561137169959
@@ -825,6 +828,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   sprite: {fileID: 4091539483453072639}
+  skillName: {fileID: 0}
   description: {fileID: 0}
   descriptionPanel: {fileID: 0}
 --- !u!114 &1638332404832713220
@@ -1523,6 +1527,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   sprite: {fileID: 6991566199995784354}
+  skillName: {fileID: 0}
   description: {fileID: 0}
   descriptionPanel: {fileID: 0}
 --- !u!114 &2380344832296437240
@@ -1811,6 +1816,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   sprite: {fileID: 8833264546292519091}
+  skillName: {fileID: 0}
   description: {fileID: 0}
   descriptionPanel: {fileID: 0}
 --- !u!114 &8182703629271452575
@@ -2151,6 +2157,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   sprite: {fileID: 655590219332381991}
+  skillName: {fileID: 0}
   description: {fileID: 0}
   descriptionPanel: {fileID: 0}
 --- !u!114 &1452085927337549766
@@ -4464,6 +4471,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   sprite: {fileID: 2421949442321678707}
+  skillName: {fileID: 0}
   description: {fileID: 0}
   descriptionPanel: {fileID: 0}
 --- !u!114 &2614653966396235652
@@ -4665,6 +4673,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   sprite: {fileID: 4786186646652879770}
+  skillName: {fileID: 0}
   description: {fileID: 0}
   descriptionPanel: {fileID: 0}
 --- !u!114 &397070001704724090
@@ -4867,6 +4876,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   sprite: {fileID: 7116725129202994005}
+  skillName: {fileID: 0}
   description: {fileID: 0}
   descriptionPanel: {fileID: 0}
 --- !u!114 &5229260397094038006
@@ -5398,6 +5408,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   sprite: {fileID: 4976550927800781096}
+  skillName: {fileID: 0}
   description: {fileID: 0}
   descriptionPanel: {fileID: 0}
 --- !u!114 &2492988729621364662
@@ -6460,6 +6471,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   sprite: {fileID: 5492283590229275872}
+  skillName: {fileID: 0}
   description: {fileID: 0}
   descriptionPanel: {fileID: 0}
 --- !u!114 &4982931944805574673
@@ -6828,6 +6840,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   sprite: {fileID: 5507637279597069972}
+  skillName: {fileID: 0}
   description: {fileID: 0}
   descriptionPanel: {fileID: 0}
 --- !u!114 &1594897394483067735
