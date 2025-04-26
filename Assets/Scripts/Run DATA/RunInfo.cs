@@ -8,6 +8,7 @@
    public class RunInfo
    {
       public List<CharacterSaveData> saveTeam = new();
+      public ushort badKarma = 0; //На 5 и 10 происходит смена стадии
 
       [NonSerialized]
       public List<GlobalBuff> globalBuffs = new();

@@ -201,6 +201,21 @@ public class Room3D : MonoBehaviour
                hero.TakeHeal(rewardCountHeal);
             }
          }
+         if (data.karmaMax != 0)
+         {
+            ushort rewardCountKarma = (ushort)Random.Range(data.karmaMin, data.karmaMax + 1);
+            if (rewardCountKarma != 0)
+            {
+               if (isNext)
+               {
+                  room.eventRewardText += ", ";
+               }
+               room.eventRewardText += $"тьма внутри вас набирает силу";
+               isNext = true;
+
+               SaveLoadController.runInfo.badKarma += rewardCountKarma;
+            }
+         }
 
          bool isPool = false;
          List<SkillSO> rewardSkills = new(data.rewardSkillList);

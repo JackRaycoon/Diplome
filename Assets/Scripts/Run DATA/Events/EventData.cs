@@ -96,5 +96,8 @@ public class EventData : ScriptableObject
    public int healRewardMin;
    public int healRewardMax;
 
-   public bool isStatsPackReward;
+   public int karmaMin;
+   public int karmaMax;
+
+   //public bool isStatsPackReward;
 }
