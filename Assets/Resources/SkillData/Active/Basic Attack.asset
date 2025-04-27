@@ -21,6 +21,7 @@ MonoBehaviour:
   skill_target: 0
   skill_type: 0
   skill_elem: 0
+  cooldown: 1
   isAllAvailable: 1
   isCorpseTargetToo: 0
   passiveBuff: 0

@@ -107,15 +107,15 @@ public class Skill_Image : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
       if (move1 != null) { yield return move1; yield return move2; }
       if (external)
       {
-         CenterSkill.sprite = externalSkill.Icon;
+         //CenterSkill.sprite = externalSkill.Icon;
          Description.text = externalSkill.Name + "\n";
-         Description.text += externalSkill.Description();
+         Description.text += "<i>" + externalSkill.Description() + "</i>";
       }
       else
       {
-         CenterSkill.sprite = skill.Icon;
+         //CenterSkill.sprite = skill.Icon;
          Description.text = skill.Name + "\n";
-         Description.text += skill.Description();
+         Description.text += "<i>" + skill.Description() + "</i>";
       }
       move1 = StartCoroutine(MoveToPosition(part1, pos_part1.position, 100f));
       move2 = StartCoroutine(MoveToPosition(part2, pos_part2.position, 100f));

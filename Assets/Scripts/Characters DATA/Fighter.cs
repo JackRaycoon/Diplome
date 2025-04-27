@@ -1,5 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
+using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using UnityEngine.TextCore.Text;
 
@@ -32,6 +34,8 @@ public class Fighter
    public int bonus_strengh, bonus_agility, bonus_wisdow; //боевые изменения хар-тик
 
    public List<Buff> buffs = new();
+
+   public Dictionary<Skill, short> cooldowns = new();
 
    public bool isSpawn;
    public bool isSummon;
@@ -139,6 +143,9 @@ public class Fighter
          }
       }
       skill.Cast(this, targets);
+      var cooldown = skill.skillData.cooldown;
+      if (cooldown != 0)
+         cooldowns.Add(skill, cooldown);
 
       if (isDoubleNextAttack)
       {
@@ -194,7 +201,8 @@ public class Fighter
          }
       }
 
-      MakeIntention();
+      if(Fight.EnemyTeam.Contains(this))
+         MakeIntention();
       isSpawn = true;
    }
 
@@ -202,23 +210,33 @@ public class Fighter
    {
       prevIntension = Intension;
 
-      //Количество скиллов без пассивок (используемых скиллов)
-      int skillCount = 0;
+      //Количество скиллов без пассивок и перезаряжаемых скиллов
+      //int skillCount = 0;
+      List<Skill> availableSkills = new();
       foreach (Skill skill in skills)
       {
-         if (skill.skillData.skill_target != SkillSO.SkillTarget.Passive) skillCount++;
+         if (skill.skillData.skill_target != SkillSO.SkillTarget.Passive
+            && !cooldowns.Keys.Contains(skill))
+            availableSkills.Add(skill);
       }
-      bool reroll;
-      if (skillCount > 0)
+      //bool reroll;
+      var count = availableSkills.Count;
+      if (count > 0)
          do
+         {
+            Intension = availableSkills[Random.Range(0, count)];
+         } while (count > 1 && Intension == prevIntension);
+      /*do
          {
             var _skills = skills;
             Intension = _skills[Random.Range(0, _skills.Count)];
             if (prevIntension != null)
                reroll = Intension.skillData.skill_target == SkillSO.SkillTarget.Passive ||
+                        cooldowns.Keys.Contains(Intension) ||
                         (skillCount > 1 && Intension == prevIntension);
-            else reroll = Intension.skillData.skill_target == SkillSO.SkillTarget.Passive;
-         } while (reroll);
+            else reroll = Intension.skillData.skill_target == SkillSO.SkillTarget.Passive ||
+                  cooldowns.Keys.Contains(Intension);
+         } while (reroll);*/
    }
 
    public void Death()

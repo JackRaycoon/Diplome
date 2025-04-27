@@ -12,7 +12,16 @@ public class Fight : MonoBehaviour
 
    public CanvasGroup playerHand;
 
-   public static List<Fighter> AllCharacter;
+   public static List<Fighter> AllCharacter
+   {
+      get
+      {
+         var list = new List<Fighter>(EnemyTeam);
+         foreach (Fighter hero in PlayerTeam)
+            list.Add(hero);
+         return list;
+      }
+   }
 
    public static List<PlayableCharacter> PlayerTeam;
    public static List<Fighter> PlayerUITeam;
@@ -190,9 +199,9 @@ public class Fight : MonoBehaviour
       SelectedCharacterID_Reset();
 
       AlreadyTurn = new List<Fighter>();
-      AllCharacter = new List<Fighter>();
-      foreach (Fighter character in PlayerTeam) AllCharacter.Add(character);
-      foreach (Fighter character in EnemyTeam) AllCharacter.Add(character);
+      //AllCharacter = new List<Fighter>();
+      //foreach (Fighter character in PlayerTeam) AllCharacter.Add(character);
+      //foreach (Fighter character in EnemyTeam) AllCharacter.Add(character);
 
 
       //Подготовка персонажей
@@ -514,6 +523,22 @@ public class Fight : MonoBehaviour
          allPlayerCharactersDoTurn = false;
          round_number++;
          Debug.Log("Следующий раунд: " + round_number.ToString());
+
+         foreach(var hero in AllCharacter)
+         {
+            var keys = new List<Skill>(hero.cooldowns.Keys);
+            for (int i = 0; i < keys.Count; i++)
+            {
+               Skill skill = keys[i];
+               hero.cooldowns[skill]--;
+
+               if (hero.cooldowns[skill] == 0)
+               {
+                  hero.cooldowns.Remove(skill);
+               }
+            }
+         }
+
          foreach(var enemy in EnemyTeam)
             enemy.MakeIntention();
       }
@@ -732,6 +757,14 @@ public class Fight : MonoBehaviour
                Show(SkCard);
                SkCard.GetComponent<CardFiller>().skill = skill;
                SkCard.GetComponent<Skill_Image>().skill = skill;
+
+               var contain = PlayerUITeam[0].cooldowns.Keys.Contains(skill);
+               SkCard.GetComponent<Image>().raycastTarget = !contain;
+               SkCard.transform.GetChild(2).gameObject.SetActive(contain);
+               if (contain)
+               {
+                  SkCard.transform.GetChild(2).GetChild(1).GetComponent<TextMeshProUGUI>().text = PlayerUITeam[0].cooldowns[skill].ToString();
+               }
                //SkIm.sprite = skill.Icon;
                //SkIm.gameObject.GetComponent<Skill_Image>().skill = skill;
                i++;

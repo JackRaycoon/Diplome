@@ -42,7 +42,7 @@ public class Skill
    {
       get
       {
-         return $"<b><size=55>{skillData._name}</size></b>";
+         return $"<size=60>{skillData._name}</size>\n";
       }
       private set { }
    }

@@ -22,7 +22,8 @@ MonoBehaviour:
   skill_target: 4
   skill_type: 0
   skill_elem: 1
-  availableClasses: 02000000
+  cooldown: 2
+  isAllAvailable: 0
   isCorpseTargetToo: 0
   passiveBuff: 0
   globalPassiveBuff: 0
