@@ -14,7 +14,7 @@ public class Skill
    public Action<List<Fighter>> cast; //Применение скилла
    public Func<List<Fighter>, List<int>> calc; //Рассчёт скилла (урон, длительность и тд)
    public Action battlecry; //Применяется автоматически при появлении на поле
-   public Action death; //Применяется автоматически при смерти персонажа
+   public Action<List<Fighter>> death; //Применяется автоматически при смерти персонажа
    public Action<List<Fighter>> every_turn; //Каждый ход какое-то действие
 
    public Action<Fighter, List<Fighter>> passive; //Пассивный эффект "пока я жив вы получаете то-то"

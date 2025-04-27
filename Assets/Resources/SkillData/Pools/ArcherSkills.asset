@@ -13,7 +13,6 @@ MonoBehaviour:
   m_Name: ArcherSkills
   m_EditorClassIdentifier: 
   activeSkillList:
-  - {fileID: 11400000, guid: 4c6b2348aae17d548a50c861131cd4ad, type: 2}
   - {fileID: 11400000, guid: d3e9dc8105e1bab4aa5c9e74350ae2c4, type: 2}
   passiveSkillList:
   - {fileID: 11400000, guid: c2ae22f4ef5a7fa4599c968652abf761, type: 2}

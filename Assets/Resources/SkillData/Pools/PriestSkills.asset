@@ -13,7 +13,6 @@ MonoBehaviour:
   m_Name: PriestSkills
   m_EditorClassIdentifier: 
   activeSkillList:
-  - {fileID: 11400000, guid: 4c6b2348aae17d548a50c861131cd4ad, type: 2}
   - {fileID: 11400000, guid: f087d4d62c8a93944ac2b8a15273a5a8, type: 2}
   passiveSkillList:
   - {fileID: 11400000, guid: 5853799c5e3719a49a39b78e7226b961, type: 2}

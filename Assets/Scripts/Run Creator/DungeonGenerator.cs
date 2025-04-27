@@ -335,6 +335,15 @@ public class DungeonGenerator : MonoBehaviour
          return null;
       }
 
+      for(int i = 0; i < events.Count; i++)
+      {
+         if (events[i].eventID_Part != 0)
+         {
+            events.Remove(events[i]);
+            i--;
+         }
+      }
+
       // ¬ыбираем случайный ивент из этой категории
       EventData chosenEvent = events[UnityEngine.Random.Range(0, events.Count)];
 

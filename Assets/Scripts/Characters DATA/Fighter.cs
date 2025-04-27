@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.TextCore.Text;
 
 
 public class Fighter
@@ -181,7 +182,43 @@ public class Fighter
                skill.passive?.Invoke(character, new List<Fighter> { this });
             }
       }
+
+      //Баффы от пассивок
+      foreach (var skill in skills)
+      {
+         var skillData = skill.skillData;
+         if (skillData.skill_target == SkillSO.SkillTarget.Passive &&
+            skillData.skill_type != SkillSO.SkillType.Global)
+         {
+            buffs.Add(skillData.passiveBuff);
+         }
+      }
+
+      MakeIntention();
       isSpawn = true;
+   }
+
+   public void MakeIntention()
+   {
+      prevIntension = Intension;
+
+      //Количество скиллов без пассивок (используемых скиллов)
+      int skillCount = 0;
+      foreach (Skill skill in skills)
+      {
+         if (skill.skillData.skill_target != SkillSO.SkillTarget.Passive) skillCount++;
+      }
+      bool reroll;
+      if (skillCount > 0)
+         do
+         {
+            var _skills = skills;
+            Intension = _skills[Random.Range(0, _skills.Count)];
+            if (prevIntension != null)
+               reroll = Intension.skillData.skill_target == SkillSO.SkillTarget.Passive ||
+                        (skillCount > 1 && Intension == prevIntension);
+            else reroll = Intension.skillData.skill_target == SkillSO.SkillTarget.Passive;
+         } while (reroll);
    }
 
    public void Death()
@@ -190,7 +227,7 @@ public class Fighter
 
       foreach(Skill skill in skills)
       {
-         skill.death?.Invoke();
+         skill.death?.Invoke(new List<Fighter> { this });
          skill.reverse?.Invoke(this, Fight.AllCharacter);
       }
    }
@@ -249,6 +286,11 @@ public class Fighter
       }
    }
 
+   public void FullHeal()
+   {
+      hp = max_hp + bonus_hp;
+   }
+
    public enum Buff
    {
       None,
@@ -259,5 +301,6 @@ public class Fighter
       BestialInstinctBuff, // накладывается когда применяешь не атакующий навык
       QuietBlessing,
       ScreamIntoVoid,
+      Corpseless
    }
 }

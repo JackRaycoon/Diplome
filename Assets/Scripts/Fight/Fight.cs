@@ -139,7 +139,7 @@ public class Fight : MonoBehaviour
                         ally.constitution = stats[CharacterSO.Stat.Constitution];
                         ally.defence = stats[CharacterSO.Stat.Defence];
 
-                        ally.hp = ally.max_hp;
+                        ally.FullHeal();
 
                         while(ally.skills.Count != 1 && sumParam < 25)
                            ally.skills.RemoveAt(1);
@@ -171,6 +171,8 @@ public class Fight : MonoBehaviour
                               availableSkills.Remove(skill1); // Чтобы не повторялись
                            }
                         }
+
+                        ally.AddSkill("Corpseless");
 
 
                         if (PlayerTeam.Count < 6)
@@ -284,19 +286,10 @@ public class Fight : MonoBehaviour
    {
       foreach (Fighter character in AllCharacter)
       {
-         foreach(var skill in character.skills)
-         {
-            var skillData = skill.skillData;
-            if (skillData.skill_target == SkillSO.SkillTarget.Passive &&
-               skillData.skill_type != SkillSO.SkillType.Global)
-            {
-               character.buffs.Add(skillData.passiveBuff);
-            }
-         }
          character.Spawn();
       }
 
-      MakeIntention();
+      //MakeIntention();
 
       //StartFight Buffs
       foreach (Fighter character in AllCharacter)
@@ -521,7 +514,8 @@ public class Fight : MonoBehaviour
          allPlayerCharactersDoTurn = false;
          round_number++;
          Debug.Log("Следующий раунд: " + round_number.ToString());
-         MakeIntention();
+         foreach(var enemy in EnemyTeam)
+            enemy.MakeIntention();
       }
    }
 
@@ -679,6 +673,7 @@ public class Fight : MonoBehaviour
       return selectedTargets;
    }
 
+   /*
    private void MakeIntention()
    {
       foreach (Fighter figh in EnemyTeam) 
@@ -703,7 +698,7 @@ public class Fight : MonoBehaviour
                else reroll = figh.Intension.skillData.skill_target == SkillSO.SkillTarget.Passive;
             } while (reroll);
       }
-   }
+   }*/
 
    private void UpdatePortrait()
    {

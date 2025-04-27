@@ -20,6 +20,8 @@ MonoBehaviour:
     \u0441\u043E\u0436\u0430\u043B\u0435\u043D\u0438\u0439"
   skill_target: 0
   skill_type: 0
-  availableClasses: 01000000
+  skill_elem: 0
+  isAllAvailable: 1
   isCorpseTargetToo: 0
   passiveBuff: 0
+  globalPassiveBuff: 0

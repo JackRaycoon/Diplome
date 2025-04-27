@@ -5,6 +5,7 @@ using System;
 using static UnityEngine.GraphicsBuffer;
 using Unity.VisualScripting;
 using System.Numerics;
+using UnityEngine.UI;
 
 public class SkillDB
 {
@@ -54,6 +55,7 @@ public class SkillDB
       AddSkillCast("Healing Wounds", HealingWoundsCast, HealingWoundsCalc);
       AddSkillCast("Waiting", WaitingCast);
       AddSkillCast("Blade of the Wind", BladeWindCast, BladeWindCalc);
+      AddSkillCast("Summon the Shadow", SummonShadowCast);
 
       AddSkillPassive("Call of the Pack", CallPackPassive, CallPackReverse);
       AddSkillPassive("Old Fighter's Chest", OldFightersChestCalc);
@@ -65,49 +67,60 @@ public class SkillDB
       AddSkillPassive("Quiet Blessing");
       AddSkillPassive("Touching the Mystery");
       AddSkillPassive("Scream Into the Void");
-      //AddSkillPassive(KeyWord.Gigachad, "Test Skill", GigachadEveryTurn);
+
+      AddSkillDeath("Corpseless", CorpselessDeath);
    }
 
    // астер всегда на самой первой позиции листа целей.
    private void AddSkillCast(string name, Action<List<Fighter>> cast,
       Func<List<Fighter>, List<int>> calc = null)
    {
-      Skill skill = new Skill(name, false);
-      skill.cast = cast;
-      skill.calc = calc;
+      Skill skill = new(name, false)
+      {
+         cast = cast,
+         calc = calc
+      };
       skillDatabase.Add(name, skill);
    }
-   private void AddSkillDeath(string name, Action death)
+   private void AddSkillDeath(string name, Action<List<Fighter>> death)
    {
-      Skill skill = new Skill(name, true);
-      skill.death = death;
+      Skill skill = new(name, true)
+      {
+         death = death
+      };
       skillDatabase.Add(name, skill);
    }
 
    private void AddSkillEvTurn(string name, Action<List<Fighter>> everyTurn)
    {
-      Skill skill = new Skill(name, true);
-      skill.every_turn = everyTurn;
+      Skill skill = new(name, true)
+      {
+         every_turn = everyTurn
+      };
       skillDatabase.Add(name, skill);
    }
 
    private void AddSkillPassive(string name, Action<Fighter, List<Fighter>> passive, Action<Fighter, List<Fighter>> reverse, Func<List<Fighter>, List<int>> calc = null)
    {
-      Skill skill = new Skill(name, true);
-      skill.passive = passive;
-      skill.reverse = reverse;
-      skill.calc = calc;
+      Skill skill = new(name, true)
+      {
+         passive = passive,
+         reverse = reverse,
+         calc = calc
+      };
       skillDatabase.Add(name, skill);
    }
    private void AddSkillPassive(string name, Func<List<Fighter>, List<int>> calc)
    {
-      Skill skill = new Skill(name, true);
-      skill.calc = calc;
+      Skill skill = new(name, true)
+      {
+         calc = calc
+      };
       skillDatabase.Add(name, skill);
    }
    private void AddSkillPassive(string name)
    {
-      Skill skill = new Skill(name, true);
+      Skill skill = new(name, true);
       skillDatabase.Add(name, skill);
    }
 
@@ -242,6 +255,53 @@ public class SkillDB
       return new List<int> { sumWisdow, 1 + sumAgility / 5};
    }
 
+   //Summon the Shadow
+   public void SummonShadowCast(List<Fighter> targets)
+   {
+      var caster = targets[0];
+      var target = Fight.RandomEnemy(caster);
+      bool isEnemyCast = Fight.IsEnemy(Fight.PlayerTeam[0], caster);
+
+      Fighter shadow = new("Shadow")
+      {
+         strengh = target.strengh / 2,
+         bonus_strengh = target.bonus_strengh / 2,
+
+         agility = target.agility / 2,
+         bonus_agility = target.bonus_agility / 2,
+
+         wisdow = target.wisdow / 2,
+         bonus_wisdow = target.bonus_wisdow / 2,
+
+         constitution = (target.constitution) / 2,
+         bonus_hp = target.bonus_hp / 2
+      };
+      if (shadow.constitution == 0) shadow.constitution = 1;
+      shadow.FullHeal();
+
+      foreach(var skill in target.skills)
+      {
+         shadow.AddSkill(skill);
+      }
+
+      if (isEnemyCast)
+      {
+         if (Fight.EnemyTeam.Count < 6)
+         {
+            Fight.EnemyTeam.Add(shadow);
+            shadow.Spawn();
+         }
+      }
+      else
+      {
+         if (Fight.PlayerTeam.Count < 6)
+         {
+            Fight.PlayerTeam.Add(shadow as PlayableCharacter);
+            shadow.Spawn();
+         }
+      }
+   }
+
    //Call of the Pack
    public void CallPackPassive(Fighter caster, List<Fighter> targets)
    {
@@ -286,5 +346,19 @@ public class SkillDB
       var caster = targets[0];
       var agility = caster.agility + caster.bonus_agility;
       return new List<int> { 25 + Math.Clamp(agility / 2 - 2, 0, 50) };
+   }
+
+   //Corpseless
+   public void CorpselessDeath(List<Fighter> targets)
+   {
+      var caster = targets[0];
+      if (Fight.EnemyTeam.Contains(caster))
+      {
+         Fight.EnemyTeam.Remove(caster);
+      }
+      else
+      {
+         Fight.PlayerTeam.Remove(caster as PlayableCharacter);
+      }
    }
 }

@@ -35,12 +35,13 @@ public class Room3D : MonoBehaviour
    }
    private void Update()
    {
-      if(room != null && !isFilled)
+      if(room != null && data != null && !isFilled)
       {
          isFilled = true;
          FillEvent();
       }
-      if(data.eventType == EventData.EventType.BossWin && SaveLoadController.runInfo.currentRoom != room)
+      if(data != null 
+         && data.eventType == EventData.EventType.BossWin && SaveLoadController.runInfo.currentRoom != room)
       {
          Debug.Log("Меню победы в забеге, можно кидать на сцену статистики например и удалять сейв сразу.");
       }
