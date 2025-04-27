@@ -56,6 +56,8 @@ public class SkillDB
       AddSkillCast("Waiting", WaitingCast);
       AddSkillCast("Blade of the Wind", BladeWindCast, BladeWindCalc);
       AddSkillCast("Summon the Shadow", SummonShadowCast);
+      AddSkillCast("Purple Haze", PurpleHazeCast, PurpleHazeCalc);
+      AddSkillCast("Curse of Destruction", CurseDestructionCast);
 
       AddSkillPassive("Call of the Pack", CallPackPassive, CallPackReverse);
       AddSkillPassive("Old Fighter's Chest", OldFightersChestCalc);
@@ -69,6 +71,7 @@ public class SkillDB
       AddSkillPassive("Scream Into the Void");
       AddSkillPassive("Heart of Darkness", HeartDarknessPassive, HeartDarknessReverse);
       AddSkillPassive("Corpseless");
+      AddSkillPassive("Cursed Hand");
    }
 
    //Кастер всегда на самой первой позиции листа целей.
@@ -130,7 +133,7 @@ public class SkillDB
       All_Allies
    }
 
-   /*public void GigachadEveryTurn(List<Fighter> targets) //первый в targets всегда caster
+   /*public void EveryTurn(List<Fighter> targets) //первый в targets всегда caster
    {
       //var Board = GameScript.EnemyBoard;
       //foreach (Card card in GameScript.PlayerBoard) if (card == caster) { Board = GameScript.PlayerBoard; break; }
@@ -147,10 +150,23 @@ public class SkillDB
    public void BasicAttackCast(List<Fighter> targets)
    {
       int dmg = BasicAttackCalc(targets)[0];
+      var caster = targets[0];
       targets.RemoveAt(0); //Убираем кастера
       foreach (Fighter target in targets)
       {
-         if(!target.isDead) target.TakeDmg(dmg);
+         if (!target.isDead)
+         {
+            target.TakeDmg(dmg);
+            if (caster.buffs.Contains(Fighter.Buff.CursedHand)
+               && SaveLoadController.runInfo.globalBuffs.Contains(RunInfo.GlobalBuff.CursedHand))
+            {
+               //Применяем к врагу случайный скилл из пула проклятий
+               var pool = GetPoolByName("CurseSkills");
+               var list = pool.activeSkillList;
+               var skill = Instance.GetSkillByName(list[UnityEngine.Random.Range(0,list.Count)].name);
+               caster.CastSkill(new List<Fighter> { caster, target }, skill);
+            }
+         }
       }
    }
    public List<int> BasicAttackCalc(List<Fighter> targets)
@@ -195,9 +211,15 @@ public class SkillDB
    //Waiting
    public void WaitingCast(List<Fighter> targets)
    {
-      //Будем вешать бафф
       var caster = targets[0];
       caster.buffs.Add(Fighter.Buff.DoubleNextAttack);
+   }
+
+   //Waiting
+   public void CurseDestructionCast(List<Fighter> targets)
+   {
+      var target = targets[1];
+      target.buffs.Add(Fighter.Buff.CurseDestruction);
    }
 
    //Raise Shields
@@ -303,6 +325,32 @@ public class SkillDB
             shadow.Spawn();
          }
       }
+   }
+
+   //Purple Haze
+   public void PurpleHazeCast(List<Fighter> targets)
+   {
+      var list = PurpleHazeCalc(targets);
+      int dmg = list[0];
+
+      var caster = targets[0];
+      targets.RemoveAt(0); //Убираем кастера
+      foreach (Fighter target in targets)
+      {
+         if (!target.isDead)
+         {
+            target.TakeDmg(dmg);
+
+            var pool = GetPoolByName("CurseSkills");
+            var listSk = pool.activeSkillList;
+            var skill = Instance.GetSkillByName(listSk[UnityEngine.Random.Range(0, listSk.Count)].name);
+            caster.CastSkill(new List<Fighter> { caster, target }, skill);
+         }
+      }
+   }
+   public List<int> PurpleHazeCalc(List<Fighter> targets)
+   {
+      return new List<int> { ((int)SaveLoadController.runInfo.currentLocation + 1) * 10 };
    }
 
    //Call of the Pack

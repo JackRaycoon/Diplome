@@ -143,6 +143,9 @@ public class Fighter
             list = pool.activeSkillList;
             AddSkill(list[Random.Range(0, list.Count)]);
             return;
+         case RunInfo.GlobalBuff.CursedHand:
+            AddSkill(SkillDB.Instance.GetSkillByName("Purple Haze"));
+            return;
       }
    }
 
@@ -352,5 +355,8 @@ public class Fighter
       QuietBlessing,
       ScreamIntoVoid,
       Corpseless,
+      CursedHand,
+      TouchingMystery,
+      CurseDestruction,
    }
 }

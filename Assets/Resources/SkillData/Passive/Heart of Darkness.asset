@@ -32,7 +32,7 @@ MonoBehaviour:
   skill_type: 2
   skill_elem: 6
   cooldown: 1
-  isAllAvailable: 1
+  isAllAvailable: 0
   isCorpseTargetToo: 0
   passiveBuff: 0
   globalPassiveBuff: 5

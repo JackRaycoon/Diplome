@@ -481,6 +481,15 @@ public class Fight : MonoBehaviour
 
    private void CheckRoundChange()
    {
+      //Всё что нужно делать в конце раунда
+      foreach (var chara in AllCharacter)
+      {
+         if (chara.buffs.Contains(Fighter.Buff.CurseDestruction))
+         {
+            chara.TakeDmg(1);
+         }
+      }
+
       //Проверка надо ли удалять трупы
       for (int i = 0; i < PlayerTeam.Count; i++)
       {
@@ -494,6 +503,7 @@ public class Fight : MonoBehaviour
          if (chara.isDead && chara.buffs.Contains(Fighter.Buff.Corpseless))
             EnemyTeam.Remove(chara);
       }
+
       PlayerUITeam = new(PlayerTeam);
       EnemyUITeam = new(EnemyTeam);
       UpdatePortrait();
@@ -716,33 +726,6 @@ public class Fight : MonoBehaviour
       }
       return selectedTargets;
    }
-
-   /*
-   private void MakeIntention()
-   {
-      foreach (Fighter figh in EnemyTeam) 
-      {
-         figh.prevIntension = figh.Intension;
-
-         //Количество скиллов без пассивок (используемых скиллов)
-         int skillCount = 0;
-         foreach(Skill skill in figh.skills)
-         {
-            if (skill.skillData.skill_target != SkillSO.SkillTarget.Passive) skillCount++;
-         }
-         bool reroll;
-         if(skillCount > 0)
-            do
-            {
-               var skills = figh.skills;
-               figh.Intension = skills[Random.Range(0, skills.Count)];
-               if (figh.prevIntension != null)
-                  reroll = figh.Intension.skillData.skill_target == SkillSO.SkillTarget.Passive ||
-                           (skillCount > 1 && figh.Intension == figh.prevIntension);
-               else reroll = figh.Intension.skillData.skill_target == SkillSO.SkillTarget.Passive;
-            } while (reroll);
-      }
-   }*/
 
    private void UpdatePortrait()
    {

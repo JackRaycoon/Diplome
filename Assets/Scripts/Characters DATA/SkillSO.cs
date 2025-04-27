@@ -46,7 +46,8 @@ public class SkillSO : ScriptableObject
       Summon,
       Access,
       Special,
-      Map
+      Map,
+      Debuff
    }
    public enum SkillElement
    {

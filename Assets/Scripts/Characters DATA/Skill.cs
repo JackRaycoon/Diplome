@@ -67,8 +67,12 @@ public class Skill
          switch (buff)
          {
             case RunInfo.GlobalBuff.TouchingMystery:
-               if(skillData._name == "Исцеление ран")
+               if (skillData.name == "Healing Wounds" && (fighter == null || fighter.buffs.Contains(Buff.TouchingMystery)) )
                   description += ". Половина избыточного лечения становится бронёй";
+               break;
+            case RunInfo.GlobalBuff.CursedHand:
+               if (skillData._name == "Basic Attack" && (fighter == null || fighter.buffs.Contains(Buff.CursedHand)) )
+                  description += ". Накладывает на противника случайное проклятие";
                break;
          }
       }

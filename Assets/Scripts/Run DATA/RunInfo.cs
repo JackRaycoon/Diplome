@@ -46,6 +46,7 @@
          TraceAncientRoute,
          TouchingMystery,
          HeartDarkness,
+         CursedHand,
    }
 
       public string RusTranslateLocation()
