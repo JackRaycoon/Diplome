@@ -49,15 +49,26 @@ public class PlayableCharacter : Fighter
       }
       private set { }
    }
-   /*
-   private Class StringToClass(string name)
+
+   public List<SkillPool> AvailableSkills
    {
-      return name switch
+      get
       {
-         "Warrior" => Class.Warrior,
-         "Archer" => Class.Archer,
-         "Priest" => Class.Priest,
-         _ => Class.Enemy,
-      };
-   }*/
+         List<SkillPool> list = new(Data._availableSkills);
+         //global buffs
+         if (SaveLoadController.runInfo.globalBuffs.Contains(RunInfo.GlobalBuff.AmuletWind)
+            && skills.Contains(SkillDB.Instance.GetSkillByName("Amulet of the Wind"))
+            )
+         {
+            list.Add(SkillDB.Instance.GetPoolByName("WindSkills"));
+         }
+         if (SaveLoadController.runInfo.globalBuffs.Contains(RunInfo.GlobalBuff.HeartDarkness)
+            && skills.Contains(SkillDB.Instance.GetSkillByName("Heart of Darkness"))
+            )
+         {
+            list.Add(SkillDB.Instance.GetPoolByName("DarkSkills"));
+         }
+         return list;
+      }
+   }
 }

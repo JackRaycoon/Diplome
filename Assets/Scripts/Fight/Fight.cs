@@ -155,7 +155,7 @@ public class Fight : MonoBehaviour
 
                         if (sumParam >= 50)
                         {
-                           var skillPools = ally.Data.availableSkills;
+                           var skillPools = ally.AvailableSkills;
 
                            int skillsToAdd = (sumParam - 50) / 25 + 1; // Например: 50 → 1, 75 → 2, 100 → 3
 
@@ -481,6 +481,25 @@ public class Fight : MonoBehaviour
 
    private void CheckRoundChange()
    {
+      //Проверка надо ли удалять трупы
+      for (int i = 0; i < PlayerTeam.Count; i++)
+      {
+         PlayableCharacter chara = PlayerTeam[i];
+         if (chara.isDead && chara.buffs.Contains(Fighter.Buff.Corpseless))
+            PlayerTeam.Remove(chara);
+      }
+      for (int i = 0; i < EnemyTeam.Count; i++)
+      {
+         Fighter chara = EnemyTeam[i];
+         if (chara.isDead && chara.buffs.Contains(Fighter.Buff.Corpseless))
+            EnemyTeam.Remove(chara);
+      }
+      PlayerUITeam = new(PlayerTeam);
+      EnemyUITeam = new(EnemyTeam);
+      UpdatePortrait();
+      FightUIController.hardUpdate = true;
+
+
       allPlayerCharactersDoTurn = true;
       foreach (Fighter fighter in PlayerTeam)
          if (!AlreadyTurn.Contains(fighter) && !fighter.isDead)

@@ -40,7 +40,7 @@ public class MagicScrollController : MonoBehaviour
    void SpawnNewScroll()
    {
       Vector3 spawnPos = player.position + player.forward * showDistance;
-      spawnPos += new Vector3(0, 1.58f, 0);
+      spawnPos += new Vector3(0, 1.73f, 0);
       Quaternion spawnRot = Quaternion.LookRotation(player.forward);
       currentScroll = Instantiate(magicScrollPrefab, spawnPos, spawnRot);
       currentScroll.GetComponent<MagicScrollFiller>().Initialize();

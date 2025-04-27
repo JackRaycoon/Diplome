@@ -48,9 +48,10 @@ MonoBehaviour:
   minGold: 0
   maxGold: 0
   rewardSkillList:
-  - {fileID: 11400000, guid: ac41a90a055002643b9feb98d22e3380, type: 2}
+  - {fileID: 11400000, guid: 758bde9bf38617b48822854418f1e5d0, type: 2}
   rewardSkillPool: {fileID: 0}
   allSkillsFromList: 0
+  ignoreSkillPools: 1
   chanceToReceiveSkill:
   - 100
   randomRewardTarget: 0

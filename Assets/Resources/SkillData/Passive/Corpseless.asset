@@ -18,9 +18,10 @@ MonoBehaviour:
     \u043D\u0435 \u043E\u0441\u0442\u0430\u0451\u0442\u0441\u044F \u0442\u0440\u0443\u043F\u0430"
   quote: 
   skill_target: 9
-  skill_type: 0
+  skill_type: 6
   skill_elem: 0
+  cooldown: 1
   isAllAvailable: 0
   isCorpseTargetToo: 0
-  passiveBuff: 0
+  passiveBuff: 8
   globalPassiveBuff: 0

@@ -73,6 +73,8 @@ public class EventData : ScriptableObject
    [Tooltip("Если включено, то в награду будут выданы все скиллы из списка\n" +
       "Иначе будет выдан случайный")]
    public bool allSkillsFromList;
+   [Tooltip("Не проверяет принадлежность пуллам")]
+   public bool ignoreSkillPools;
    [Tooltip("Шанс на получение скилла из списка, от 0 до 100.")]
    public List<float> chanceToReceiveSkill = new();
    [Tooltip("Случайный ли (подходящий) герой из списка получит скилл в награду, если выключено то игрок выбирает сам")]

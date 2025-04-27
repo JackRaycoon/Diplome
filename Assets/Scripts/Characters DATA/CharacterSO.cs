@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "CharacterData", menuName = "Character Data", order = 1)]
@@ -17,22 +18,6 @@ public class CharacterSO : ScriptableObject
 
    public List<SkillSO> skills;
 
-
-   public List<SkillPool> availableSkills 
-   { 
-      get
-      {
-         List<SkillPool> list = new(_availableSkills);
-         //global buffs
-         if (SaveLoadController.runInfo.globalBuffs.Contains(RunInfo.GlobalBuff.AmuletWind) 
-            && charClass == Class.Archer
-            )
-         {
-            list.Add(SkillDB.Instance.GetPoolByName("WindSkills"));
-         }
-         return list;
-      } 
-   }
    public List<SkillPool> _availableSkills;
 
    //Стартовые характеристики

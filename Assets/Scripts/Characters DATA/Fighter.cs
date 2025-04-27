@@ -77,7 +77,7 @@ public class Fighter
    public void AddSkill(SkillSO skillData)
    {
       var skill = SkillDB.Instance.GetSkillByName(skillData.name);
-      if (!skills.Contains(skill))
+      if (!skills.Contains(skill) && CheckSkillCount(skillData.skill_target))
       {
          skills.Add(skill);
          CheckAddSkillGlobal(skill);
@@ -85,7 +85,7 @@ public class Fighter
    }
    public void AddSkill(Skill skill)
    {
-      if (!skills.Contains(skill))
+      if (!skills.Contains(skill) && CheckSkillCount(skill.skillData.skill_target))
       {
          skills.Add(skill);
          CheckAddSkillGlobal(skill);
@@ -94,11 +94,39 @@ public class Fighter
    public void AddSkill(string skillName)
    {
       var skill = SkillDB.Instance.GetSkillByName(skillName);
-      if (!skills.Contains(skill))
+      if (!skills.Contains(skill) && CheckSkillCount(skill.skillData.skill_target))
       {
          skills.Add(skill);
          CheckAddSkillGlobal(skill);
       }
+   }
+
+   public bool CheckSkillCount(SkillSO.SkillTarget st)
+   {
+      int slots, cur_count;
+      bool isPassive = st == SkillSO.SkillTarget.Passive;
+      if (isPassive)
+      {
+         slots = 2 + wisdow / 3;
+
+         cur_count = 0;
+         foreach(var skill in skills)
+         {
+            if (skill.skillData.skill_target == SkillSO.SkillTarget.Passive) cur_count++;
+         }
+      }
+      else
+      {
+         slots = 3 + agility / 10;
+         if (slots > 5) slots = 5;
+
+         cur_count = 0;
+         foreach (var skill in skills)
+         {
+            if (skill.skillData.skill_target != SkillSO.SkillTarget.Passive) cur_count++;
+         }
+      }
+         return slots > cur_count;
    }
 
    public void CheckAddSkillGlobal(Skill skill)
@@ -108,6 +136,11 @@ public class Fighter
          case RunInfo.GlobalBuff.AmuletWind:
             var pool = SkillDB.Instance.GetPoolByName("WindSkills");
             var list = pool.activeSkillList;
+            AddSkill(list[Random.Range(0, list.Count)]);
+            return;
+         case RunInfo.GlobalBuff.HeartDarkness:
+            pool = SkillDB.Instance.GetPoolByName("DarkSkills");
+            list = pool.activeSkillList;
             AddSkill(list[Random.Range(0, list.Count)]);
             return;
       }
@@ -194,8 +227,7 @@ public class Fighter
       foreach (var skill in skills)
       {
          var skillData = skill.skillData;
-         if (skillData.skill_target == SkillSO.SkillTarget.Passive &&
-            skillData.skill_type != SkillSO.SkillType.Global)
+         if (skillData.passiveBuff != Buff.None)
          {
             buffs.Add(skillData.passiveBuff);
          }
@@ -319,6 +351,6 @@ public class Fighter
       BestialInstinctBuff, // накладывается когда применяешь не атакующий навык
       QuietBlessing,
       ScreamIntoVoid,
-      Corpseless
+      Corpseless,
    }
 }

@@ -67,8 +67,8 @@ public class SkillDB
       AddSkillPassive("Quiet Blessing");
       AddSkillPassive("Touching the Mystery");
       AddSkillPassive("Scream Into the Void");
-
-      AddSkillDeath("Corpseless", CorpselessDeath);
+      AddSkillPassive("Heart of Darkness", HeartDarknessPassive, HeartDarknessReverse);
+      AddSkillPassive("Corpseless");
    }
 
    // астер всегда на самой первой позиции листа целей.
@@ -156,10 +156,11 @@ public class SkillDB
    public List<int> BasicAttackCalc(List<Fighter> targets)
    {
       var caster = targets[0];
-      var max_characteristic = Mathf.Max(caster.strengh + caster.bonus_strengh, 
+      /*var max_characteristic = Mathf.Max(caster.strengh + caster.bonus_strengh, 
          caster.agility + caster.bonus_agility, 
-         caster.wisdow + caster.bonus_wisdow);
-      return new List<int> { 1 + max_characteristic / 2 };
+         caster.wisdow + caster.bonus_wisdow);*/
+      int strengh = caster.strengh + caster.bonus_strengh;
+      return new List<int> { 1 + strengh };
    }
 
    //Healing Wounds
@@ -208,7 +209,9 @@ public class SkillDB
    public List<int> RaiseShieldsCalc(List<Fighter> targets)
    {
       var caster = targets[0];
-      return new List<int> { caster.defence };
+      int defence = caster.defence;
+      if (defence == 0) defence = 1;
+      return new List<int> { defence };
    }
 
    //Fire Wave
@@ -348,17 +351,23 @@ public class SkillDB
       return new List<int> { 25 + Math.Clamp(agility / 2 - 2, 0, 50) };
    }
 
-   //Corpseless
-   public void CorpselessDeath(List<Fighter> targets)
+   //Heart of the Darkness
+   public void HeartDarknessPassive(Fighter caster, List<Fighter> targets)
    {
-      var caster = targets[0];
-      if (Fight.EnemyTeam.Contains(caster))
-      {
-         Fight.EnemyTeam.Remove(caster);
-      }
-      else
-      {
-         Fight.PlayerTeam.Remove(caster as PlayableCharacter);
-      }
+      int darkBonus = SaveLoadController.runInfo.badKarma / 5;
+      caster.bonus_hp += SaveLoadController.runInfo.badKarma;
+      caster.hp += SaveLoadController.runInfo.badKarma;
+      caster.bonus_strengh+= darkBonus;
+      caster.bonus_agility += darkBonus;
+      caster.bonus_wisdow += darkBonus;
+   }
+   public void HeartDarknessReverse(Fighter caster, List<Fighter> targets)
+   {
+      int darkBonus = SaveLoadController.runInfo.badKarma / 3;
+      caster.bonus_hp -= darkBonus * 4;
+      if (caster.hp > caster.max_hp + caster.bonus_hp) caster.hp = caster.max_hp + caster.bonus_hp;
+      caster.bonus_strengh -= darkBonus;
+      caster.bonus_agility -= darkBonus;
+      caster.bonus_wisdow -= darkBonus;
    }
 }

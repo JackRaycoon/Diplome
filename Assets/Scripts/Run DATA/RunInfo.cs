@@ -44,7 +44,8 @@
          SilentBlood,
          AmuletWind,
          TraceAncientRoute,
-         TouchingMystery
+         TouchingMystery,
+         HeartDarkness,
    }
 
       public string RusTranslateLocation()

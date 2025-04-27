@@ -132,8 +132,7 @@ public class SaveLoadController
          foreach (var skill in fighter.skills)
          {
             var skillData = skill.skillData;
-            if (skillData.skill_type == SkillSO.SkillType.Global &&
-               skillData.skill_target == SkillSO.SkillTarget.Passive)
+            if (skillData.globalPassiveBuff != RunInfo.GlobalBuff.None)
             {
                _runInfo.globalBuffs.Add(skillData.globalPassiveBuff);
             }

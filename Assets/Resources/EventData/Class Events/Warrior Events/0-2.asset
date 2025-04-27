@@ -39,7 +39,7 @@ MonoBehaviour:
   maxEnemyCount: 0
   enemiesChances: []
   minGold: 1
-  maxGold: 20
+  maxGold: 10
   rewardSkillList:
   - {fileID: 11400000, guid: be46c839f21fa0042a9bece6406cb419, type: 2}
   rewardSkillPool: {fileID: 0}

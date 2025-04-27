@@ -22,9 +22,10 @@ MonoBehaviour:
     \u0433\u0440\u0430\u043D\u044C\u044E, \u043E\u043D \u0432\u0441\u0451 \u0435\u0449\u0451
     \u043C\u043E\u0436\u0435\u0442 \u0431\u044B\u0442\u044C \u0441\u0432\u0435\u0442\u043E\u043C"
   skill_target: 9
-  skill_type: 5
+  skill_type: 4
   skill_elem: 5
-  availableClasses: 04000000
+  cooldown: 1
+  isAllAvailable: 0
   isCorpseTargetToo: 0
   passiveBuff: 7
   globalPassiveBuff: 0

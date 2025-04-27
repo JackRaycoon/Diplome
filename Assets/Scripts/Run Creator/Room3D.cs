@@ -244,7 +244,7 @@ public class Room3D : MonoBehaviour
             foreach (PlayableCharacter character in SaveLoadController.runInfo.PlayerTeam)
             {
                bool available = false;
-               foreach(var pool in character.Data.availableSkills)
+               foreach(var pool in character.AvailableSkills)
                {
                   if (pool.allSkillList.Contains(skillData))
                   {
@@ -254,7 +254,7 @@ public class Room3D : MonoBehaviour
                }
                if (
                   available ||
-                  skillData.isAllAvailable
+                  skillData.isAllAvailable || data.ignoreSkillPools
                   )
                {
                   availableCharacters.Add(character);
@@ -269,18 +269,14 @@ public class Room3D : MonoBehaviour
                SkillSO.SkillTarget.Passive => "ѕассивный",
                _ => "јктивный"
             };
-            if(skillData.skill_target == SkillSO.SkillTarget.Passive &&
-               skillData.skill_type == SkillSO.SkillType.Global)
-                  room.eventRewardText += " (глобальный)";
-            else if (skillData.skill_target == SkillSO.SkillTarget.Passive)
-                  room.eventRewardText += " (боевой)";
-
      
             room.eventRewardText += $" навык \"{skillData._name}\" Ц {skill.Description(target)}.\nЂ{skillData.quote}ї";
 
+            if (!target.CheckSkillCount(skill.skillData.skill_target))
+               room.eventRewardText += " (места нет)";
+
             target.AddSkill(skill);
-            if(skillData.skill_target == SkillSO.SkillTarget.Passive &&
-               skillData.skill_type == SkillSO.SkillType.Global)
+            if(skillData.globalPassiveBuff != RunInfo.GlobalBuff.None)
             {
                SaveLoadController.GlobalBuffsUpdate();
             }
