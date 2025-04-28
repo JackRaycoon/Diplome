@@ -318,6 +318,12 @@ public class Fight : MonoBehaviour
          }
       }
 
+      StartRound();
+   }
+
+   public void StartRound()
+   {
+
       //Проверка на просмотр намерений:
       var mainChar = PlayerTeam[0];
       int chance = (mainChar.wisdow + mainChar.bonus_wisdow) * procentPerOneCharacteristic;
@@ -325,7 +331,21 @@ public class Fight : MonoBehaviour
       int res = Random.Range(0, 100);
       seeIntension = res < chance;
 
-      StartCoroutine(PlayerTurn());
+      //Кто стартует раунд?
+      bool isPlayerFirst = true;
+      int agility = PlayerTeam[0].agility + PlayerTeam[0].bonus_agility;
+      foreach (var chara in EnemyTeam)
+      {
+         if (chara.agility + chara.bonus_agility > agility)
+         {
+            isPlayerFirst = false;
+            break;
+         }
+      }
+      if (isPlayerFirst)
+         StartCoroutine(PlayerTurn());
+      else
+         StartCoroutine(EnemyTurn());
    }
 
    public void SelectedCharacterID_Reset()
@@ -432,7 +452,7 @@ public class Fight : MonoBehaviour
       CheckRoundChange(caster);
       if (!isWin && !isLose) 
       {
-         if (isAllDoTurn) StartCoroutine(PlayerTurn());
+         if (isAllDoTurn) StartRound();
          else StartCoroutine(EnemyTurn());
       }
    }
@@ -491,7 +511,11 @@ public class Fight : MonoBehaviour
       isEnemyTurn = false;
       Skip:
       CheckRoundChange(caster);
-      if(!isWin && !isLose) StartCoroutine(PlayerTurn());
+      if (!isWin && !isLose)
+      {
+         if (isAllDoTurn) StartRound();
+         else StartCoroutine(PlayerTurn());
+      }
    }
 
    bool isDoubleTurn = false;
@@ -544,7 +568,7 @@ public class Fight : MonoBehaviour
       }
 
 
-         PlayerUITeam = new(PlayerTeam);
+      PlayerUITeam = new(PlayerTeam);
       EnemyUITeam = new(EnemyTeam);
       UpdatePortrait();
       FightUIController.hardUpdate = true;
@@ -588,7 +612,7 @@ public class Fight : MonoBehaviour
 
       if (isAllDoTurn)
       {
-         //Всё что нужно делать в конце раунда из баффов
+         //Всё что нужно делать в конце раунда из баффов, начало раунда (если будет нужно) в методе StartRound();
          foreach (var chara in AllCharacter)
          {
             if (chara.buffs.Contains(Fighter.Buff.CurseDestruction))
@@ -597,12 +621,12 @@ public class Fight : MonoBehaviour
             }
          }
 
-         //Проверка на просмотр намерений:
-         var mainChar = PlayerTeam[0];
-         int chance = (mainChar.wisdow + mainChar.bonus_wisdow) * procentPerOneCharacteristic;
-         if (chance > limitProcent) chance = limitProcent;
-         int res = Random.Range(0, 100);
-         seeIntension = res < chance;
+         ////Проверка на просмотр намерений:
+         //var mainChar = PlayerTeam[0];
+         //int chance = (mainChar.wisdow + mainChar.bonus_wisdow) * procentPerOneCharacteristic;
+         //if (chance > limitProcent) chance = limitProcent;
+         //int res = Random.Range(0, 100);
+         //seeIntension = res < chance;
 
          AlreadyTurn.Clear();
          allEnemiesDoTurn = false;
@@ -612,7 +636,8 @@ public class Fight : MonoBehaviour
          round_number++;
          Debug.Log("Следующий раунд: " + round_number.ToString());
 
-         foreach(var hero in AllCharacter)
+         //Кулдауны
+         foreach (var hero in AllCharacter)
          {
             var keys = new List<Skill>(hero.cooldowns.Keys);
             for (int i = 0; i < keys.Count; i++)
@@ -627,7 +652,8 @@ public class Fight : MonoBehaviour
             }
          }
 
-         foreach(var enemy in EnemyTeam)
+         //Намерения
+         foreach (var enemy in EnemyTeam)
             enemy.MakeIntention();
       }
    }
