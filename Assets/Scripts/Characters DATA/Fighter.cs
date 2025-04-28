@@ -129,6 +129,33 @@ public class Fighter
          return slots > cur_count;
    }
 
+   public int ActiveSkillEmptySlots()
+   {
+      int slots, cur_count;
+      slots = 3 + agility / 5;
+      if (slots > 5) slots = 5;
+
+      cur_count = 0;
+      foreach (var skill in skills)
+      {
+         if (skill.skillData.skill_target != SkillSO.SkillTarget.Passive) cur_count++;
+      }
+      return slots - cur_count;
+   }
+
+   public int PassiveSkillEmptySlots()
+   {
+      int slots, cur_count;
+      slots = 2 + wisdow / 2;
+
+      cur_count = 0;
+      foreach (var skill in skills)
+      {
+         if (skill.skillData.skill_target == SkillSO.SkillTarget.Passive) cur_count++;
+      }
+      return slots - cur_count;
+   }
+
    public void CheckAddSkillGlobal(Skill skill)
    {
       switch (skill.skillData.globalPassiveBuff)

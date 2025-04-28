@@ -51,6 +51,7 @@ public class Fight : MonoBehaviour
    public static bool needUpdatePortrait = false;
 
    public static bool cast = false;
+   public static bool seeIntension = false;
 
    private bool allEnemiesDoTurn, allPlayerCharactersDoTurn;
    private bool isWin, isLose, isAllDoTurn;
@@ -58,6 +59,8 @@ public class Fight : MonoBehaviour
    public static bool isEnemyTurn = false;
 
    public static Room eventRoom; //Откуда запустилась битва
+
+   private int procentPerOneCharacteristic = 5; // Для проверок влияния хар-к
    private void Start()
    {
       Cursor.lockState = CursorLockMode.None;
@@ -256,7 +259,7 @@ public class Fight : MonoBehaviour
          needUpdatePortrait = false;
          UpdatePortrait();
       }
-      RoundNum.text = "Раунд: " + round_number;
+      RoundNum.text = "Раунд: " + round_number + (seeIntension ? " (намерения видны)" : "");
    }
 
    int[] DistributeStats(int total, int count)
@@ -313,6 +316,12 @@ public class Fight : MonoBehaviour
             }
          }
       }
+
+      //Проверка на просмотр намерений:
+      var mainChar = PlayerTeam[0];
+      int chance = (mainChar.wisdow + mainChar.bonus_wisdow) * procentPerOneCharacteristic;
+      int res = Random.Range(0, 100);
+      seeIntension = res < chance;
 
       StartCoroutine(PlayerTurn());
    }
@@ -481,15 +490,6 @@ public class Fight : MonoBehaviour
 
    private void CheckRoundChange()
    {
-      //Всё что нужно делать в конце раунда
-      foreach (var chara in AllCharacter)
-      {
-         if (chara.buffs.Contains(Fighter.Buff.CurseDestruction))
-         {
-            chara.TakeDmg(1);
-         }
-      }
-
       //Проверка надо ли удалять трупы
       for (int i = 0; i < PlayerTeam.Count; i++)
       {
@@ -547,6 +547,21 @@ public class Fight : MonoBehaviour
       isAllDoTurn = allEnemiesDoTurn && allPlayerCharactersDoTurn;
       if (isAllDoTurn)
       {
+         //Всё что нужно делать в конце раунда из баффов
+         foreach (var chara in AllCharacter)
+         {
+            if (chara.buffs.Contains(Fighter.Buff.CurseDestruction))
+            {
+               chara.TakeDmg(1);
+            }
+         }
+
+         //Проверка на просмотр намерений:
+         var mainChar = PlayerTeam[0];
+         int chance = (mainChar.wisdow + mainChar.bonus_wisdow) * procentPerOneCharacteristic;
+         int res = Random.Range(0, 100);
+         seeIntension = res < chance;
+
          AlreadyTurn.Clear();
          allEnemiesDoTurn = false;
          allPlayerCharactersDoTurn = false;

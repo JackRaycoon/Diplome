@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using TMPro;
 using Unity.VisualScripting;
+using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -41,9 +42,17 @@ public class MagicScrollFiller : MonoBehaviour
       grid.constraintCount = 2;
 
       bool isFirstPassive = true;
-      foreach (var skill in hero.skills)
+
+      List<Skill> skillList = new(hero.skills);
+      int count = SaveLoadController.runInfo.PlayerTeam[0].ActiveSkillEmptySlots();
+
+      for(int i = 0; i < count; i++)
       {
-         bool isPassive = skill.skillData.skill_target == SkillSO.SkillTarget.Passive;
+         skillList.Add(SkillDB.Instance.GetSkillByName("Empty"));
+      }
+      foreach (var skill in skillList)
+      {
+         bool isPassive = skill.skillData.skill_target == SkillSO.SkillTarget.Passive && skill.skillData.name != "Empty";
          if (isPassive)
          {
             if (isFirstPassive)
@@ -69,6 +78,20 @@ public class MagicScrollFiller : MonoBehaviour
             btn.onClick.AddListener(filler.DescriptionPanelOpenCloser);
          createdCards.Add(go);
       }
+      if(isFirstPassive)
+      {
+         var skill = SkillDB.Instance.GetSkillByName("Empty");
+         GameObject go = Instantiate(cardPrefab, activeHand);
+         var filler = go.GetComponent<CardFiller>();
+         filler.skill = skill;
+         var btn = go.GetComponent<Button>();
+         btn.interactable = true;
+         go.transform.SetSiblingIndex(0);
+         filler.DescriptionPanelOpenCloser();
+         filler.DescriptionUpdate("<size=17>Перейти к пассивным навыкам</size>");
+         btn.onClick.AddListener(ToPassiveSkills);
+         createdCards.Add(go);
+      }
    }
    private void ToPassiveSkills()
    {
@@ -80,9 +103,18 @@ public class MagicScrollFiller : MonoBehaviour
       grid.constraintCount = 3;
 
       bool isFirstActive = true;
-      foreach (var skill in hero.skills)
+
+      List<Skill> skillList = new(hero.skills);
+      int count = SaveLoadController.runInfo.PlayerTeam[0].PassiveSkillEmptySlots();
+
+      for (int i = 0; i < count; i++)
       {
-         bool isActive = skill.skillData.skill_target != SkillSO.SkillTarget.Passive;
+         skillList.Add(SkillDB.Instance.GetSkillByName("Empty"));
+      }
+
+      foreach (var skill in skillList)
+      {
+         bool isActive = skill.skillData.skill_target != SkillSO.SkillTarget.Passive && skill.skillData.name != "Empty";
          if (isActive)
          {
             if (isFirstActive)
@@ -106,6 +138,21 @@ public class MagicScrollFiller : MonoBehaviour
          }
          else
             btn.onClick.AddListener(filler.DescriptionPanelOpenCloser);
+         createdCards.Add(go);
+      }
+
+      if (isFirstActive)
+      {
+         var skill = SkillDB.Instance.GetSkillByName("Empty");
+         GameObject go = Instantiate(cardPrefab, activeHand);
+         var filler = go.GetComponent<CardFiller>();
+         filler.skill = skill;
+         var btn = go.GetComponent<Button>();
+         btn.interactable = true;
+         go.transform.SetSiblingIndex(0);
+         filler.DescriptionPanelOpenCloser();
+         filler.DescriptionUpdate("<size=17>Перейти к активным навыкам</size>");
+         btn.onClick.AddListener(ToActiveSkills);
          createdCards.Add(go);
       }
    }

@@ -17,6 +17,8 @@ public class FightUIController : MonoBehaviour
    public List<RenderTexture> enemiesRenderTextures;
    public List<RenderTexture> addictsRenderTextures;
 
+   public Skill_Image toCopy;
+
    public static bool allInteractable, allDisable;
    private bool _allInteractable, _allDisable;
 
@@ -75,6 +77,17 @@ public class FightUIController : MonoBehaviour
          for (int i = 0; i < _countHeroes; i++)
          {
             var go = Instantiate(portraitPrefab, heroes.transform);
+            /*var skI = go.GetComponent<Skill_Image>();
+            skI.part1 = toCopy.part1;
+            skI.part2 = toCopy.part2;
+            skI.Veil = toCopy.Veil;
+            skI.pos_part1 = toCopy.pos_part1;
+            skI.pos_part2 = toCopy.pos_part2;
+            skI.pos_Veil = toCopy.pos_Veil;
+            skI.CenterSkill = toCopy.CenterSkill;
+            skI.Description = toCopy.Description;
+            skI.isClickable = false;*/
+
             var fp = go.GetComponent<FightPortrait>();
             List<RenderTexture> renderTextures = new(heroesRenderTextures);
             foreach (var rt in addictsRenderTextures) renderTextures.Add(rt);
@@ -107,6 +120,20 @@ public class FightUIController : MonoBehaviour
          for (int i = 0; i < _countEnemies; i++)
          {
             var go = Instantiate(portraitPrefab, enemies.transform);
+            Skill_Image skI = go.GetComponent<Skill_Image>() ?? go.AddComponent<Skill_Image>();
+            skI.part1 = toCopy.part1;
+            skI.part2 = toCopy.part2;
+            skI.Veil = toCopy.Veil;
+            skI.pos_part1 = toCopy.pos_part1;
+            skI.pos_part2 = toCopy.pos_part2;
+            skI.pos_Veil = toCopy.pos_Veil;
+            skI.CenterSkill = toCopy.CenterSkill;
+            skI.Description = toCopy.Description;
+            skI.isClickable = false;
+            if (Fight.EnemyUITeam[i].Intension != null)
+               skI.skill = Fight.EnemyUITeam[i].Intension;
+            skI.isIntention = true;
+
             var fp = go.GetComponent<FightPortrait>();
             List<RenderTexture> renderTextures = new(enemiesRenderTextures);
             foreach (var rt in addictsRenderTextures) renderTextures.Add(rt);

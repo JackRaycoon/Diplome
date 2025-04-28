@@ -27,7 +27,10 @@ public class Skill_Image : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
 
    public static bool isOneLocked = false;
 
+   public static bool isOnCard = false;
+
    public static bool isNeedClose = false;
+   public bool isIntention;
 
    private void Start()
    {
@@ -40,7 +43,7 @@ public class Skill_Image : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
    {
       if (externalSkill != null)
       { 
-         Enter(true); 
+         Enter(true, externalSkill); 
          externalSkill = null; 
       }
 
@@ -59,13 +62,17 @@ public class Skill_Image : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
 
    public void OnPointerEnter(PointerEventData eventData)
    {
-      if (!isEnabled || isOneLocked) { return; }
+      if (!isEnabled || isOneLocked) return;
+      if (isIntention && !Fight.seeIntension) return;
+      if (Fight.isEnemyTurn) return;
+      isOnCard = true;
+
       Enter(false);
    }
 
    public void Action()
    {
-      if (!isClickable) { return; }
+      if (!isClickable || isIntention) { return; }
 
       Fight.selectedSkill = skill;
       isEnabled = false;
@@ -74,52 +81,86 @@ public class Skill_Image : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
       if (wait != null) 
          StopCoroutine(wait);
       wait = StartCoroutine(Wait());
-      //if (move3 != null) StopCoroutine(move3);
-      //move3 = StartCoroutine(MoveToPosition(Veil, pos_Veil.position, 200f));
-      //Debug.Log("Veil move to zero");
    }
-   /*public void OnPointerClick(PointerEventData eventData)
-   {
-      
-   }*/
 
    public void OnPointerExit(PointerEventData eventData)
    {
+      isOnCard = false;
       if (!isEnabled || isOneLocked) { return; }
+      if (isIntention && !Fight.seeIntension) return;
+      if (Fight.isEnemyTurn) return;
       Exit();
    }
 
-   public void Enter(bool external)
+
+
+   public void Enter(bool external, Skill externalSkill = null)
    {
-      StartCoroutine(Open(external));
+      //StartCoroutine(Open(external, externalSkill));
+      if (external)
+         HandAnimationManager.Instance.RequestOpen(externalSkill);
+      else
+         HandAnimationManager.Instance.RequestOpen(skill);
    }
    public void Exit()
    {
-      //CenterSkill.sprite = null;
+      //if (move1 != null) { StopCoroutine(move1); StopCoroutine(move2); }
+      //move1 = StartCoroutine(MoveToPosition(part1, startPos_part1, 200f));
+      //move2 = StartCoroutine(MoveToPosition(part2, startPos_part2, 200f));
 
-      if (move1 != null) { StopCoroutine(move1); StopCoroutine(move2); }
-      move1 = StartCoroutine(MoveToPosition(part1, startPos_part1, 200f));
-      move2 = StartCoroutine(MoveToPosition(part2, startPos_part2, 200f));
+      //StartCoroutine(Close());
+      HandAnimationManager.Instance.RequestClose();
    }
 
-   public IEnumerator Open(bool external)
+   private bool isMoving = false;
+
+   /*
+   public IEnumerator Close()
    {
-      if (move1 != null) { yield return move1; yield return move2; }
+      // Ждём пока идёт предыдущее движение
+      while (isMoving)
+         yield return null;
+
+      isMoving = true;
+
+      move1 = StartCoroutine(MoveToPosition(part1, startPos_part1, 200f));
+      move2 = StartCoroutine(MoveToPosition(part2, startPos_part2, 200f));
+
+      // Подождём пока обе анимации завершатся
+      yield return move1;
+      yield return move2;
+
+      isMoving = false;
+   }
+
+   public IEnumerator Open(bool external, Skill externalSkill)
+   {
+      while (isMoving)
+         yield return null;
+
+      isMoving = true;
+
       if (external)
       {
-         //CenterSkill.sprite = externalSkill.Icon;
          Description.text = externalSkill.Name + "\n";
          Description.text += "<i>" + externalSkill.Description() + "</i>";
       }
       else
       {
-         //CenterSkill.sprite = skill.Icon;
          Description.text = skill.Name + "\n";
          Description.text += "<i>" + skill.Description() + "</i>";
       }
+
       move1 = StartCoroutine(MoveToPosition(part1, pos_part1.position, 100f));
       move2 = StartCoroutine(MoveToPosition(part2, pos_part2.position, 100f));
+
+      yield return move1;
+      yield return move2;
+
+      isMoving = false;
    }
+   */
+
    public IEnumerator Wait()
    {
       while (Fight.selectedSkill != null) 

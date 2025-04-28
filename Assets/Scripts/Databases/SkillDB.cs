@@ -59,6 +59,7 @@ public class SkillDB
       AddSkillCast("Purple Haze", PurpleHazeCast, PurpleHazeCalc);
       AddSkillCast("Curse of Destruction", CurseDestructionCast);
 
+      AddSkillPassive("Empty");
       AddSkillPassive("Call of the Pack", CallPackPassive, CallPackReverse);
       AddSkillPassive("Old Fighter's Chest", OldFightersChestCalc);
       AddSkillPassive("Bestial Instinct", BestialInstinctCalc);
