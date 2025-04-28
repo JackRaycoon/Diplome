@@ -39,6 +39,7 @@ public class Fighter
 
    public bool isSpawn;
    public bool isSummon;
+   public bool isFear;
 
    //Умения персонажа
    public List<Skill> skills = new()

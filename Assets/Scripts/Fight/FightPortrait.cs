@@ -14,8 +14,19 @@ public class FightPortrait : MonoBehaviour
    private TMP_Text hp_text;
    private Image hearth_icon, slider_filler;
 
-   public GameObject Dark, Skeleton, DoubleTurn;
+   public GameObject Dark;
+   public Image EffectImage;
 
+   public List<Sprite> effects;
+   public Effect forCheckOrder;
+
+   public enum Effect
+   {
+      Death,
+      DoubleTurn,
+      Fear,
+      Foresight
+   }
    private void Start()
    {
       hp_slider = transform.GetChild(1).GetChild(0).GetComponent<Slider>();
@@ -34,6 +45,7 @@ public class FightPortrait : MonoBehaviour
 
    private void Update()
    {
+      EffectImage.gameObject.SetActive(false);
       //Для обновления хп
       Fighter character = null;
       if (id < 6)
@@ -44,7 +56,17 @@ public class FightPortrait : MonoBehaviour
          if (Dark.activeInHierarchy == isInteractable)
             Dark.SetActive(!isInteractable);
 
-         DoubleTurn.SetActive((character as PlayableCharacter).isDoubleTurn);
+         if (id == 0 && Fight.seeIntension)
+         {
+            EffectImage.sprite = effects[(int)Effect.Foresight];
+            EffectImage.gameObject.SetActive(true);
+         }
+
+         if ((character as PlayableCharacter).isDoubleTurn)
+         {
+            EffectImage.sprite = effects[(int)Effect.DoubleTurn];
+            EffectImage.gameObject.SetActive(true);
+         }
       }
       else
       {
@@ -58,6 +80,12 @@ public class FightPortrait : MonoBehaviour
          }
          if (Dark.activeInHierarchy != darkCondition)
             Dark.SetActive(darkCondition);
+
+         if (character.isFear)
+         {
+            EffectImage.sprite = effects[(int)Effect.Fear];
+            EffectImage.gameObject.SetActive(true);
+         }
       }
 
       if (Fight.cast) Dark.SetActive(false);
@@ -91,7 +119,8 @@ public class FightPortrait : MonoBehaviour
       if (character.hp <= 0)
       {
          hearth_icon.color = new Color32(46, 46, 46, 255);
-         Skeleton.SetActive(true);
+         EffectImage.sprite = effects[(int)Effect.Death];
+         EffectImage.gameObject.SetActive(true);
       }
 
       hp_text.text = character.hp.ToString() +

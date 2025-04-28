@@ -323,13 +323,25 @@ public class Fight : MonoBehaviour
 
    public void StartRound()
    {
-
       //Проверка на просмотр намерений:
       var mainChar = PlayerTeam[0];
       int chance = (mainChar.wisdow + mainChar.bonus_wisdow) * procentPerOneCharacteristic;
       if (chance > limitProcent) chance = limitProcent;
       int res = Random.Range(0, 100);
       seeIntension = res < chance;
+
+      foreach (var enemy in EnemyTeam)
+      {
+         //Проверка на страх:
+         chance = ( (mainChar.strengh + mainChar.bonus_strengh) - (enemy.strengh + enemy.bonus_strengh) ) * procentPerOneCharacteristic;
+         if (chance > limitProcent) chance = limitProcent;
+         res = Random.Range(0, 100);
+         enemy.isFear = res < chance;
+         if (res < chance)
+         {
+            AlreadyTurn.Add(enemy);
+         }
+      }
 
       //Кто стартует раунд?
       bool isPlayerFirst = true;
@@ -342,6 +354,7 @@ public class Fight : MonoBehaviour
             break;
          }
       }
+
       if (isPlayerFirst)
          StartCoroutine(PlayerTurn());
       else
