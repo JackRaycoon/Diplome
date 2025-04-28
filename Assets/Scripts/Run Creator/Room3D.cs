@@ -1,6 +1,7 @@
 using KeySystem;
 using System.Collections;
 using System.Collections.Generic;
+using System.Data;
 using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -85,7 +86,15 @@ public class Room3D : MonoBehaviour
       eventCG.blocksRaycasts = true;
 
       eventTitle.text = data.eventName;
+
       string text = data.eventText;
+      switch (SaveLoadController.runInfo.PlayerTeam[0].Data.name)
+      {
+         case "Archer":
+         case "Priest":
+            text = data.eventTextWomanCharacter;
+            break;
+      }
 
       //Награды
       if(data.choices.Count == 0 && !room.eventRewardClaim)
@@ -190,7 +199,10 @@ public class Room3D : MonoBehaviour
          }
          if (data.healRewardMax != 0)
          {
-            int rewardCountHeal = Random.Range(data.healRewardMin, data.healRewardMax + 1);
+            var hero = SaveLoadController.runInfo.PlayerTeam[0];
+            int randomKoef = Random.Range(data.healRewardMin, data.healRewardMax + 1);
+            int rewardCountHeal = (int)(hero.max_hp * (randomKoef / 100.0f));
+            
             if(rewardCountHeal != 0)
             {
                if (isNext)
@@ -200,7 +212,6 @@ public class Room3D : MonoBehaviour
                room.eventRewardText += $"{rewardCountHeal} здоровья";
                isNext = true;
 
-               var hero = SaveLoadController.runInfo.PlayerTeam[0];
                hero.TakeHeal(rewardCountHeal);
             }
          }
@@ -490,7 +501,26 @@ public class Room3D : MonoBehaviour
          case 4:
             //Проверка на ловкость чтобы понять избежал ли ловушки
             var mainChar = SaveLoadController.runInfo.PlayerTeam[0];
-            int chance = (mainChar.agility + mainChar.bonus_agility) * Fight.procentPerOneCharacteristic;
+            int chance = 0;
+            switch (data.checkTrap)
+            {
+               case EventData.Characteristic.None:
+               case EventData.Characteristic.Agility:
+                  chance = (mainChar.agility) * Fight.procentPerOneCharacteristic;
+                  break;
+               case EventData.Characteristic.Strengh:
+                  chance = (mainChar.strengh) * Fight.procentPerOneCharacteristic;
+                  break;
+               case EventData.Characteristic.Wisdow:
+                  chance = (mainChar.wisdow) * Fight.procentPerOneCharacteristic;
+                  break;
+               case EventData.Characteristic.Consitution:
+                  chance = (mainChar.constitution) * Fight.procentPerOneCharacteristic;
+                  break;
+               case EventData.Characteristic.Armor:
+                  chance = (mainChar.armor) * Fight.procentPerOneCharacteristic;
+                  break;
+            }
             if (chance > Fight.limitProcent) chance = Fight.limitProcent;
             int res = Random.Range(0, 100);
             room.eventData = (res < chance) ? data.choices[1] : data.choices[0];

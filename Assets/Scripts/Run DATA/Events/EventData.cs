@@ -17,6 +17,9 @@ public class EventData : ScriptableObject
 
    [TextArea(10, 20)]
    public string eventText;
+   [TextArea(10, 20)]
+   [Tooltip("Для того чтобы поменять род слов в тексте")]
+   public string eventTextWomanCharacter;
 
    [Tooltip("StartEvent - Стартовый для персонажа, сюжетный?\n" +
       "EnteranceEvent - Появляется после входа в комнату, старт ивента\n" +
@@ -47,6 +50,20 @@ public class EventData : ScriptableObject
       Trap //Ловушка ли это, требуется 2 ивента для попадания в ловушку и её избегания
    }
 
+   [Tooltip("Если ловушка, то по какой хар-ке смотрим её избегание? Если None, то по ловкости")]
+   public Characteristic checkTrap;
+
+   public enum Characteristic
+   {
+      None,
+      Strengh,
+      Agility,
+      Wisdow,
+      Consitution,
+      Armor
+   }
+
+
    [Header("Бой")]
    [Tooltip("Если никого нет, то ивент обычный, но если есть хоть 1, то все выборы заменяются на кнопку Начать Бой" +
       "\nНе может быть финальным! Требует ровно 1 ивент для перехода дальше (после победы в бою)")]
@@ -56,6 +73,10 @@ public class EventData : ScriptableObject
    public List<short> enemiesCount;
    [Tooltip("При включении игрок не будет видеть врагов до боя.")]
    public bool isFog;
+   [Tooltip("Если включено и умер в бою, вместо поражения активируется 2-й ивент из списка выборов.")]
+   public bool isNotOver;
+   [Tooltip("Сколько хп (в %) должно быть у персонажа после поражения в бою, если включен isNotOver")]
+   public int overHpProcent;
    [Tooltip("При включении список выше станет пулом из которого могут сгенерироваться враги.")]
    public bool randomEnemies;
    [Tooltip("Нужно только для randomEnemies.")]
@@ -99,6 +120,7 @@ public class EventData : ScriptableObject
    public int armorRewardMin;
    public int armorRewardMax;
 
+   [Tooltip("В процентах")]
    public int healRewardMin;
    public int healRewardMax;
 

@@ -686,7 +686,22 @@ public class Fight : MonoBehaviour
       {
          WinLoseText.text = "К сожалению, вы проиграли";
          SaveLoadController.EndFight();
-         SaveLoadController.ClearSave(SaveLoadController.slot);
+         var data = eventRoom.eventData;
+         if (data.isNotOver)
+         {
+            WinLoseText.text += "\nНо это ещё не конец.";
+            eventRoom.eventData = eventRoom.eventData.choices[1];
+            var data2 = eventRoom.eventData;
+            eventRoom.eventName = $"{data2.eventID}-{data2.eventID_Part}";
+
+            foreach(var chara in PlayerTeam)
+            {
+               chara.hp = (int)(chara.max_hp * (data.overHpProcent / 100.0f));
+            }
+            SaveLoadController.Save();
+         }
+         else
+            SaveLoadController.ClearSave(SaveLoadController.slot);
       }
       else if (isWin)
       {
