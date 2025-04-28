@@ -42,7 +42,6 @@ MonoBehaviour:
   other_portraits: []
   skills:
   - {fileID: 11400000, guid: 7f6a00a3d8378e54e99a0679cd85765a, type: 2}
-  - {fileID: 11400000, guid: 4bef8a99f368a7a4abcf21afa5998f95, type: 2}
   _availableSkills:
   - {fileID: 11400000, guid: 2135e189859e7e74cb50d2760481b15f, type: 2}
   strengh: 3

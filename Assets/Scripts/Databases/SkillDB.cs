@@ -71,6 +71,7 @@ public class SkillDB
       AddSkillPassive("Heart of Darkness", HeartDarknessPassive, HeartDarknessReverse);
       AddSkillPassive("Corpseless");
       AddSkillPassive("Cursed Hand");
+      AddSkillPassive("The Weight of Memories");
    }
 
    // астер всегда на самой первой позиции листа целей.

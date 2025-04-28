@@ -402,5 +402,6 @@ public class Fighter
       CursedHand,
       TouchingMystery,
       CurseDestruction,
+      WeightMemories,
    }
 }

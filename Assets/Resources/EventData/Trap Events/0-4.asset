@@ -61,13 +61,15 @@ MonoBehaviour:
   minEnemyCount: 0
   maxEnemyCount: 0
   enemiesChances: []
-  minGold: 0
-  maxGold: 0
-  rewardSkillList: []
+  minSoul: 0
+  maxSoul: 0
+  rewardSkillList:
+  - {fileID: 11400000, guid: c5c088f5a7826604f9c2324fc9504209, type: 2}
   rewardSkillPool: {fileID: 0}
   allSkillsFromList: 0
   ignoreSkillPools: 0
-  chanceToReceiveSkill: []
+  chanceToReceiveSkill:
+  - 100
   randomRewardTarget: 0
   strengthRewardMin: 0
   strengthRewardMax: 0

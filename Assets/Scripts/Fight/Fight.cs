@@ -302,6 +302,7 @@ public class Fight : MonoBehaviour
    {
       foreach (Fighter character in AllCharacter)
       {
+         character.isSpawn = false;
          character.Spawn();
       }
 
@@ -345,6 +346,27 @@ public class Fight : MonoBehaviour
             AlreadyTurn.Add(enemy);
          }
       }
+
+      //Всё что нужно делать в начале раунда из баффов
+      foreach (var chara in AllCharacter)
+      {
+         if (chara.buffs.Contains(Fighter.Buff.WeightMemories))
+         {
+            chance = 30;
+            res = Random.Range(0, 100);
+            chara.isFear = res < chance;
+            if (res < chance)
+            {
+               AlreadyTurn.Add(chara);
+            }
+         }
+      }
+      CheckConditionWinLose();
+
+      PlayerUITeam = new(PlayerTeam);
+      EnemyUITeam = new(EnemyTeam);
+      UpdatePortrait();
+      FightUIController.hardUpdate = true;
 
       //Кто стартует раунд?
       bool isPlayerFirst = true;
@@ -580,18 +602,8 @@ public class Fight : MonoBehaviour
    }
 
    bool isDoubleTurn = false;
-   bool isBegin = false;
    private void CheckRoundChange(Fighter whoMakeTurn)
    {
-      isBegin = false;
-      Begin:
-      //Проверка надо ли удалять трупы
-      for (int i = 0; i < PlayerTeam.Count; i++)
-      {
-         PlayableCharacter chara = PlayerTeam[i];
-         if (chara.isDead && chara.buffs.Contains(Fighter.Buff.Corpseless))
-            PlayerTeam.Remove(chara);
-      }
       for (int i = 0; i < EnemyTeam.Count; i++)
       {
          Fighter chara = EnemyTeam[i];
@@ -599,12 +611,12 @@ public class Fight : MonoBehaviour
             EnemyTeam.Remove(chara);
       }
 
-      if (isDoubleTurn && whoMakeTurn == PlayerTeam[0] && !isBegin)
+      if (isDoubleTurn && whoMakeTurn == PlayerTeam[0])
       {
          PlayerTeam[0].isDoubleTurn = false;
       }
 
-      if (!isDoubleTurn && whoMakeTurn == PlayerTeam[0] && !isBegin)
+      if (!isDoubleTurn && whoMakeTurn == PlayerTeam[0])
       {
          //Проверка на двойной ход:
          var mainChar = PlayerTeam[0];
@@ -637,40 +649,8 @@ public class Fight : MonoBehaviour
       UpdatePortrait();
       FightUIController.hardUpdate = true;
 
-      allPlayerCharactersDoTurn = true;
-      foreach (Fighter fighter in PlayerTeam)
-         if (!AlreadyTurn.Contains(fighter) && !fighter.isDead)
-         {
-            allPlayerCharactersDoTurn = false;
-            break;
-         }
-      allEnemiesDoTurn = true;
-      foreach (Fighter fighter in EnemyTeam)
-         if (!AlreadyTurn.Contains(fighter) && !fighter.isDead)
-         {
-            allEnemiesDoTurn = false;
-            break;
-         }
-      //Check WinLose
-      isWin = true;
-      foreach (Fighter fighter in EnemyTeam)
-         if (!fighter.isDead)
-         {
-            isWin = false;
-            break;
-         }
-      isLose = true;
-      foreach (Fighter fighter in PlayerTeam)
-         if (!fighter.isDead)
-         {
-            isLose = false;
-            break;
-         }
-      if (isLose || isWin)
-      {
-         EndFight();
-         return;
-      }
+      CheckConditionWinLose();
+
       isAllDoTurn = allEnemiesDoTurn && allPlayerCharactersDoTurn;
 
 
@@ -721,8 +701,53 @@ public class Fight : MonoBehaviour
          foreach (var enemy in EnemyTeam)
             enemy.MakeIntention();
 
-         isBegin = true;
-         goto Begin;
+         CheckConditionWinLose();
+      }
+   }
+
+   private void CheckConditionWinLose()
+   {
+      //Проверка надо ли удалять трупы
+      for (int i = 0; i < PlayerTeam.Count; i++)
+      {
+         PlayableCharacter chara = PlayerTeam[i];
+         if (chara.isDead && chara.buffs.Contains(Fighter.Buff.Corpseless))
+            PlayerTeam.Remove(chara);
+      }
+
+      allPlayerCharactersDoTurn = true;
+      foreach (Fighter fighter in PlayerTeam)
+         if (!AlreadyTurn.Contains(fighter) && !fighter.isDead)
+         {
+            allPlayerCharactersDoTurn = false;
+            break;
+         }
+      allEnemiesDoTurn = true;
+      foreach (Fighter fighter in EnemyTeam)
+         if (!AlreadyTurn.Contains(fighter) && !fighter.isDead)
+         {
+            allEnemiesDoTurn = false;
+            break;
+         }
+      //Check WinLose
+      isWin = true;
+      foreach (Fighter fighter in EnemyTeam)
+         if (!fighter.isDead)
+         {
+            isWin = false;
+            break;
+         }
+      isLose = true;
+      foreach (Fighter fighter in PlayerTeam)
+         if (!fighter.isDead)
+         {
+            isLose = false;
+            break;
+         }
+      if (isLose || isWin)
+      {
+         EndFight();
+         return;
       }
    }
 
