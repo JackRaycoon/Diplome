@@ -71,7 +71,7 @@ public class Skill
                   description += ". Половина избыточного лечения становится бронёй";
                break;
             case RunInfo.GlobalBuff.CursedHand:
-               if (skillData._name == "Basic Attack" && (fighter == null || fighter.buffs.Contains(Buff.CursedHand)) )
+               if (skillData.name == "Basic Attack" && (fighter == null || fighter.buffs.Contains(Buff.CursedHand)) )
                   description += ". Накладывает на противника случайное проклятие";
                break;
          }
@@ -82,10 +82,14 @@ public class Skill
       List<int> values;
       if (fighter != null)
          values = calc(new List<Fighter> { fighter });
-      else if (Fight.isEnemyTurn)
+      /*else if (Fight.isEnemyTurn)
          values = calc(new List<Fighter> { Fight.EnemyUITeam[0] });
       else
-         values = calc(new List<Fighter> { Fight.SelectedCharacter() });
+         values = calc(new List<Fighter> { Fight.SelectedCharacter() });*/
+      else
+      {
+         values = calc(new List<Fighter> { SaveLoadController.runInfo.PlayerTeam[0] });
+      }
 
       return string.Format(description, values.Cast<object>().ToArray());
    }

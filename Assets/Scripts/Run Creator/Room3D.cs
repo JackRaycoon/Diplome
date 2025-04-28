@@ -1,11 +1,7 @@
-using KeySystem;
 using System.Collections;
 using System.Collections.Generic;
-using System.Data;
 using TMPro;
-using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.UI;
 
 public class Room3D : MonoBehaviour
 {
@@ -283,7 +279,7 @@ public class Room3D : MonoBehaviour
                _ => "јктивный"
             };
      
-            room.eventRewardText += $" навык \"{skillData._name}\" Ц {skill.Description(target)}.\nЂ{skillData.quote}ї";
+            room.eventRewardText += $" навык \"{skillData._name}\" Ц {skill.Description()}.\nЂ{skillData.quote}ї";
 
             if (!target.CheckSkillCount(skill.skillData.skill_target))
                room.eventRewardText += " (места нет)";
@@ -343,8 +339,10 @@ public class Room3D : MonoBehaviour
 
 
          //Ѕитва
-         fightBtn.SetActive(data.eventType == EventData.EventType.FightEvent 
+      fightBtn.SetActive(data.eventType == EventData.EventType.FightEvent 
             || data.eventType == EventData.EventType.BossEvent);
+      trapBtn.SetActive(data.eventType == EventData.EventType.Trap);
+
       if (data.eventType == EventData.EventType.FightEvent 
          || data.eventType == EventData.EventType.BossEvent)
       {
@@ -401,7 +399,6 @@ public class Room3D : MonoBehaviour
 
 
       // нопки выбора
-      trapBtn.SetActive(data.eventType == EventData.EventType.Trap);
       if(data.eventType == EventData.EventType.Trap)
       {
          foreach (var go in eventBtns) go.SetActive(false);
@@ -438,7 +435,7 @@ public class Room3D : MonoBehaviour
    bool DidChanceDrop(float chance)
    {
       int scaledChance = Mathf.RoundToInt(chance * 100);
-      int roll = UnityEngine.Random.Range(0, 10000);
+      int roll = Random.Range(0, 10000);
       return roll < scaledChance;
    }
 

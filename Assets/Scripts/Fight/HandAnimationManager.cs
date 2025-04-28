@@ -17,6 +17,7 @@ public class HandAnimationManager : MonoBehaviour
    private bool isMoving = false;
    private bool pendingOpenRequest = false;
    private Skill pendingSkill;
+   private Fighter pendingFighter;
 
    public Transform part1, part2;
    private Vector3 startPos_part1, startPos_part2;
@@ -30,13 +31,14 @@ public class HandAnimationManager : MonoBehaviour
       startPos_part1 = part1.transform.position;
       startPos_part2 = part2.transform.position;
    }
-   public void RequestOpen(Skill externalSkill)
+   public void RequestOpen(Skill externalSkill, Fighter caster)
    {
       if (isClosing)
       {
          // Идёт закрытие — запоминаем, что нужно открыть после
          pendingOpenRequest = true;
          pendingSkill = externalSkill;
+         pendingFighter = caster;
          return;
       }
 
@@ -47,7 +49,7 @@ public class HandAnimationManager : MonoBehaviour
          openRoutine = null;
       }
 
-      openRoutine = StartCoroutine(OpenCoroutine(externalSkill));
+      openRoutine = StartCoroutine(OpenCoroutine(externalSkill, caster));
    }
 
    public void RequestClose()
@@ -64,11 +66,11 @@ public class HandAnimationManager : MonoBehaviour
       closeRoutine = StartCoroutine(CloseCoroutine());
    }
 
-   private IEnumerator OpenCoroutine(Skill externalSkill)
+   private IEnumerator OpenCoroutine(Skill externalSkill, Fighter caster)
    {
       // Здесь можно поменять текст (если нужно)
       // Например:
-      Description.text = externalSkill.Name + "\n" + "<i>" + externalSkill.Description() + "</i>";
+      Description.text = externalSkill.Name + "\n" + "<i>" + externalSkill.Description(caster) + "</i>";
 
       Vector3 target1 = pos_part1.position;
       Vector3 target2 = pos_part2.position;
@@ -110,9 +112,10 @@ public class HandAnimationManager : MonoBehaviour
       // После полного закрытия — если запрашивали открытие, делаем его
       if (pendingOpenRequest && pendingSkill != null)
       {
-         RequestOpen(pendingSkill);
+         RequestOpen(pendingSkill, pendingFighter);
          pendingOpenRequest = false;
          pendingSkill = null;
+         pendingFighter = null;
       }
    }
 

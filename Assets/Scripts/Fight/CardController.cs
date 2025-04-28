@@ -62,7 +62,7 @@ public class CardController : MonoBehaviour
             {
                //var skimage = topCard.GetComponent<Skill_Image>();
                skimage.Exit();
-               skimage.Enter(false);
+               skimage.Enter(false, Fight.SelectedCharacter());
                //StartCoroutine(skimage.Open(false));
             }
          }

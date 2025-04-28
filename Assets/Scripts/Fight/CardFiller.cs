@@ -30,7 +30,7 @@ public class CardFiller : MonoBehaviour
       if(description != null)
       {
          skillName.text = skill.skillData._name;
-         description.text = $"<i>{skill.Description(SaveLoadController.runInfo.PlayerTeam[0])}</i>";
+         description.text = $"<i>{skill.Description()}</i>";
          if (descriptionUpdate != "")
          {
             skillName.text = "";

@@ -58,6 +58,8 @@ public class Fight : MonoBehaviour
    public static bool endFight = false;
    public static bool isEnemyTurn = false;
 
+   public static List<CastSkillStructure> additionalCastSkills = new();
+
    public static Room eventRoom; //Откуда запустилась битва
 
    public static readonly int procentPerOneCharacteristic = 5; // Для проверок влияния хар-к
@@ -78,6 +80,7 @@ public class Fight : MonoBehaviour
       cast = false;
       isEnemyTurn = false;
       endFight = false;
+      additionalCastSkills = new();
 
       PlayerTeam = SaveLoadController.runInfo.PlayerTeam;
       EnemyTeam = SaveLoadController.enemies;
@@ -397,7 +400,9 @@ public class Fight : MonoBehaviour
             break;
          case SkillSO.SkillTarget.All:
          case SkillSO.SkillTarget.Random_Target:
-            EnemyUITeam = new List<Fighter>(AllCharacter);
+            var list = new List<Fighter>(AllCharacter);
+            list.Remove(caster);
+            EnemyUITeam = list;
             break;
          case SkillSO.SkillTarget.Solo_Ally:
          case SkillSO.SkillTarget.Mass_Allies:
@@ -442,12 +447,33 @@ public class Fight : MonoBehaviour
       EnemyUITeam = selectedTargets;
       cast = true;
       UpdatePortrait();
+      FightUIController.hardUpdate = true;
 
       caster.CastSkill(selectedTargets, true, selectedSkill);
 
       AlreadyTurn.Add(caster);
 
       yield return new WaitForSeconds(2f);
+      //Если применение скилла повлекло за собой применение других скиллов
+      while (additionalCastSkills.Count > 0)
+      {
+         //Устанавливаем весь дизайн для каста и кастуем здесь
+         selectedTargets = additionalCastSkills[0].targets;
+         selectedSkill = additionalCastSkills[0].skill;
+
+         Skill_Image.externalSkill = selectedSkill;
+         Skill_Image.externalCaster = caster;
+
+         PlayerUITeam = new List<Fighter> { PlayerTeam[SelectedCharacterID] };
+         EnemyUITeam = selectedTargets;
+         cast = true;
+         UpdatePortrait();
+         FightUIController.hardUpdate = true;
+
+         caster.CastSkill(selectedTargets, additionalCastSkills[0].needCooldown, selectedSkill);
+         additionalCastSkills.RemoveAt(0);
+         yield return new WaitForSeconds(2f);
+      }
 
       PlayerUITeam = new List<Fighter>(PlayerTeam);
       EnemyUITeam = new List<Fighter>(EnemyTeam);
@@ -506,11 +532,33 @@ public class Fight : MonoBehaviour
       EnemyUITeam = new List<Fighter> { caster };
       cast = true;
       Skill_Image.externalSkill = caster.Intension;
+      Skill_Image.externalCaster = caster;
       UpdatePortrait();
 
       yield return new WaitForSeconds(2f);
 
       caster.CastSkill(selectedTargets);
+
+      //Если применение скилла повлекло за собой применение других скиллов
+      while (additionalCastSkills.Count > 0)
+      {
+         //Устанавливаем весь дизайн для каста и кастуем здесь
+         selectedTargets = additionalCastSkills[0].targets;
+         var selectedSkill = additionalCastSkills[0].skill;
+
+         Skill_Image.externalSkill = selectedSkill;
+         Skill_Image.externalCaster = caster;
+
+         PlayerUITeam = selectedTargets;
+         EnemyUITeam = new List<Fighter> { caster };
+         cast = true;
+         UpdatePortrait();
+         FightUIController.hardUpdate = true;
+
+         yield return new WaitForSeconds(2f);
+         caster.CastSkill(selectedTargets, additionalCastSkills[0].needCooldown, selectedSkill);
+         additionalCastSkills.RemoveAt(0);
+      }
       yield return null;
       cast = false;
       Skill_Image.isDisableExSkill = true;
@@ -532,8 +580,11 @@ public class Fight : MonoBehaviour
    }
 
    bool isDoubleTurn = false;
+   bool isBegin = false;
    private void CheckRoundChange(Fighter whoMakeTurn)
    {
+      isBegin = false;
+      Begin:
       //Проверка надо ли удалять трупы
       for (int i = 0; i < PlayerTeam.Count; i++)
       {
@@ -548,12 +599,12 @@ public class Fight : MonoBehaviour
             EnemyTeam.Remove(chara);
       }
 
-      if (isDoubleTurn && whoMakeTurn == PlayerTeam[0])
+      if (isDoubleTurn && whoMakeTurn == PlayerTeam[0] && !isBegin)
       {
          PlayerTeam[0].isDoubleTurn = false;
       }
 
-      if (!isDoubleTurn && whoMakeTurn == PlayerTeam[0])
+      if (!isDoubleTurn && whoMakeTurn == PlayerTeam[0] && !isBegin)
       {
          //Проверка на двойной ход:
          var mainChar = PlayerTeam[0];
@@ -634,6 +685,7 @@ public class Fight : MonoBehaviour
             }
          }
 
+         
          ////Проверка на просмотр намерений:
          //var mainChar = PlayerTeam[0];
          //int chance = (mainChar.wisdow + mainChar.bonus_wisdow) * procentPerOneCharacteristic;
@@ -668,6 +720,9 @@ public class Fight : MonoBehaviour
          //Намерения
          foreach (var enemy in EnemyTeam)
             enemy.MakeIntention();
+
+         isBegin = true;
+         goto Begin;
       }
    }
 
@@ -789,6 +844,7 @@ public class Fight : MonoBehaviour
             break;
          case SkillSO.SkillTarget.All:
             selectedTargets = new List<Fighter>(AllCharacter);
+            selectedTargets.Remove(caster);
             if (!selectedSkill.skillData.isCorpseTargetToo)
             {
                for (int i = 0; i < selectedTargets.Count; i++)
@@ -836,12 +892,14 @@ public class Fight : MonoBehaviour
             }
             break;
          case SkillSO.SkillTarget.Random_Target:
-            selectedTargets = new List<Fighter>() { AllCharacter[Random.Range(0, AllCharacter.Count)] };
+            List<Fighter> list = new(AllCharacter);
+            list.Remove(caster);
+            selectedTargets = new List<Fighter>() { list[Random.Range(0, list.Count)] };
             if (!selectedSkill.skillData.isCorpseTargetToo)
             {
                do
                {
-                  selectedTargets = new List<Fighter>() { AllCharacter[Random.Range(0, AllCharacter.Count)] };
+                  selectedTargets = new List<Fighter>() { list[Random.Range(0, list.Count)] };
                } while (selectedTargets[0].isDead);
             }
             break;

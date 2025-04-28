@@ -2,10 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System;
-using static UnityEngine.GraphicsBuffer;
-using Unity.VisualScripting;
-using System.Numerics;
-using UnityEngine.UI;
+using Random = UnityEngine.Random;
 
 public class SkillDB
 {
@@ -58,6 +55,7 @@ public class SkillDB
       AddSkillCast("Summon the Shadow", SummonShadowCast);
       AddSkillCast("Purple Haze", PurpleHazeCast, PurpleHazeCalc);
       AddSkillCast("Curse of Destruction", CurseDestructionCast);
+      AddSkillCast("Surge of Darkness", SurgeDarknessCast, SurgeDarknessCalc);
 
       AddSkillPassive("Empty");
       AddSkillPassive("Call of the Pack", CallPackPassive, CallPackReverse);
@@ -164,8 +162,10 @@ public class SkillDB
                //ѕримен€ем к врагу случайный скилл из пула прокл€тий
                var pool = GetPoolByName("CurseSkills");
                var list = pool.activeSkillList;
-               var skill = Instance.GetSkillByName(list[UnityEngine.Random.Range(0,list.Count)].name);
-               caster.CastSkill(new List<Fighter> { caster, target }, false, skill);
+               var skill = Instance.GetSkillByName(list[Random.Range(0,list.Count)].name);
+
+               Fight.additionalCastSkills.Insert(0, new(new List<Fighter> { target }, false, skill));
+               //caster.CastSkill(new List<Fighter> { caster, target }, false, skill);
             }
          }
       }
@@ -216,7 +216,7 @@ public class SkillDB
       caster.buffs.Add(Fighter.Buff.DoubleNextAttack);
    }
 
-   //Waiting
+   //Curse of Destraction
    public void CurseDestructionCast(List<Fighter> targets)
    {
       var target = targets[1];
@@ -346,14 +346,49 @@ public class SkillDB
 
             var pool = GetPoolByName("CurseSkills");
             var listSk = pool.activeSkillList;
-            var skill = Instance.GetSkillByName(listSk[UnityEngine.Random.Range(0, listSk.Count)].name);
-            caster.CastSkill(new List<Fighter> { caster, target }, false, skill);
+            var skill = Instance.GetSkillByName(listSk[Random.Range(0, listSk.Count)].name);
+            Fight.additionalCastSkills.Insert(0, new(new List<Fighter> { target }, false, skill));
+            //caster.CastSkill(new List<Fighter> { caster, target }, false, skill);
          }
       }
    }
    public List<int> PurpleHazeCalc(List<Fighter> targets)
    {
       return new List<int> { ((int)SaveLoadController.runInfo.currentLocation + 1) * 10 };
+   }
+
+   //Surge of Darkness
+   public void SurgeDarknessCast(List<Fighter> targets)
+   {
+      var list = SurgeDarknessCalc(targets);
+      int dmg = list[0];
+      int chance = list[1];
+
+      var caster = targets[0];
+      var target = targets[1];
+
+      if (!target.isDead)
+      {
+         target.TakeDmg(dmg);
+
+         if(Random.Range(0, 100) < chance)
+         {
+            var pool = GetPoolByName("CurseSkills");
+            var listSk = pool.activeSkillList;
+            var skill = Instance.GetSkillByName(listSk[Random.Range(0, listSk.Count)].name);
+            Fight.additionalCastSkills.Insert(0, new(new List<Fighter> { target }, false, skill));
+            //caster.CastSkill();
+         }
+      }
+   }
+   public List<int> SurgeDarknessCalc(List<Fighter> targets)
+   {
+      var caster = targets[0];
+      int wisdow = caster.wisdow + caster.bonus_wisdow;
+      int dmg = 1 + wisdow;
+      int chance = wisdow * 10;
+      if (chance > 100) chance = 100;
+      return new List<int> { dmg, chance };
    }
 
    //Call of the Pack

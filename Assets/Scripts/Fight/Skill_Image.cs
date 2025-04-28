@@ -8,6 +8,7 @@ using UnityEngine.UI;
 public class Skill_Image : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 {
    public static Skill externalSkill = null;
+   public static Fighter externalCaster = null;
    public static bool isDisableExSkill;
 
    public Skill skill;
@@ -37,13 +38,15 @@ public class Skill_Image : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
       startPos_part1 = part1.transform.position;
       startPos_part2 = part2.transform.position;
       startPosVeil = Veil.transform.position;
+      externalSkill = null;
+      externalCaster = null;
    }
 
    private void Update()
    {
-      if (externalSkill != null)
+      if (externalSkill != null && externalCaster != null)
       { 
-         Enter(true, externalSkill); 
+         Enter(true, externalCaster, externalSkill); 
          externalSkill = null; 
       }
 
@@ -67,7 +70,7 @@ public class Skill_Image : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
       if (Fight.isEnemyTurn) return;
       isOnCard = true;
 
-      Enter(false);
+      Enter(false, Fight.SelectedCharacter());
    }
 
    public void Action()
@@ -77,7 +80,7 @@ public class Skill_Image : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
       Fight.selectedSkill = skill;
       isEnabled = false;
 
-      Enter(false);
+      Enter(false, Fight.SelectedCharacter());
       if (wait != null) 
          StopCoroutine(wait);
       wait = StartCoroutine(Wait());
@@ -94,13 +97,13 @@ public class Skill_Image : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
 
 
 
-   public void Enter(bool external, Skill externalSkill = null)
+   public void Enter(bool external, Fighter caster, Skill externalSkill = null)
    {
       //StartCoroutine(Open(external, externalSkill));
       if (external)
-         HandAnimationManager.Instance.RequestOpen(externalSkill);
+         HandAnimationManager.Instance.RequestOpen(externalSkill, caster);
       else
-         HandAnimationManager.Instance.RequestOpen(skill);
+         HandAnimationManager.Instance.RequestOpen(skill, caster);
    }
    public void Exit()
    {
