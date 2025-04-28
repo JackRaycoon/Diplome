@@ -89,8 +89,8 @@ public class EventData : ScriptableObject
 
 
    [Header("Награда")]
-   public int minGold;
-   public int maxGold;
+   public int minSoul;
+   public int maxSoul;
 
    public List<SkillSO> rewardSkillList = new();
    [Tooltip("Пулл скиллов которые могут быть выданы, обычно выдаётся только 1 отсюда, список выше игнорируется")]

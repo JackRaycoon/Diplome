@@ -54,6 +54,7 @@ MonoBehaviour:
     \u043E\u0442\u0441\u044E\u0434\u0430."
   isHidden: 0
   choices: []
+  checkTrap: 0
   enemies: []
   enemiesCount: 
   isFog: 0
@@ -63,8 +64,8 @@ MonoBehaviour:
   minEnemyCount: 0
   maxEnemyCount: 0
   enemiesChances: []
-  minGold: 0
-  maxGold: 0
+  minSoul: 5
+  maxSoul: 10
   rewardSkillList:
   - {fileID: 11400000, guid: 758bde9bf38617b48822854418f1e5d0, type: 2}
   rewardSkillPool: {fileID: 0}

@@ -29,7 +29,7 @@
          this.slotID = slotID;
       }
 
-      public int goldCount = 0;
+      public int souls = 0;
 
       [NonSerialized]
       public List<PlayableCharacter> PlayerTeam = new();

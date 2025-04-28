@@ -105,19 +105,19 @@ public class Room3D : MonoBehaviour
          room.eventRewardText += "Получено: ";
          bool isNext = false;
 
-         if(data.minGold != 0)
+         if (data.minSoul != 0)
          {
-            int rewardCountGold = Random.Range(data.minGold, data.maxGold + 1);
-            if(rewardCountGold != 0)
+            int rewardCountSoul = Random.Range(data.minSoul, data.maxSoul + 1);
+            if(rewardCountSoul != 0)
             {
                if (isNext)
                {
                   room.eventRewardText += ", ";
                }
-               room.eventRewardText += $"{rewardCountGold} золота";
+               room.eventRewardText += $"{rewardCountSoul} {SoulWord(rewardCountSoul)}";
                isNext = true;
 
-               SaveLoadController.runInfo.goldCount += rewardCountGold;
+               SaveLoadController.runInfo.souls += rewardCountSoul;
             }
          }
          if (data.strengthRewardMax != 0)
@@ -442,7 +442,36 @@ public class Room3D : MonoBehaviour
       return roll < scaledChance;
    }
 
+   string SoulWord(int rewardCountSoul)
+   {
+      string soulWord;
+      int lastDigit = rewardCountSoul % 10;
+      int lastTwoDigits = rewardCountSoul % 100;
 
+      if (lastTwoDigits >= 11 && lastTwoDigits <= 14)
+      {
+         soulWord = "душ";
+      }
+      else
+      {
+         switch (lastDigit)
+         {
+            case 1:
+               soulWord = "душа";
+               break;
+            case 2:
+            case 3:
+            case 4:
+               soulWord = "души";
+               break;
+            default:
+               soulWord = "душ";
+               break;
+         }
+      }
+
+      return soulWord;
+   }
    private void Shuffle(List<SkillSO> list, List<float> list2, bool ignoreList2)
    {
       if (list.Count != list2.Count && !ignoreList2)

@@ -67,8 +67,8 @@ MonoBehaviour:
   minEnemyCount: 0
   maxEnemyCount: 0
   enemiesChances: []
-  minGold: 1
-  maxGold: 3
+  minSoul: 1
+  maxSoul: 3
   rewardSkillList: []
   rewardSkillPool: {fileID: 0}
   allSkillsFromList: 0

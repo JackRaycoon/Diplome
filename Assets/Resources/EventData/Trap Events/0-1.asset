@@ -33,19 +33,20 @@ MonoBehaviour:
   choices:
   - {fileID: 11400000, guid: dcba069d51ba5ca44a020ef307c93171, type: 2}
   - {fileID: 11400000, guid: 2daf0c00df101f54a89ce8b7c85fcb28, type: 2}
+  checkTrap: 0
   enemies:
-  - {fileID: 0}
+  - {fileID: 11400000, guid: da9e1b5e07029ce45851c5a936727cfe, type: 2}
   enemiesCount: 
   isFog: 1
   isNotOver: 1
-  overHpProcent: 10
+  overHpProcent: 20
   randomEnemies: 1
   minEnemyCount: 3
   maxEnemyCount: 6
   enemiesChances:
   - 100
-  minGold: 0
-  maxGold: 0
+  minSoul: 0
+  maxSoul: 0
   rewardSkillList: []
   rewardSkillPool: {fileID: 0}
   allSkillsFromList: 0

@@ -297,28 +297,28 @@ public class DungeonGenerator : MonoBehaviour
    {
       Combat,
       Good,
-      Bad,
+      Trap,
       Class
    }
 
    public EventData GenerateRandomEvent(Room room, int totalEventRooms)
    {
       string basePath = "EventData/";
-      string[] folders = { "Combat Events", "Good Events", "Bad Events", "Class Events" };
+      string[] folders = { "Combat Events", "Good Events", "Trap Events", "Class Events" };
       Dictionary<EventCategory, string> folderMap = new()
     {
         { EventCategory.Combat, "Combat Events" },
         { EventCategory.Good, "Good Events" },
-        { EventCategory.Bad, "Bad Events" },
+        { EventCategory.Trap, "Trap Events" },
         { EventCategory.Class, $"Class Events/{SaveLoadController.runInfo.PlayerTeam[0].Data.charClass} Events" }
     };
 
       // Распределение по весу
       Dictionary<EventCategory, float> weights = new()
     {
-        { EventCategory.Combat, 0.4f },
+        { EventCategory.Combat, 0.3f },
         { EventCategory.Good, 0.2f },
-        { EventCategory.Bad,  0.2f },
+        { EventCategory.Trap,  0.3f },
         { EventCategory.Class, 0.2f }
     };
 

@@ -24,7 +24,7 @@ public class MagicScrollFiller : MonoBehaviour
 
       heroPortrate.sprite = hero.Portrait;
 
-      int[] values = { hero.strengh, hero.agility, hero.wisdow, hero.constitution, hero.defence, SaveLoadController.runInfo.goldCount };
+      int[] values = { hero.strengh, hero.agility, hero.wisdow, hero.constitution, hero.defence, SaveLoadController.runInfo.souls };
       string text = characteristicsText.text;
       characteristicsText.text = string.Format(text, values.Cast<object>().ToArray());
 
