@@ -269,6 +269,7 @@ public class SkillDB
          else
          {
             target = Fight.RandomEnemy(targets[0]);
+            if (target.isDead) break;
             i--;
          }
       }
@@ -288,6 +289,7 @@ public class SkillDB
       var target = Fight.RandomEnemy(caster);
       bool isEnemyCast = Fight.IsEnemy(Fight.PlayerTeam[0], caster);
 
+      if (target.isDead) return;
       Fighter shadow = new("Shadow")
       {
          strengh = target.strengh / 2,

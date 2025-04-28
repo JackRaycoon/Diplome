@@ -20,6 +20,7 @@ public class EventData : ScriptableObject
 
    [Tooltip("StartEvent - Стартовый для персонажа, сюжетный?\n" +
       "EnteranceEvent - Появляется после входа в комнату, старт ивента\n" +
+      "Trap - Требует 2 выбора - первый для попавшего в ловушку, второй для избегания ловушки\n" +
       "EventPart - Часть ивента, по сути после любого действия с ивентом мы переходим к его следующей части")]
    public EventType eventType;
 
@@ -29,6 +30,8 @@ public class EventData : ScriptableObject
    [Tooltip("Текст на кнопку выбора, если это часть ивента")]
    [TextArea]
    public string textChoice;
+   [Tooltip("Скрытый ли это выбор?")]
+   public bool isHidden;
 
    [Tooltip("Выборы для ивента, если пустой значит ивент закончился")]
    public List<EventData> choices;
@@ -40,7 +43,8 @@ public class EventData : ScriptableObject
       EnteranceEvent, //Появляется после входа в комнату, старт ивента
       FightEvent, //Боевой ивент
       BossEvent, //Босс локации
-      BossWin //Ивент победы над боссом, будет появляться переход на следующую локацию
+      BossWin, //Ивент победы над боссом, будет появляться переход на следующую локацию
+      Trap //Ловушка ли это, требуется 2 ивента для попадания в ловушку и её избегания
    }
 
    [Header("Бой")]

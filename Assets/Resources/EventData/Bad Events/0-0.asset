@@ -14,17 +14,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   eventID: 0
   eventID_Part: 0
-  eventName: "\u0412\u043E\u043B\u043A\u0438!"
-  eventText: "\u0412\u0441\u0442\u0440\u0435\u0447\u0430 \u0441 \u0432\u043E\u043B\u043A\u0430\u043C\u0438"
-  eventType: 3
+  eventName: "\u041B\u043E\u0432\u0443\u0448\u043A\u0430"
+  eventText: 
+  eventType: 6
   isLockableEvent: 1
   textChoice: 
   isHidden: 0
   choices:
-  - {fileID: 11400000, guid: a166038a09f7a27418deb1301a5546a7, type: 2}
-  enemies:
-  - {fileID: 11400000, guid: d7ec80e4941c95a4397043c4da0ef60e, type: 2}
-  enemiesCount: 0100
+  - {fileID: 11400000, guid: 0c339a4ba40d31a4f8ae03c6a58c9b45, type: 2}
+  - {fileID: 11400000, guid: 5a033f767c4ad7e4fb9a0cb192f4bc8c, type: 2}
+  enemies: []
+  enemiesCount: 
   isFog: 0
   randomEnemies: 0
   minEnemyCount: 0

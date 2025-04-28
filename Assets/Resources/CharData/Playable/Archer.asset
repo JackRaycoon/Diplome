@@ -46,7 +46,7 @@ MonoBehaviour:
   _availableSkills:
   - {fileID: 11400000, guid: 3c5d6f6028f91a84286940f47f5f1dd7, type: 2}
   strengh: 1
-  agility: 5
+  agility: 50
   wisdow: 1
   constitution: 3
   defence: 0

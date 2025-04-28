@@ -30,6 +30,7 @@ MonoBehaviour:
     \u0438 \u043E\u0431\u044B\u0441\u043A\u0430\u0442\u044C \u0441\u0443\u043C\u043A\u0443.
     \u041B\u0443\u0447\u0448\u0435 \u043D\u0435 \u043E\u0441\u0442\u0430\u0432\u043B\u044F\u0442\u044C
     \u0441\u043B\u0435\u0434\u043E\u0432."
+  isHidden: 0
   choices: []
   enemies: []
   enemiesCount: 
@@ -40,12 +41,11 @@ MonoBehaviour:
   enemiesChances: []
   minGold: 1
   maxGold: 10
-  rewardSkillList:
-  - {fileID: 11400000, guid: be46c839f21fa0042a9bece6406cb419, type: 2}
+  rewardSkillList: []
   rewardSkillPool: {fileID: 0}
   allSkillsFromList: 0
-  chanceToReceiveSkill:
-  - 100
+  ignoreSkillPools: 0
+  chanceToReceiveSkill: []
   randomRewardTarget: 0
   strengthRewardMin: 0
   strengthRewardMax: 0

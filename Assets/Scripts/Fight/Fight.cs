@@ -728,6 +728,7 @@ public class Fight : MonoBehaviour
             i--;
          }
       }
+      if (enemies.Count == 0) return EnemyTeam[0];
       return enemies[Random.Range(0, enemies.Count)];
    }
 

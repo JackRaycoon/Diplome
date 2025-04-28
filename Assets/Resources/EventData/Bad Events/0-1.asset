@@ -10,21 +10,19 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 378e67e22a5d3a546933c1bef4f501bb, type: 3}
-  m_Name: 0-0
+  m_Name: 0-1
   m_EditorClassIdentifier: 
   eventID: 0
-  eventID_Part: 0
-  eventName: "\u0412\u043E\u043B\u043A\u0438!"
-  eventText: "\u0412\u0441\u0442\u0440\u0435\u0447\u0430 \u0441 \u0432\u043E\u043B\u043A\u0430\u043C\u0438"
-  eventType: 3
-  isLockableEvent: 1
+  eventID_Part: 1
+  eventName: "\u041B\u043E\u0432\u0443\u0448\u043A\u0430: \u041F\u043E\u043F\u0430\u043B\u0441\u044F"
+  eventText: 
+  eventType: 0
+  isLockableEvent: 0
   textChoice: 
   isHidden: 0
-  choices:
-  - {fileID: 11400000, guid: a166038a09f7a27418deb1301a5546a7, type: 2}
-  enemies:
-  - {fileID: 11400000, guid: d7ec80e4941c95a4397043c4da0ef60e, type: 2}
-  enemiesCount: 0100
+  choices: []
+  enemies: []
+  enemiesCount: 
   isFog: 0
   randomEnemies: 0
   minEnemyCount: 0

@@ -15,6 +15,7 @@ public class Room3D : MonoBehaviour
    public List<TextMeshProUGUI> eventBtnsText;
    public List<GameObject> eventBtns;
    public GameObject fightBtn;
+   public GameObject trapBtn;
 
    private EventData data;
 
@@ -51,6 +52,7 @@ public class Room3D : MonoBehaviour
    {
 
       if ((data.eventType == EventData.EventType.EnteranceEvent ||
+         data.eventType == EventData.EventType.Trap ||
          data.eventType == EventData.EventType.FightEvent ||
          data.eventType == EventData.EventType.BossEvent) &&
          SaveLoadController.runInfo.currentRoom != room)
@@ -386,12 +388,31 @@ public class Room3D : MonoBehaviour
          return;
       }
 
-      
+
       //Кнопки выбора
+      trapBtn.SetActive(data.eventType == EventData.EventType.Trap);
+      if(data.eventType == EventData.EventType.Trap)
+      {
+         foreach (var go in eventBtns) go.SetActive(false);
+
+         return;
+      }
       int i = 0;
       foreach (var eventData in data.choices)
       {
-         eventBtns[i].SetActive(true);
+         bool isVisible = true;
+         if (eventData.isHidden)
+         {
+            //Проверка мудрости увидел ли скрытый вариант
+            var mainChar = SaveLoadController.runInfo.PlayerTeam[0];
+            int chance = (mainChar.wisdow + mainChar.bonus_wisdow) * Fight.procentPerOneCharacteristic;
+            if (chance > Fight.limitProcent) chance = Fight.limitProcent;
+            int res = Random.Range(0, 100);
+            isVisible = res < chance;
+         }
+         if (i == room.hiddenVariant.Count)
+            room.hiddenVariant.Add(isVisible);
+         eventBtns[i].SetActive(room.hiddenVariant[i]);
          eventBtnsText[i].text = eventData.textChoice;
          i++;
       }
@@ -459,19 +480,32 @@ public class Room3D : MonoBehaviour
 
    public void ChoiceBtnClick(int choiceID)
    {
-      if(choiceID == 3)
+      switch (choiceID)
       {
-         SaveLoadController.Save();
-         Fight.eventRoom = room;
-         SaveLoadController.StartFight(enemiesForFight);
-      }
-      else
-      {
-         room.eventData = data.choices[choiceID];
-         data = room.eventData;
-         room.eventName = $"{data.eventID}-{data.eventID_Part}";
-         FillEvent();
-         SaveLoadController.Save();
+         case 3:
+            SaveLoadController.Save();
+            Fight.eventRoom = room;
+            SaveLoadController.StartFight(enemiesForFight);
+            break;
+         case 4:
+            //Проверка на ловкость чтобы понять избежал ли ловушки
+            var mainChar = SaveLoadController.runInfo.PlayerTeam[0];
+            int chance = (mainChar.agility + mainChar.bonus_agility) * Fight.procentPerOneCharacteristic;
+            if (chance > Fight.limitProcent) chance = Fight.limitProcent;
+            int res = Random.Range(0, 100);
+            room.eventData = (res < chance) ? data.choices[1] : data.choices[0];
+            data = room.eventData;
+            room.eventName = $"{data.eventID}-{data.eventID_Part}";
+            FillEvent();
+            SaveLoadController.Save();
+            break;
+         default:
+            room.eventData = data.choices[choiceID];
+            data = room.eventData;
+            room.eventName = $"{data.eventID}-{data.eventID_Part}";
+            FillEvent();
+            SaveLoadController.Save();
+            break;
       }
    }
 }

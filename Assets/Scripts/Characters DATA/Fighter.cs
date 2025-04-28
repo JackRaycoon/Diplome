@@ -104,30 +104,33 @@ public class Fighter
 
    public bool CheckSkillCount(SkillSO.SkillTarget st)
    {
-      int slots, cur_count;
+      int slots;
       bool isPassive = st == SkillSO.SkillTarget.Passive;
       if (isPassive)
       {
-         slots = 2 + wisdow / 3;
+         slots = PassiveSkillEmptySlots();
+         //slots = 2 + wisdow / 2;
+         //if (slots > 7) slots = 7; //7 от статов + 1 от зелья = максимум 8
 
-         cur_count = 0;
-         foreach(var skill in skills)
-         {
-            if (skill.skillData.skill_target == SkillSO.SkillTarget.Passive) cur_count++;
-         }
+         //cur_count = 0;
+         //foreach(var skill in skills)
+         //{
+         //   if (skill.skillData.skill_target == SkillSO.SkillTarget.Passive) cur_count++;
+         //}
       }
       else
       {
-         slots = 3 + agility / 10;
-         if (slots > 5) slots = 5;
+         slots = ActiveSkillEmptySlots();
+         //slots = 3 + agility / 5;
+         //if (slots > 5) slots = 5; //5 от статов + 1 от зелья = максимум 6
 
-         cur_count = 0;
-         foreach (var skill in skills)
-         {
-            if (skill.skillData.skill_target != SkillSO.SkillTarget.Passive) cur_count++;
-         }
+         //cur_count = 0;
+         //foreach (var skill in skills)
+         //{
+         //   if (skill.skillData.skill_target != SkillSO.SkillTarget.Passive) cur_count++;
+         //}
       }
-         return slots > cur_count;
+         return slots > 0;
    }
 
    public int ActiveSkillEmptySlots()
@@ -148,6 +151,7 @@ public class Fighter
    {
       int slots, cur_count;
       slots = 2 + wisdow / 2;
+      if (slots > 7) slots = 7; //7 от статов + 1 от зелья = максимум 8
 
       cur_count = 0;
       foreach (var skill in skills)

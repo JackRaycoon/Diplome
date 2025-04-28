@@ -46,6 +46,7 @@ MonoBehaviour:
   eventType: 0
   isLockableEvent: 1
   textChoice: 
+  isHidden: 0
   choices:
   - {fileID: 11400000, guid: 81de94414723dec4ab6beb2c55fa2892, type: 2}
   - {fileID: 11400000, guid: 07db745ed0e661e49b192e462f93a32e, type: 2}
@@ -58,13 +59,11 @@ MonoBehaviour:
   enemiesChances: []
   minGold: 0
   maxGold: 0
-  rewardSkillList:
-  - {fileID: 11400000, guid: ac41a90a055002643b9feb98d22e3380, type: 2}
+  rewardSkillList: []
   rewardSkillPool: {fileID: 0}
   allSkillsFromList: 0
   ignoreSkillPools: 0
-  chanceToReceiveSkill:
-  - 100
+  chanceToReceiveSkill: []
   randomRewardTarget: 0
   strengthRewardMin: 0
   strengthRewardMax: 0
