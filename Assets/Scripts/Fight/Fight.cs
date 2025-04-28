@@ -60,8 +60,8 @@ public class Fight : MonoBehaviour
 
    public static Room eventRoom; //Откуда запустилась битва
 
-   private readonly int procentPerOneCharacteristic = 20; // Для проверок влияния хар-к
-   private readonly int limitProcent = 80;
+   public static readonly int procentPerOneCharacteristic = 5; // Для проверок влияния хар-к
+   public static readonly int limitProcent = 80;
    private void Start()
    {
       Cursor.lockState = CursorLockMode.None;
@@ -511,6 +511,11 @@ public class Fight : MonoBehaviour
             EnemyTeam.Remove(chara);
       }
 
+      if (isDoubleTurn && whoMakeTurn == PlayerTeam[0])
+      {
+         PlayerTeam[0].isDoubleTurn = false;
+      }
+
       if (!isDoubleTurn && whoMakeTurn == PlayerTeam[0])
       {
          //Проверка на двойной ход:
@@ -538,7 +543,8 @@ public class Fight : MonoBehaviour
          isDoubleTurn = true;
       }
 
-      PlayerUITeam = new(PlayerTeam);
+
+         PlayerUITeam = new(PlayerTeam);
       EnemyUITeam = new(EnemyTeam);
       UpdatePortrait();
       FightUIController.hardUpdate = true;

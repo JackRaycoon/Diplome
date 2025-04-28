@@ -303,6 +303,18 @@ public class Fighter
 
    public void Death()
    {
+      if(this == SaveLoadController.runInfo.PlayerTeam[0])
+      {
+         //Проверка на бессмертие:
+         int chance = (strengh + bonus_strengh) * Fight.procentPerOneCharacteristic;
+         if (chance > Fight.limitProcent) chance = Fight.limitProcent;
+         int res = Random.Range(0, 100);
+         if(res < chance)
+         {
+            hp = 1;
+            return;
+         }
+      }
       isDead = true;
 
       foreach(Skill skill in skills)
