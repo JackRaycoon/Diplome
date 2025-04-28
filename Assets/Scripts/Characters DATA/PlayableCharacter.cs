@@ -7,6 +7,7 @@ using UnityEngine;
 public class PlayableCharacter : Fighter
 {
    public byte currentPhase = 1; //1 - человек, 2 - получеловек, 3 - монстр
+   public bool isDoubleTurn = false;
 
    public PlayableCharacter(string name) : base("Playable/" + name)
    {

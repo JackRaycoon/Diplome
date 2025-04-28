@@ -60,7 +60,7 @@ public class Fight : MonoBehaviour
 
    public static Room eventRoom; //Откуда запустилась битва
 
-   private readonly int procentPerOneCharacteristic = 5; // Для проверок влияния хар-к
+   private readonly int procentPerOneCharacteristic = 20; // Для проверок влияния хар-к
    private readonly int limitProcent = 80;
    private void Start()
    {
@@ -312,7 +312,7 @@ public class Fight : MonoBehaviour
             switch (buff)
             {
                case Fighter.Buff.QuickRebuff:
-                  character.CastSkill(new List<Fighter>() { RandomEnemy(character) }, SkillDB.Instance.GetSkillByName("Basic Attack"));
+                  character.CastSkill(new List<Fighter>() { RandomEnemy(character) }, false, SkillDB.Instance.GetSkillByName("Basic Attack"));
                   break;
             }
          }
@@ -337,12 +337,15 @@ public class Fight : MonoBehaviour
 
    IEnumerator PlayerTurn()
    {
+      Fighter caster = null;
       if (allPlayerCharactersDoTurn) goto Skip;
       SelectedCharacterID_Reset();
       StartTurn:
       selectedSkill = null;
       selectedTarget = null;
       CardShowerReset();
+
+      caster = SelectedCharacter();
 
       //Ждём пока не выберется скилл
       ChangeSkill:
@@ -351,7 +354,7 @@ public class Fight : MonoBehaviour
       while (selectedSkill == null) yield return null;
 
       //Кто отображается в списке персонажей справа
-      PlayerUITeam = new List<Fighter>() { SelectedCharacter() };
+      PlayerUITeam = new List<Fighter>() { caster };
       switch (selectedSkill.skillData.skill_target)
       {
          case SkillSO.SkillTarget.Solo_Enemy:
@@ -369,7 +372,7 @@ public class Fight : MonoBehaviour
             EnemyUITeam = new List<Fighter>(PlayerTeam);
             break;
          case SkillSO.SkillTarget.Caster:
-            EnemyUITeam = new List<Fighter>() { SelectedCharacter() };
+            EnemyUITeam = new List<Fighter>() { caster };
             break;
             
       }
@@ -397,7 +400,7 @@ public class Fight : MonoBehaviour
          }
       }
       //Выбираем цели для каста
-      var selectedTargets = ChooseTarget(selectedSkill, SelectedCharacter(), selectedTarget);
+      var selectedTargets = ChooseTarget(selectedSkill, caster, selectedTarget);
       
       FightUIController.allInteractable = false;
       _selected = false;
@@ -407,9 +410,9 @@ public class Fight : MonoBehaviour
       cast = true;
       UpdatePortrait();
 
-      SelectedCharacter().CastSkill(selectedTargets, selectedSkill);
+      caster.CastSkill(selectedTargets, true, selectedSkill);
 
-      AlreadyTurn.Add(SelectedCharacter());
+      AlreadyTurn.Add(caster);
 
       yield return new WaitForSeconds(2f);
 
@@ -426,7 +429,7 @@ public class Fight : MonoBehaviour
 
       Skip:
       CardShowerReset();
-      CheckRoundChange();
+      CheckRoundChange(caster);
       if (!isWin && !isLose) 
       {
          if (isAllDoTurn) StartCoroutine(PlayerTurn());
@@ -436,6 +439,7 @@ public class Fight : MonoBehaviour
 
    IEnumerator EnemyTurn()
    {
+      Fighter caster = null;
       if (allEnemiesDoTurn) goto Skip;
       var notTurnEnemies = new List<Fighter>();
       foreach (Fighter figh in EnemyTeam)
@@ -451,7 +455,7 @@ public class Fight : MonoBehaviour
 
       yield return new WaitForSeconds(2f);
 
-      var selectedEnemy = notTurnEnemies[Random.Range(0, notTurnEnemies.Count)];
+      caster = notTurnEnemies[Random.Range(0, notTurnEnemies.Count)];
 
       //EnemyUITeam = new List<Fighter>() { selectedEnemy };
       //UpdatePortrait();
@@ -462,35 +466,36 @@ public class Fight : MonoBehaviour
          target = PlayerTeam[Random.Range(0, PlayerTeam.Count)];
       } while (target.isDead); //выбираем не мёртвую цель
 
-      var selectedTargets = ChooseTarget(selectedEnemy.Intension, selectedEnemy, target);
+      var selectedTargets = ChooseTarget(caster.Intension, caster, target);
       
-      Debug.Log("Использует умение: " + selectedEnemy.Intension.skillData._name);
+      Debug.Log("Использует умение: " + caster.Intension.skillData._name);
       PlayerUITeam = selectedTargets;
-      EnemyUITeam = new List<Fighter> { selectedEnemy };
+      EnemyUITeam = new List<Fighter> { caster };
       cast = true;
-      Skill_Image.externalSkill = selectedEnemy.Intension;
+      Skill_Image.externalSkill = caster.Intension;
       UpdatePortrait();
 
       yield return new WaitForSeconds(2f);
 
-      selectedEnemy.CastSkill(selectedTargets);
+      caster.CastSkill(selectedTargets);
       yield return null;
       cast = false;
       Skill_Image.isDisableExSkill = true;
       yield return null;
       PlayerUITeam = new List<Fighter>(PlayerTeam);
       EnemyUITeam = new List<Fighter>(EnemyTeam);
-      AlreadyTurn.Add(selectedEnemy);
+      AlreadyTurn.Add(caster);
       FightUIController.allDisable = false;
 
       UpdatePortrait();
       isEnemyTurn = false;
       Skip:
-      CheckRoundChange();
+      CheckRoundChange(caster);
       if(!isWin && !isLose) StartCoroutine(PlayerTurn());
    }
 
-   private void CheckRoundChange()
+   bool isDoubleTurn = false;
+   private void CheckRoundChange(Fighter whoMakeTurn)
    {
       //Проверка надо ли удалять трупы
       for (int i = 0; i < PlayerTeam.Count; i++)
@@ -506,11 +511,37 @@ public class Fight : MonoBehaviour
             EnemyTeam.Remove(chara);
       }
 
+      if (!isDoubleTurn && whoMakeTurn == PlayerTeam[0])
+      {
+         //Проверка на двойной ход:
+         var mainChar = PlayerTeam[0];
+         int chance = (mainChar.agility + mainChar.bonus_agility) * procentPerOneCharacteristic;
+         if (chance > limitProcent) chance = limitProcent;
+         int res = Random.Range(0, 100);
+         PlayerTeam[0].isDoubleTurn = res < chance;
+         if (res < chance)
+         {
+            AlreadyTurn.Remove(mainChar);
+            //Кулдауны
+            var keys = new List<Skill>(mainChar.cooldowns.Keys);
+            for (int i = 0; i < keys.Count; i++)
+            {
+               Skill skill = keys[i];
+               mainChar.cooldowns[skill]--;
+
+               if (mainChar.cooldowns[skill] == 0)
+               {
+                  mainChar.cooldowns.Remove(skill);
+               }
+            }
+         }
+         isDoubleTurn = true;
+      }
+
       PlayerUITeam = new(PlayerTeam);
       EnemyUITeam = new(EnemyTeam);
       UpdatePortrait();
       FightUIController.hardUpdate = true;
-
 
       allPlayerCharactersDoTurn = true;
       foreach (Fighter fighter in PlayerTeam)
@@ -547,6 +578,8 @@ public class Fight : MonoBehaviour
          return;
       }
       isAllDoTurn = allEnemiesDoTurn && allPlayerCharactersDoTurn;
+
+
       if (isAllDoTurn)
       {
          //Всё что нужно делать в конце раунда из баффов
@@ -568,6 +601,8 @@ public class Fight : MonoBehaviour
          AlreadyTurn.Clear();
          allEnemiesDoTurn = false;
          allPlayerCharactersDoTurn = false;
+         isDoubleTurn = false;
+         PlayerTeam[0].isDoubleTurn = false;
          round_number++;
          Debug.Log("Следующий раунд: " + round_number.ToString());
 
@@ -602,13 +637,21 @@ public class Fight : MonoBehaviour
       playerHand.interactable = false;
       playerHand.blocksRaycasts = false;
 
-      if (isLose) WinLoseText.text = "К сожалению, вы проиграли";
-      else if (isWin) WinLoseText.text = "Поздравляю с победой";
-      eventRoom.eventData = eventRoom.eventData.choices[0];
-      var data = eventRoom.eventData;
-      eventRoom.eventName = $"{data.eventID}-{data.eventID_Part}";
-      SaveLoadController.EndFight();
-      SaveLoadController.Save();
+      if (isLose)
+      {
+         WinLoseText.text = "К сожалению, вы проиграли";
+         SaveLoadController.EndFight();
+         SaveLoadController.ClearSave(SaveLoadController.slot);
+      }
+      else if (isWin)
+      {
+         WinLoseText.text = "Поздравляю с победой";
+
+         eventRoom.eventData = eventRoom.eventData.choices[0];
+         var data = eventRoom.eventData;
+         eventRoom.eventName = $"{data.eventID}-{data.eventID_Part}";
+         SaveLoadController.Save();
+      }
    }
 
    public static void SelectCharacter(int id)
@@ -846,7 +889,6 @@ public class Fight : MonoBehaviour
    {
       if (isLose)
       {
-         SaveLoadController.ClearSave(SaveLoadController.slot);
          SceneManager.LoadScene(0);
       }
       else

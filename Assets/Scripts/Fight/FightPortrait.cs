@@ -14,7 +14,7 @@ public class FightPortrait : MonoBehaviour
    private TMP_Text hp_text;
    private Image hearth_icon, slider_filler;
 
-   public GameObject Dark, Skeleton;
+   public GameObject Dark, Skeleton, DoubleTurn;
 
    private void Start()
    {
@@ -43,6 +43,8 @@ public class FightPortrait : MonoBehaviour
 
          if (Dark.activeInHierarchy == isInteractable)
             Dark.SetActive(!isInteractable);
+
+         DoubleTurn.SetActive((character as PlayableCharacter).isDoubleTurn);
       }
       else
       {

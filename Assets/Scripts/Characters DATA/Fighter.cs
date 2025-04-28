@@ -176,7 +176,7 @@ public class Fighter
       }
    }
 
-   public void CastSkill(List<Fighter> targets, Skill skill = null)
+   public void CastSkill(List<Fighter> targets, bool needCooldown = true, Skill skill = null)
    {
       skill ??= Intension;
 
@@ -207,12 +207,12 @@ public class Fighter
       }
       skill.Cast(this, targets);
       var cooldown = skill.skillData.cooldown;
-      if (cooldown != 0)
+      if (cooldown != 0 && needCooldown)
          cooldowns.Add(skill, cooldown);
 
       if (isDoubleNextAttack)
       {
-         CastSkill(Fight.ChooseTarget(skill, this, Fight.RandomEnemy(this)), skill);
+         CastSkill(Fight.ChooseTarget(skill, this, Fight.RandomEnemy(this)), false, skill);
       }
    }
 

@@ -165,7 +165,7 @@ public class SkillDB
                var pool = GetPoolByName("CurseSkills");
                var list = pool.activeSkillList;
                var skill = Instance.GetSkillByName(list[UnityEngine.Random.Range(0,list.Count)].name);
-               caster.CastSkill(new List<Fighter> { caster, target }, skill);
+               caster.CastSkill(new List<Fighter> { caster, target }, false, skill);
             }
          }
       }
@@ -345,7 +345,7 @@ public class SkillDB
             var pool = GetPoolByName("CurseSkills");
             var listSk = pool.activeSkillList;
             var skill = Instance.GetSkillByName(listSk[UnityEngine.Random.Range(0, listSk.Count)].name);
-            caster.CastSkill(new List<Fighter> { caster, target }, skill);
+            caster.CastSkill(new List<Fighter> { caster, target }, false, skill);
          }
       }
    }
