@@ -60,7 +60,8 @@ public class Fight : MonoBehaviour
 
    public static Room eventRoom; //Откуда запустилась битва
 
-   private int procentPerOneCharacteristic = 5; // Для проверок влияния хар-к
+   private readonly int procentPerOneCharacteristic = 5; // Для проверок влияния хар-к
+   private readonly int limitProcent = 80;
    private void Start()
    {
       Cursor.lockState = CursorLockMode.None;
@@ -320,6 +321,7 @@ public class Fight : MonoBehaviour
       //Проверка на просмотр намерений:
       var mainChar = PlayerTeam[0];
       int chance = (mainChar.wisdow + mainChar.bonus_wisdow) * procentPerOneCharacteristic;
+      if (chance > limitProcent) chance = limitProcent;
       int res = Random.Range(0, 100);
       seeIntension = res < chance;
 
@@ -559,6 +561,7 @@ public class Fight : MonoBehaviour
          //Проверка на просмотр намерений:
          var mainChar = PlayerTeam[0];
          int chance = (mainChar.wisdow + mainChar.bonus_wisdow) * procentPerOneCharacteristic;
+         if (chance > limitProcent) chance = limitProcent;
          int res = Random.Range(0, 100);
          seeIntension = res < chance;
 
