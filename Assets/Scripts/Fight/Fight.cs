@@ -368,22 +368,32 @@ public class Fight : MonoBehaviour
       UpdatePortrait();
       FightUIController.hardUpdate = true;
 
-      //Кто стартует раунд?
+      // Кто стартует раунд?
       bool isPlayerFirst = true;
-      int agility = PlayerTeam[0].agility + PlayerTeam[0].bonus_agility;
+      int playerAgility = PlayerTeam[0].agility + PlayerTeam[0].bonus_agility;
+      int maxEnemyAgility = int.MinValue;
+
       foreach (var chara in EnemyTeam)
       {
-         if (chara.agility + chara.bonus_agility > agility)
-         {
-            isPlayerFirst = false;
-            break;
-         }
+         int enemyAgility = chara.agility + chara.bonus_agility;
+         if (enemyAgility > maxEnemyAgility)
+            maxEnemyAgility = enemyAgility;
+      }
+
+      if (maxEnemyAgility > playerAgility)
+      {
+         isPlayerFirst = false;
+      }
+      else if (maxEnemyAgility == playerAgility)
+      {
+         isPlayerFirst = Random.value < 0.5f;
       }
 
       if (isPlayerFirst)
          StartCoroutine(PlayerTurn());
       else
          StartCoroutine(EnemyTurn());
+
    }
 
    public void SelectedCharacterID_Reset()
