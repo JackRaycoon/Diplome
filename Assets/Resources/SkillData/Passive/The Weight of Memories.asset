@@ -27,5 +27,6 @@ MonoBehaviour:
   cooldown: 1
   isAllAvailable: 0
   isCorpseTargetToo: 0
+  isCurse: 1
   passiveBuff: 12
   globalPassiveBuff: 0

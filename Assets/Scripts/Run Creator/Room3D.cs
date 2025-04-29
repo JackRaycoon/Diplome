@@ -281,7 +281,7 @@ public class Room3D : MonoBehaviour
      
             room.eventRewardText += $" навык \"{skillData._name}\" Ц {skill.Description()}.\nЂ{skillData.quote}ї";
 
-            if (!target.CheckSkillCount(skill.skillData.skill_target))
+            if (!target.CheckSkillCount(skill.skillData))
                room.eventRewardText += " (места нет)";
 
             target.AddSkill(skill);

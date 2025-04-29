@@ -55,7 +55,7 @@ public class MagicScrollFiller : MonoBehaviour
          bool isPassive = skill.skillData.skill_target == SkillSO.SkillTarget.Passive && skill.skillData.name != "Empty";
          if (isPassive)
          {
-            if (isFirstPassive)
+            if (isFirstPassive && !skill.skillData.isCurse)
             {
                isFirstPassive = false;
             }
@@ -102,10 +102,78 @@ public class MagicScrollFiller : MonoBehaviour
       var grid = activeHand.GetComponent<GridLayoutGroup>();
       grid.constraintCount = 3;
 
-      bool isFirstActive = true;
+      bool isFirstCurse = true;
 
       List<Skill> skillList = new(hero.skills);
       int count = SaveLoadController.runInfo.PlayerTeam[0].PassiveSkillEmptySlots();
+
+      for (int i = 0; i < count; i++)
+      {
+         skillList.Add(SkillDB.Instance.GetSkillByName("Empty"));
+      }
+
+      foreach (var skill in skillList)
+      {
+         bool isCurse = skill.skillData.isCurse && skill.skillData.name != "Empty";
+         if (isCurse)
+         {
+            if (isFirstCurse)
+            {
+               isFirstCurse = false;
+            }
+            else
+               continue;
+         }
+         else if (skill.skillData.skill_target != SkillSO.SkillTarget.Passive)
+         {
+            continue;
+         }
+         GameObject go = Instantiate(cardPrefab, activeHand);
+         var filler = go.GetComponent<CardFiller>();
+         filler.skill = skill;
+         var btn = go.GetComponent<Button>();
+         btn.interactable = isCurse;
+         if (isCurse)
+         {
+            go.transform.SetSiblingIndex(0);
+            filler.DescriptionPanelOpenCloser();
+            filler.DescriptionUpdate("<size=17>Перейти к проклятьям</size>");
+            btn.onClick.AddListener(ToCurseSkills);
+         }
+         else
+            btn.onClick.AddListener(filler.DescriptionPanelOpenCloser);
+         createdCards.Add(go);
+      }
+
+      if (isFirstCurse)
+      {
+         var skill = SkillDB.Instance.GetSkillByName("Empty");
+         GameObject go = Instantiate(cardPrefab, activeHand);
+         var filler = go.GetComponent<CardFiller>();
+         filler.skill = skill;
+         var btn = go.GetComponent<Button>();
+         btn.interactable = true;
+         go.transform.SetSiblingIndex(0);
+         filler.DescriptionPanelOpenCloser();
+         filler.DescriptionUpdate("<size=17>Перейти к проклятьям</size>");
+         btn.onClick.AddListener(ToCurseSkills);
+         createdCards.Add(go);
+      }
+   }
+
+   private void ToCurseSkills()
+   {
+      if (activeHand.childCount > 0)
+      {
+         CreatedCardsClear();
+      }
+      var grid = activeHand.GetComponent<GridLayoutGroup>();
+      grid.constraintCount = 3;
+
+      bool isFirstActive = true;
+
+      List<Skill> skillList = new(hero.skills);
+      int count = SaveLoadController.runInfo.PlayerTeam[0].CurseSkillEmptySlots();
 
       for (int i = 0; i < count; i++)
       {
@@ -123,6 +191,10 @@ public class MagicScrollFiller : MonoBehaviour
             }
             else
                continue;
+         }
+         else if (!skill.skillData.isCurse && skill.skillData.name != "Empty")
+         {
+            continue;
          }
          GameObject go = Instantiate(cardPrefab, activeHand);
          var filler = go.GetComponent<CardFiller>();

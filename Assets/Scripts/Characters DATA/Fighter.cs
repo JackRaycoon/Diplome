@@ -78,7 +78,7 @@ public class Fighter
    public void AddSkill(SkillSO skillData)
    {
       var skill = SkillDB.Instance.GetSkillByName(skillData.name);
-      if (!skills.Contains(skill) && CheckSkillCount(skillData.skill_target))
+      if (!skills.Contains(skill) && CheckSkillCount(skillData))
       {
          skills.Add(skill);
          CheckAddSkillGlobal(skill);
@@ -86,7 +86,7 @@ public class Fighter
    }
    public void AddSkill(Skill skill)
    {
-      if (!skills.Contains(skill) && CheckSkillCount(skill.skillData.skill_target))
+      if (!skills.Contains(skill) && CheckSkillCount(skill.skillData))
       {
          skills.Add(skill);
          CheckAddSkillGlobal(skill);
@@ -95,20 +95,20 @@ public class Fighter
    public void AddSkill(string skillName)
    {
       var skill = SkillDB.Instance.GetSkillByName(skillName);
-      if (!skills.Contains(skill) && CheckSkillCount(skill.skillData.skill_target))
+      if (!skills.Contains(skill) && CheckSkillCount(skill.skillData))
       {
          skills.Add(skill);
          CheckAddSkillGlobal(skill);
       }
    }
 
-   public bool CheckSkillCount(SkillSO.SkillTarget st)
+   public bool CheckSkillCount(SkillSO data)
    {
       int slots;
-      bool isPassive = st == SkillSO.SkillTarget.Passive;
-      if (isPassive)
+      bool isPassive = data.skill_target == SkillSO.SkillTarget.Passive;
+      if (isPassive && data.isCurse)
       {
-         slots = PassiveSkillEmptySlots();
+         slots = CurseSkillEmptySlots();
          //slots = 2 + wisdow / 2;
          //if (slots > 7) slots = 7; //7 от статов + 1 от зелья = максимум 8
 
@@ -117,6 +117,10 @@ public class Fighter
          //{
          //   if (skill.skillData.skill_target == SkillSO.SkillTarget.Passive) cur_count++;
          //}
+      }
+      else if (isPassive)
+      {
+         slots = PassiveSkillEmptySlots();
       }
       else
       {
@@ -156,7 +160,21 @@ public class Fighter
       cur_count = 0;
       foreach (var skill in skills)
       {
-         if (skill.skillData.skill_target == SkillSO.SkillTarget.Passive) cur_count++;
+         if (skill.skillData.skill_target == SkillSO.SkillTarget.Passive
+            && !skill.skillData.isCurse) cur_count++;
+      }
+      return slots - cur_count;
+   }
+   public int CurseSkillEmptySlots()
+   {
+      int slots, cur_count;
+      slots = 8;
+
+      cur_count = 0;
+      foreach (var skill in skills)
+      {
+         if (skill.skillData.skill_target == SkillSO.SkillTarget.Passive
+            && skill.skillData.isCurse) cur_count++;
       }
       return slots - cur_count;
    }

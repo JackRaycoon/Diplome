@@ -18,6 +18,8 @@ public class SkillSO : ScriptableObject
    //public List<PlayableCharacter.Class> availableClasses;
    public bool isAllAvailable;
    public bool isCorpseTargetToo = false;
+   [Tooltip("явл€етс€ ли эта пассивка прокл€тием?")]
+   public bool isCurse;
 
    [Tooltip("ƒл€ пассивных скиллов, какой бафф они выдают в начале игры.\n" +
       "„исто дл€ того, чтобы программно было проще сделать.")]
