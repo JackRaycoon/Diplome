@@ -25,7 +25,7 @@ MonoBehaviour:
   skill_type: 8
   skill_elem: 6
   cooldown: 1
-  isAllAvailable: 0
+  isAllAvailable: 1
   isCorpseTargetToo: 0
   isCurse: 1
   passiveBuff: 12
