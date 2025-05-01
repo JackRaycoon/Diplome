@@ -11,6 +11,8 @@ public class MouseCamLook : MonoBehaviour
    float xRotation = 0f;
 
    public TextMeshProUGUI compassText;
+   public Transform miniMapTransform;
+   public Transform fullMapTransform;
 
    private Transform headBone;
    void Start()
@@ -51,5 +53,7 @@ public class MouseCamLook : MonoBehaviour
       string direction = directions[sector];
 
       compassText.text = direction;
+      miniMapTransform.rotation = Quaternion.Euler(0,0,rotationY);
+      fullMapTransform.rotation = Quaternion.Euler(0,0,rotationY);
    }
 }
