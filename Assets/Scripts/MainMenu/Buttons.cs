@@ -15,7 +15,8 @@ public class Buttons : MonoBehaviour
 
    public List<CanvasGroup> panels;
    public CanvasGroup dark;
-   public CanvasGroup loadScreen;
+   //public CanvasGroup loadScreen;
+   public Loading load;
    public float duration = 0.2f; // ¬рем€ анимации
 
    public List<Button> slotsContinue;
@@ -53,6 +54,11 @@ public class Buttons : MonoBehaviour
          new Color(0.4528302f, 0.4528302f, 0.4528302f) : new Color(1f, 1f, 1f);
 
       Cursor.lockState = CursorLockMode.None;
+   }
+
+   private void Start()
+   {
+      load.StartScene();
    }
 
    private void Update()
@@ -195,12 +201,12 @@ public class Buttons : MonoBehaviour
    public void BeginNewRun()
    {
       if (PlatformMove.is_Block) return;
-      StartCoroutine(LoadScene(true));
+      LoadScene(true);
    }
    public void ContinueBtn(int slot)
    {
       SaveLoadController.slot = (short)slot;
-      StartCoroutine(LoadScene(false));
+      LoadScene(false);
    }
 
    
@@ -299,12 +305,10 @@ public class Buttons : MonoBehaviour
       isChangedMenu = false;
    }
 
-   IEnumerator LoadScene(bool isNewGame)
+   void LoadScene(bool isNewGame)
    {
       //ѕереход к игре дл€ выбранного слота
       isLoading = true;
-      loadScreen.interactable = true;
-      loadScreen.blocksRaycasts = true;
 
       //«десь устанавливаем параметры
       if (isNewGame)
@@ -320,24 +324,7 @@ public class Buttons : MonoBehaviour
          SaveLoadController.Load();
       }
 
-         //Ёкран загрузки
-         float startAlpha = 0f, endAlpha = 1f, elapsed = 0f;
-      loadScreen.alpha = startAlpha;
-
-      while (elapsed < duration)
-      {
-         float t = elapsed / duration;
-         float alpha = Mathf.Lerp(startAlpha, endAlpha, t);
-
-         loadScreen.alpha = alpha;
-
-         elapsed += Time.deltaTime;
-         yield return null;
-      }
-
-      // ”становка финальных значений
-      loadScreen.alpha = endAlpha;
-      yield return null;
-      SceneManager.LoadScene(1);
+      //Ёкран загрузки
+      load.LoadScene(1);
    }
 }

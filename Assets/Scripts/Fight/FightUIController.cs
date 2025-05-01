@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class FightUIController : MonoBehaviour
@@ -22,6 +23,8 @@ public class FightUIController : MonoBehaviour
    public static bool allInteractable, allDisable;
    private bool _allInteractable, _allDisable;
 
+   public Loading loader;
+
    //public static bool hardUpdate = false;
 
    //public static int oneID_heroes = -1;
@@ -30,6 +33,8 @@ public class FightUIController : MonoBehaviour
 
    void Start()
     {
+      loader.StartScene();
+
       UpdateCount(1);
       UpdateCount(2);
    }
@@ -229,6 +234,18 @@ public class FightUIController : MonoBehaviour
          UpdateCount(1);
          UpdateCount(2);
          UpdateCount(0);
+      }
+   }
+
+   public void ContinueBtn()
+   {
+      if (Fight.isLose)
+      {
+         loader.LoadScene(0);
+      }
+      else
+      {
+         loader.LoadScene(1);
       }
    }
 }

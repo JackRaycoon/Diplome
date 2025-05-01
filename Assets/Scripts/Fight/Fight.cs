@@ -54,7 +54,7 @@ public class Fight : MonoBehaviour
    public static bool seeIntension = false;
 
    private bool allEnemiesDoTurn, allPlayerCharactersDoTurn;
-   private bool isWin, isLose, isAllDoTurn;
+   public static bool isWin, isLose, isAllDoTurn;
    public static bool endFight = false;
    public static bool isEnemyTurn = false;
 
@@ -1036,18 +1036,6 @@ public class Fight : MonoBehaviour
       foreach (Graphic lRenderer in lChildRenderers)
       {
          lRenderer.enabled = true;
-      }
-   }
-
-   public void ContinueBtn()
-   {
-      if (isLose)
-      {
-         SceneManager.LoadScene(0);
-      }
-      else
-      {
-         SceneManager.LoadScene(1);
       }
    }
 }

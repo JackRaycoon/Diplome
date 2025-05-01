@@ -69,8 +69,7 @@ MonoBehaviour:
   m_text: "<size=25><align=center>\u0425\u0430\u0440\u0430\u043A\u0442\u0435\u0440\u0438\u0441\u0442\u0438\u043A\u0438</align></size>\n\n\u0421\u0438\u043B\u0430:
     {0}\n\u041B\u043E\u0432\u043A\u043E\u0441\u0442\u044C: {1}\n\u041C\u0443\u0434\u0440\u043E\u0441\u0442\u044C:
     {2}\n\u0422\u0435\u043B\u043E\u0441\u043B\u043E\u0436\u0435\u043D\u0438\u0435:
-    {3}\n\u0417\u0430\u0449\u0438\u0442\u0430: {4}\n\u0417\u043E\u043B\u043E\u0442\u043E:
-    {5}"
+    {3}\n\u0417\u0430\u0449\u0438\u0442\u0430: {4}\n\u0414\u0443\u0448\u0438: {5}"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 9dcbab94ae2a08b4ea57978d64a765e6, type: 2}
   m_sharedMaterial: {fileID: -780465184510917948, guid: 9dcbab94ae2a08b4ea57978d64a765e6, type: 2}
@@ -519,6 +518,7 @@ MonoBehaviour:
   CenterSkill: {fileID: 0}
   Description: {fileID: 0}
   isClickable: 1
+  isIntention: 0
 --- !u!114 &4321173815946781607
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -870,6 +870,7 @@ MonoBehaviour:
   CenterSkill: {fileID: 0}
   Description: {fileID: 0}
   isClickable: 1
+  isIntention: 0
 --- !u!114 &920844529311518
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1569,6 +1570,7 @@ MonoBehaviour:
   CenterSkill: {fileID: 0}
   Description: {fileID: 0}
   isClickable: 1
+  isIntention: 0
 --- !u!114 &1534877699766854902
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1858,6 +1860,7 @@ MonoBehaviour:
   CenterSkill: {fileID: 0}
   Description: {fileID: 0}
   isClickable: 1
+  isIntention: 0
 --- !u!114 &6661938116872247241
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2199,6 +2202,7 @@ MonoBehaviour:
   CenterSkill: {fileID: 0}
   Description: {fileID: 0}
   isClickable: 1
+  isIntention: 0
 --- !u!114 &8807849445110646409
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4918,6 +4922,7 @@ MonoBehaviour:
   CenterSkill: {fileID: 0}
   Description: {fileID: 0}
   isClickable: 1
+  isIntention: 0
 --- !u!114 &464966856190672005
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5450,6 +5455,7 @@ MonoBehaviour:
   CenterSkill: {fileID: 0}
   Description: {fileID: 0}
   isClickable: 1
+  isIntention: 0
 --- !u!114 &8953722683091471590
 MonoBehaviour:
   m_ObjectHideFlags: 0

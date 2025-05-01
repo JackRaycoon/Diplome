@@ -101,7 +101,8 @@ public class SaveLoadController
    public static void StartFight(List<Fighter> enemiesForFight)
    {
       enemies = new(enemiesForFight);
-      SceneManager.LoadScene(2);
+      Pauser.needOpenFight = true;
+      //SceneManager.LoadScene(2);
    }
 
    public static void EndFight()
