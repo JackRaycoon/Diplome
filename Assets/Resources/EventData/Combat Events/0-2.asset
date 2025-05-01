@@ -53,6 +53,7 @@ MonoBehaviour:
   minEnemyCount: 0
   maxEnemyCount: 0
   enemiesChances: []
+  isLost: 1
   minSoul: -5
   maxSoul: -3
   rewardSkillList: []

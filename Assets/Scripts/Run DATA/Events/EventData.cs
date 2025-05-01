@@ -89,6 +89,10 @@ public class EventData : ScriptableObject
 
 
    [Header("Награда")]
+
+   [Tooltip("Вместо Получено станет Потеряно")]
+   public bool isLost;
+
    public int minSoul;
    public int maxSoul;
 

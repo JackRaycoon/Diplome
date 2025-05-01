@@ -18,6 +18,8 @@ public class Fighter
    {
       get
       {
+         if (constitution <= 0)
+            return 1;
          return constitution * 5;
       }
    }

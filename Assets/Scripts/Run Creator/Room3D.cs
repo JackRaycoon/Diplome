@@ -1,7 +1,9 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 public class Room3D : MonoBehaviour
 {
@@ -98,10 +100,13 @@ public class Room3D : MonoBehaviour
          //Добавляем информацию о награде
          room.eventRewardText = "";
          room.eventRewardText += "\n\n";
-         room.eventRewardText += "Получено: ";
+         if (data.isLost)
+            room.eventRewardText += "Потеряно: ";
+         else
+            room.eventRewardText += "Получено: ";
          bool isNext = false;
 
-         if (data.minSoul != 0)
+         if (data.maxSoul != 0)
          {
             int rewardCountSoul = Random.Range(data.minSoul, data.maxSoul + 1);
             if(rewardCountSoul != 0)
@@ -114,6 +119,7 @@ public class Room3D : MonoBehaviour
                isNext = true;
 
                SaveLoadController.runInfo.souls += rewardCountSoul;
+               if (SaveLoadController.runInfo.souls < 0) SaveLoadController.runInfo.souls = 0;
             }
          }
          if (data.strengthRewardMax != 0)
@@ -128,7 +134,9 @@ public class Room3D : MonoBehaviour
                room.eventRewardText += $"{rewardCountStrength} силы";
                isNext = true;
 
-               SaveLoadController.runInfo.PlayerTeam[0].strengh += rewardCountStrength;
+               var hero = SaveLoadController.runInfo.PlayerTeam[0];
+               hero.strengh += rewardCountStrength;
+               if (hero.strengh < 0) hero.strengh = 0;
             }
          }
          if (data.agilityRewardMax != 0)
@@ -143,7 +151,10 @@ public class Room3D : MonoBehaviour
                room.eventRewardText += $"{rewardCountAgility} ловкости";
                isNext = true;
 
-               SaveLoadController.runInfo.PlayerTeam[0].agility += rewardCountAgility;
+               var hero = SaveLoadController.runInfo.PlayerTeam[0];
+               hero.agility += rewardCountAgility;
+               if (hero.agility < 0) hero.agility = 0;
+
             }
          }
          if (data.wisdowRewardMax != 0)
@@ -158,7 +169,9 @@ public class Room3D : MonoBehaviour
                room.eventRewardText += $"{rewardCountWisdow} мудрости";
                isNext = true;
 
-               SaveLoadController.runInfo.PlayerTeam[0].wisdow += rewardCountWisdow;
+               var hero = SaveLoadController.runInfo.PlayerTeam[0];
+               hero.wisdow += rewardCountWisdow;
+               if (hero.wisdow < 0) hero.wisdow = 0;
             }
          }
          if (data.constitutionRewardMax != 0)
@@ -175,7 +188,10 @@ public class Room3D : MonoBehaviour
 
                var hero = SaveLoadController.runInfo.PlayerTeam[0];
                hero.constitution += rewardCountConstitution;
+               if (hero.constitution < 0) hero.constitution = 0;
+
                hero.TakeHeal(rewardCountConstitution * 5);
+               if (hero.max_hp < hero.hp) hero.hp = hero.max_hp;
             }
          }
          if (data.armorRewardMax != 0)
@@ -190,7 +206,9 @@ public class Room3D : MonoBehaviour
                room.eventRewardText += $"{rewardCountArmor} защиты";
                isNext = true;
 
-               SaveLoadController.runInfo.PlayerTeam[0].defence += rewardCountArmor;
+               var hero = SaveLoadController.runInfo.PlayerTeam[0];
+               hero.defence += rewardCountArmor;
+               if (hero.defence < 0) hero.defence = 0;
             }
          }
          if (data.healRewardMax != 0)
@@ -209,6 +227,8 @@ public class Room3D : MonoBehaviour
                isNext = true;
 
                hero.TakeHeal(rewardCountHeal);
+               if (hero.hp <= 0)
+                  hero.hp = 1;
             }
          }
          if (data.karmaMax != 0)
@@ -224,6 +244,7 @@ public class Room3D : MonoBehaviour
                isNext = true;
 
                SaveLoadController.runInfo.badKarma += rewardCountKarma;
+               if (SaveLoadController.runInfo.badKarma < 0) SaveLoadController.runInfo.badKarma = 0;
             }
          }
 
@@ -273,11 +294,14 @@ public class Room3D : MonoBehaviour
             PlayableCharacter target = availableCharacters[Random.Range(0, availableCharacters.Count)];
 
             room.eventRewardText += "\n";
-            room.eventRewardText += skillData.skill_target switch
-            {
-               SkillSO.SkillTarget.Passive => "Пассивный",
-               _ => "Активный"
-            };
+            if (skillData.isCurse)
+               room.eventRewardText += "Проклятый";
+            else
+               room.eventRewardText += skillData.skill_target switch
+               {
+                  SkillSO.SkillTarget.Passive => "Пассивный",
+                  _ => "Активный"
+               };
      
             room.eventRewardText += $" навык \"{skillData._name}\" – {skill.Description()}.\n«{skillData.quote}»";
 
