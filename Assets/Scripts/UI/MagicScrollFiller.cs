@@ -5,13 +5,17 @@ using TMPro;
 using Unity.VisualScripting;
 using UnityEditor.Experimental.GraphView;
 using UnityEngine;
+using UnityEngine.TextCore.Text;
 using UnityEngine.UI;
+using static FightPortrait;
 
 public class MagicScrollFiller : MonoBehaviour
 {
    public PlayableCharacter hero;
    public Image heroPortrate;
-   public TextMeshProUGUI characteristicsText;
+   public Slider sliderHP;
+   public Image hearth_icon, slider_filler;
+   public TextMeshProUGUI hp_text, characteristicsText;
    public Transform activeHand;
    public GameObject cardPrefab;
 
@@ -23,6 +27,30 @@ public class MagicScrollFiller : MonoBehaviour
       hero = SaveLoadController.runInfo.PlayerTeam[0];
 
       heroPortrate.sprite = hero.Portrait;
+
+      //ея
+      sliderHP.maxValue = hero.max_hp;
+      sliderHP.value = hero.hp;
+
+      float ratio = sliderHP.value / sliderHP.maxValue;
+      //defence 557B7E(4F686A) green 40CF30(1B6714) yellow CBCD35(AEB00B) red E02B29(9A171D)
+      if (ratio > 0.6)
+      {
+         hearth_icon.color = new Color32(64, 207, 48, 255);
+         slider_filler.color = new Color32(27, 103, 20, 255);
+      }
+      else if (ratio > 0.3)
+      {
+         hearth_icon.color = new Color32(202, 204, 53, 255);
+         slider_filler.color = new Color32(173, 176, 11, 255);
+      }
+      else
+      {
+         hearth_icon.color = new Color32(224, 43, 41, 255);
+         slider_filler.color = new Color32(154, 22, 29, 255);
+      }
+      hp_text.text = hero.hp.ToString() +
+      "/" + (hero.max_hp + hero.bonus_hp).ToString();
 
       int[] values = { hero.strengh, hero.agility, hero.wisdow, hero.constitution, hero.defence, SaveLoadController.runInfo.souls };
       string text = characteristicsText.text;
