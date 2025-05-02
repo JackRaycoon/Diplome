@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   eventID: 0
   eventID_Part: 1
-  eventName: "\u041A\u043E\u0441\u0442\u0438 \u0438\u0437 \u0441\u0442\u0435\u043D:
+  eventName: "\u0413\u043E\u0441\u0442\u0438 \u0438\u0437 \u0441\u0442\u0435\u043D:
     \u0423\u043F\u043E\u043A\u043E\u0435\u043D\u0438\u0435"
   eventText: "\u041A\u0430\u043C\u043D\u0438 \u043D\u0430\u043A\u043E\u043D\u0435\u0446
     \u0443\u0441\u043F\u043E\u043A\u0430\u0438\u0432\u0430\u044E\u0442\u0441\u044F.
@@ -59,6 +59,7 @@ MonoBehaviour:
   minEnemyCount: 0
   maxEnemyCount: 0
   enemiesChances: []
+  isLost: 0
   minSoul: 4
   maxSoul: 6
   rewardSkillList: []

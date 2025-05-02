@@ -244,6 +244,9 @@ public class Fighter
                }
                buffs.Remove(Buff.ProvocationCaster);
                break;
+            case Buff.DissolvingShadows:
+               buffs.Remove(Buff.DissolvingShadows);
+               break;
          }
       }
       skill.Cast(this, targets);
@@ -394,7 +397,7 @@ public class Fighter
       return null;
    }
 
-   public void TakeDmg(int dmg)
+   public void TakeDmg(int dmg, SkillSO.SkillElement element)
    {
       //Buffs
       foreach(var buff in buffs)
@@ -406,6 +409,10 @@ public class Fighter
                break;
             case Buff.Provocation:
                dmg = 0;
+               break;
+            case Buff.DissolvingShadows:
+               if (element != SkillSO.SkillElement.Light)
+                  dmg = 0;
                break;
             case Buff.EchoPain:
                switch(Random.Range(0,3))
@@ -522,6 +529,7 @@ public class Fighter
       Provocation,
       ProvocationCaster,
       Poison,
+      DissolvingShadows,
 
    }
 }

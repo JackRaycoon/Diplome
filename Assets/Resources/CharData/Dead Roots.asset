@@ -1,0 +1,31 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe0d30022cbdbdc469fd8a301de89b48, type: 3}
+  m_Name: Dead Roots
+  m_EditorClassIdentifier: 
+  character_name: "\u041C\u0451\u0440\u0442\u0432\u044B\u0435 \u043A\u043E\u0440\u043D\u0438"
+  charClass: 0
+  character_description: 
+  portrait_human: {fileID: 0}
+  portrait_halfhuman: {fileID: 0}
+  portrait_monster: {fileID: 21300000, guid: ba9c4d658b8880644b827b2bf7451b86, type: 3}
+  portrait_summon: {fileID: 21300000, guid: ba9c4d658b8880644b827b2bf7451b86, type: 3}
+  other_portraits: []
+  skills:
+  - {fileID: 11400000, guid: d969dcfa4de915740be04b380be2f79c, type: 2}
+  _availableSkills: []
+  strengh: 1
+  agility: 2
+  wisdow: 4
+  constitution: 1
+  defence: 0
+  priorityStats: 0200000001000000

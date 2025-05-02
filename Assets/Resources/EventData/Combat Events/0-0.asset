@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   eventID: 0
   eventID_Part: 0
-  eventName: "\u041A\u043E\u0441\u0442\u0438 \u0438\u0437 \u0441\u0442\u0435\u043D"
+  eventName: "\u0413\u043E\u0441\u0442\u0438 \u0438\u0437 \u0441\u0442\u0435\u043D"
   eventText: "\u041A\u043E\u0433\u0434\u0430 \u044F \u0432\u043E\u0448\u0451\u043B
     \u0432 \u043A\u043E\u043C\u043D\u0430\u0442\u0443, \u0441\u043F\u0435\u0440\u0432\u0430
     \u043F\u043E\u043A\u0430\u0437\u0430\u043B\u043E\u0441\u044C, \u0447\u0442\u043E
@@ -64,8 +64,8 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 88de369b2c0a06747b59ccd689f85953, type: 2}
   checkTrap: 0
   enemies:
-  - {fileID: 11400000, guid: d7ec80e4941c95a4397043c4da0ef60e, type: 2}
-  - {fileID: 11400000, guid: d7ec80e4941c95a4397043c4da0ef60e, type: 2}
+  - {fileID: 11400000, guid: ef83325e99dd48c4cb2986112e432938, type: 2}
+  - {fileID: 11400000, guid: f48e85572df3c73478f0ed5950561a91, type: 2}
   - {fileID: 11400000, guid: 682e0c16c14cb86419066d511b6b412a, type: 2}
   enemiesCount: 0100
   isFog: 0
@@ -75,8 +75,8 @@ MonoBehaviour:
   minEnemyCount: 2
   maxEnemyCount: 5
   enemiesChances:
-  - 50
-  - 30
+  - 40
+  - 40
   - 20
   isLost: 0
   minSoul: 0

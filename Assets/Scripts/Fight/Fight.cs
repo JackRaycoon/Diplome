@@ -679,11 +679,11 @@ public class Fight : MonoBehaviour
          {
             if (chara.buffs.Contains(Fighter.Buff.CurseDestruction))
             {
-               chara.TakeDmg(1);
+               chara.TakeDmg(1, SkillSO.SkillElement.Dark);
             }
             if (chara.buffs.Contains(Fighter.Buff.Poison))
             {
-               chara.TakeDmg(chara.poisonStacks);
+               chara.TakeDmg(chara.poisonStacks, SkillSO.SkillElement.Poison);
                chara.poisonStacks /= 2;
                if(chara.poisonStacks <= 0)
                {

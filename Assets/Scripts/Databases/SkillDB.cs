@@ -49,6 +49,7 @@ public class SkillDB
    {
       AddSkillCast("Basic Attack", BasicAttackCast, BasicAttackCalc);
 
+      //Active
       AddSkillCast("Raise Shields", RaiseShieldsCast, RaiseShieldsCalc);
       AddSkillCast("Fire Wave", FireWaveCast, FireWaveCalc);
       AddSkillCast("Healing Wounds", HealingWoundsCast, HealingWoundsCalc);
@@ -59,12 +60,15 @@ public class SkillDB
       AddSkillCast("Curse of Destruction", CurseDestructionCast);
       AddSkillCast("Surge of Darkness", SurgeDarknessCast, SurgeDarknessCalc);
       AddSkillCast("Provocation", ProvocationCast);
+      AddSkillCast("Dissolving in the Shadows", DissolvingShadowsCast);
+      AddSkillCast("Poisoned Thorn", PoisonedThornCast, PoisonedThornCalc);
 
       //Special
       AddSkillPassive("Empty");
       AddSkillPassive("Poison", PoisonCalc);
       AddSkillPassive("Corpseless");
 
+      //Passive
       AddSkillPassive("Call of the Pack", CallPackPassive, CallPackReverse);
       AddSkillPassive("Old Fighter's Chest", OldFightersChestCalc);
       AddSkillPassive("Bestial Instinct", BestialInstinctCalc);
@@ -78,13 +82,13 @@ public class SkillDB
       AddSkillPassive("Heart of Darkness", HeartDarknessPassive, HeartDarknessReverse);
       AddSkillPassive("Cursed Hand");
 
-      //Curse
-      AddSkillPassive("The Weight of Memories");
-
       //Echo
       AddSkillPassive("Echo of Hope");
       AddSkillPassive("Echo of Pain");
       AddSkillPassive("Echo of Forest", EchoForestCalc);
+
+      //Curse
+      AddSkillPassive("The Weight of Memories");
    }
 
    //Кастер всегда на самой первой позиции листа целей.
@@ -169,7 +173,7 @@ public class SkillDB
       {
          if (!target.isDead)
          {
-            target.TakeDmg(dmg);
+            target.TakeDmg(dmg, SkillSO.SkillElement.Physical);
             if (caster.buffs.Contains(Fighter.Buff.CursedHand)
                && SaveLoadController.runInfo.globalBuffs.Contains(RunInfo.GlobalBuff.CursedHand))
             {
@@ -258,7 +262,7 @@ public class SkillDB
       targets.RemoveAt(0); //Убираем кастера
       foreach (Fighter target in targets)
       {
-         if (!target.isDead) target.TakeDmg(dmg);
+         if (!target.isDead) target.TakeDmg(dmg, SkillSO.SkillElement.Fire);
       }
    }
    public List<int> FireWaveCalc(List<Fighter> targets)
@@ -279,7 +283,7 @@ public class SkillDB
       var target = targets[1];
       for (int i = 0; i < count; i++)
       {
-         if (!target.isDead) target.TakeDmg(dmg);
+         if (!target.isDead) target.TakeDmg(dmg, SkillSO.SkillElement.Wind);
          else
          {
             target = Fight.RandomEnemy(targets[0]);
@@ -356,7 +360,7 @@ public class SkillDB
       {
          if (!target.isDead)
          {
-            target.TakeDmg(dmg);
+            target.TakeDmg(dmg, SkillSO.SkillElement.Dark);
 
             var pool = GetPoolByName("CurseSkills");
             var listSk = pool.activeSkillList;
@@ -383,7 +387,7 @@ public class SkillDB
 
       if (!target.isDead)
       {
-         target.TakeDmg(dmg);
+         target.TakeDmg(dmg, SkillSO.SkillElement.Dark);
 
          if(Random.Range(0, 100) < chance)
          {
@@ -405,6 +409,33 @@ public class SkillDB
       return new List<int> { dmg, chance };
    }
 
+   //Poisoned Thorn
+   public void PoisonedThornCast(List<Fighter> targets)
+   {
+      var list = PoisonedThornCalc(targets);
+      int dmg = list[0];
+      int poison = list[1];
+
+      var caster = targets[0];
+      var target = targets[1];
+
+      if (!target.isDead)
+      {
+         target.TakeDmg(dmg, SkillSO.SkillElement.Poison);
+
+         if (!target.buffs.Contains(Fighter.Buff.Poison))
+            target.buffs.Add(Fighter.Buff.Poison);
+         target.poisonStacks += poison;
+      }
+   }
+   public List<int> PoisonedThornCalc(List<Fighter> targets)
+   {
+      var caster = targets[0];
+      int wisdow = caster.wisdow + caster.bonus_wisdow;
+      int agility = caster.agility + caster.bonus_agility;
+      return new List<int> { agility, wisdow };
+   }
+
    //Provocation
    public void ProvocationCast(List<Fighter> targets)
    {
@@ -419,6 +450,14 @@ public class SkillDB
                target.buffs.Add(Fighter.Buff.Provocation);
          }
       }   
+   }
+
+   //Dissolving in the Shadows
+   public void DissolvingShadowsCast(List<Fighter> targets)
+   {
+      var caster = targets[0];
+      caster.buffs.Add(Fighter.Buff.DoubleNextAttack);
+      caster.buffs.Add(Fighter.Buff.DissolvingShadows);
    }
 
    //Call of the Pack
