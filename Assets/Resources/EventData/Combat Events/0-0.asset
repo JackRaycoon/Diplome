@@ -66,7 +66,7 @@ MonoBehaviour:
   enemies:
   - {fileID: 11400000, guid: d7ec80e4941c95a4397043c4da0ef60e, type: 2}
   - {fileID: 11400000, guid: d7ec80e4941c95a4397043c4da0ef60e, type: 2}
-  - {fileID: 11400000, guid: d7ec80e4941c95a4397043c4da0ef60e, type: 2}
+  - {fileID: 11400000, guid: 682e0c16c14cb86419066d511b6b412a, type: 2}
   enemiesCount: 0100
   isFog: 0
   isNotOver: 1
@@ -75,9 +75,10 @@ MonoBehaviour:
   minEnemyCount: 2
   maxEnemyCount: 5
   enemiesChances:
-  - 60
+  - 50
   - 30
-  - 10
+  - 20
+  isLost: 0
   minSoul: 0
   maxSoul: 0
   rewardSkillList: []

@@ -4,6 +4,7 @@ using System.Linq;
 using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using UnityEngine.TextCore.Text;
+using static UnityEngine.GraphicsBuffer;
 
 
 public class Fighter
@@ -212,6 +213,7 @@ public class Fighter
                buffs.RemoveAt(i);
                i--;
                break;
+
             case Buff.BestialInstinct:
                if (skill.skillData.skill_type == SkillSO.SkillType.Attack) 
                {
@@ -221,6 +223,23 @@ public class Fighter
                }
                if (!buffs.Contains(Buff.BestialInstinctBuff))
                   buffs.Add(Buff.BestialInstinctBuff);
+               break;
+
+            case Buff.EchoForest:
+               if (skill.skillData.skill_type == SkillSO.SkillType.Attack) continue;
+               armor += GetPassiveSkill(Buff.EchoForest).calc(new List<Fighter> { this })[0];
+               break;
+
+            case Buff.ProvocationCaster:
+               List<Fighter> allyes = new List<Fighter>(Fight.PlayerTeam);
+               if (Fight.IsEnemy(this, allyes[0]))
+                  allyes = new List<Fighter>(Fight.EnemyTeam);
+               foreach (var chara in allyes)
+               {
+                  if (chara.buffs.Contains(Buff.Provocation))
+                     chara.buffs.Remove(Buff.Provocation);
+               }
+               buffs.Remove(Buff.ProvocationCaster);
                break;
          }
       }
@@ -336,7 +355,26 @@ public class Fighter
       }
       isDead = true;
 
-      foreach(Skill skill in skills)
+      //Áאפפû ןנט סלונעט
+      foreach (var buff in buffs)
+      {
+         switch (buff)
+         {
+            case Buff.ProvocationCaster:
+               List<Fighter> allyes = new List<Fighter>(Fight.PlayerTeam);
+               if (Fight.IsEnemy(this, allyes[0]))
+                  allyes = new List<Fighter>(Fight.EnemyTeam);
+               foreach (var chara in allyes)
+               {
+                  if (chara.buffs.Contains(Buff.Provocation))
+                     chara.buffs.Remove(Buff.Provocation);
+               }
+               buffs.Remove(Buff.ProvocationCaster);
+               break;
+         }
+      }
+
+      foreach (Skill skill in skills)
       {
          skill.death?.Invoke(new List<Fighter> { this });
          skill.reverse?.Invoke(this, Fight.AllCharacter);
@@ -362,6 +400,23 @@ public class Fighter
          {
             case Buff.OldFightersPlate:
                dmg -= GetPassiveSkill(buff).calc(new List<Fighter> { this })[0];
+               break;
+            case Buff.Provocation:
+               dmg = 0;
+               break;
+            case Buff.EchoPain:
+               switch(Random.Range(0,3))
+               {
+                  case 0:
+                     bonus_strengh++;
+                     break;
+                  case 1:
+                     bonus_agility++;
+                     break;
+                  case 2:
+                     bonus_wisdow++;
+                     break;
+               }
                break;
          }
       }
@@ -428,6 +483,15 @@ public class Fighter
          case Buff.CallPack:
             name = "Call of the Pack";
             break;
+         case Buff.EchoPain:
+            name = "Echo of Pain";
+            break;
+         case Buff.EchoForest:
+            name = "Echo of Forest";
+            break;
+         case Buff.Provocation:
+            name = "Provocation";
+            break;
       }
       if (name == "") return null;
       return SkillDB.Instance.GetSkillByName(name);
@@ -449,5 +513,11 @@ public class Fighter
       CurseDestruction,
       WeightMemories,
       CallPack,
+      EchoHope,
+      EchoPain,
+      EchoForest,
+      Provocation,
+      ProvocationCaster,
+
    }
 }

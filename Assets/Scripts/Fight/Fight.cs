@@ -319,6 +319,11 @@ public class Fight : MonoBehaviour
                case Fighter.Buff.QuickRebuff:
                   character.CastSkill(new List<Fighter>() { RandomEnemy(character) }, false, SkillDB.Instance.GetSkillByName("Basic Attack"));
                   break;
+               case Fighter.Buff.EchoHope:
+                  int heal = (int)(character.max_hp * 0.15f);
+                  if (heal == 0) heal = 1;
+                  character.TakeHeal(heal);
+                  break;
             }
          }
       }
@@ -553,10 +558,12 @@ public class Fight : MonoBehaviour
       //UpdatePortrait();
       //Реализовать логику выбора цели
       Fighter target;
+      int i = 0;
       do
       {
          target = PlayerTeam[Random.Range(0, PlayerTeam.Count)];
-      } while (target.isDead); //выбираем не мёртвую цель
+         i++;
+      } while (target.isDead && i < 1000 && target.buffs.Contains(Fighter.Buff.Provocation)); //выбираем не мёртвую цель без провокации
 
       var selectedTargets = ChooseTarget(caster.Intension, caster, target);
       

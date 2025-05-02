@@ -13,4 +13,7 @@ MonoBehaviour:
   m_Name: EchosSkills
   m_EditorClassIdentifier: 
   activeSkillList: []
-  passiveSkillList: []
+  passiveSkillList:
+  - {fileID: 11400000, guid: 895bf12a70b74a248be333d15ce18eca, type: 2}
+  - {fileID: 11400000, guid: 9c91d6bbadaa2244685f506d5e83a1b8, type: 2}
+  - {fileID: 11400000, guid: 985b63bcac7a8d045885cb63162eeaec, type: 2}

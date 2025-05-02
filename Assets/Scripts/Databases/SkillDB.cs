@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 using Random = UnityEngine.Random;
+using static UnityEngine.GraphicsBuffer;
 
 public class SkillDB
 {
@@ -56,6 +57,7 @@ public class SkillDB
       AddSkillCast("Purple Haze", PurpleHazeCast, PurpleHazeCalc);
       AddSkillCast("Curse of Destruction", CurseDestructionCast);
       AddSkillCast("Surge of Darkness", SurgeDarknessCast, SurgeDarknessCalc);
+      AddSkillCast("Provocation", ProvocationCast);
 
       AddSkillPassive("Empty");
       AddSkillPassive("Call of the Pack", CallPackPassive, CallPackReverse);
@@ -72,6 +74,9 @@ public class SkillDB
       AddSkillPassive("Corpseless");
       AddSkillPassive("Cursed Hand");
       AddSkillPassive("The Weight of Memories");
+      AddSkillPassive("Echo of Hope");
+      AddSkillPassive("Echo of Pain");
+      AddSkillPassive("Echo of Forest", EchoForestCalc);
    }
 
    // астер всегда на самой первой позиции листа целей.
@@ -392,6 +397,22 @@ public class SkillDB
       return new List<int> { dmg, chance };
    }
 
+   //Provocation
+   public void ProvocationCast(List<Fighter> targets)
+   {
+      var caster = targets[0];
+      targets.Remove(caster);
+      caster.buffs.Add(Fighter.Buff.ProvocationCaster);
+      foreach(var target in targets)
+      {
+         if (!target.isDead)
+         {
+            if(!target.buffs.Contains(Fighter.Buff.ProvocationCaster))
+               target.buffs.Add(Fighter.Buff.Provocation);
+         }
+      }   
+   }
+
    //Call of the Pack
    public void CallPackPassive(Fighter caster, List<Fighter> targets)
    {
@@ -438,6 +459,14 @@ public class SkillDB
       var caster = targets[0];
       var agility = caster.agility + caster.bonus_agility;
       return new List<int> { 25 + Math.Clamp(agility / 2 - 2, 0, 50) };
+   }
+
+   //Echo of Forest
+   public List<int> EchoForestCalc(List<Fighter> targets)
+   {
+      var caster = targets[0];
+      var agility = caster.agility + caster.bonus_agility;
+      return new List<int> { agility };
    }
 
    //Heart of the Darkness
