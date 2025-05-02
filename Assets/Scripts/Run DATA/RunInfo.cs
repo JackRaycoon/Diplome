@@ -22,6 +22,8 @@
       public float positionX = 0, positionY = 0, positionZ = 2;
       public float rotationX = 0, rotationY = 180;
 
+      public bool activePotion, passivePotion;
+
       public short slotID;
 
       public RunInfo(short slotID)

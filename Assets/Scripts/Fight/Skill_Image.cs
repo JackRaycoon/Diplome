@@ -61,6 +61,11 @@ public class Skill_Image : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
          isNeedClose = false;
          Exit();
       }
+
+      if (!isOnCard && HandAnimationManager.isOpen && !Fight.isEnemyTurn)
+      {
+         Exit();
+      }
    }
 
    public void OnPointerEnter(PointerEventData eventData)

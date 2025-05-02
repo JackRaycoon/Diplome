@@ -111,14 +111,6 @@ public class Fighter
       if (isPassive && data.isCurse)
       {
          slots = CurseSkillEmptySlots();
-         //slots = 2 + wisdow / 2;
-         //if (slots > 7) slots = 7; //7 от статов + 1 от зелья = максимум 8
-
-         //cur_count = 0;
-         //foreach(var skill in skills)
-         //{
-         //   if (skill.skillData.skill_target == SkillSO.SkillTarget.Passive) cur_count++;
-         //}
       }
       else if (isPassive)
       {
@@ -127,14 +119,6 @@ public class Fighter
       else
       {
          slots = ActiveSkillEmptySlots();
-         //slots = 3 + agility / 5;
-         //if (slots > 5) slots = 5; //5 от статов + 1 от зелья = максимум 6
-
-         //cur_count = 0;
-         //foreach (var skill in skills)
-         //{
-         //   if (skill.skillData.skill_target != SkillSO.SkillTarget.Passive) cur_count++;
-         //}
       }
          return slots > 0;
    }
@@ -142,8 +126,13 @@ public class Fighter
    public int ActiveSkillEmptySlots()
    {
       int slots, cur_count;
-      slots = 3 + agility / 5;
-      if (slots > 5) slots = 5;
+      slots = 3 + agility / 3;
+      if (slots > 7) slots = 7; //7 от статов + 1 от зелья = максимум 8
+      try
+      {
+         if (SaveLoadController.runInfo.activePotion) slots++;
+      }
+      catch { };
 
       cur_count = 0;
       foreach (var skill in skills)
@@ -158,6 +147,11 @@ public class Fighter
       int slots, cur_count;
       slots = 2 + wisdow / 2;
       if (slots > 7) slots = 7; //7 от статов + 1 от зелья = максимум 8
+      try
+      {
+         if (SaveLoadController.runInfo.passivePotion) slots++;
+      }
+      catch { };
 
       cur_count = 0;
       foreach (var skill in skills)

@@ -25,6 +25,8 @@ public class HandAnimationManager : MonoBehaviour
 
    public TMP_Text Description;
 
+   public static bool isOpen;
+
    private void Awake()
    {
       Instance = this;
@@ -86,6 +88,7 @@ public class HandAnimationManager : MonoBehaviour
       part2.position = target2;
 
       openRoutine = null;
+      isOpen = true;
    }
 
    private IEnumerator CloseCoroutine()
@@ -110,6 +113,7 @@ public class HandAnimationManager : MonoBehaviour
       closeRoutine = null;
 
       // После полного закрытия — если запрашивали открытие, делаем его
+      isOpen = false;
       if (pendingOpenRequest && pendingSkill != null)
       {
          RequestOpen(pendingSkill, pendingFighter);
@@ -119,6 +123,7 @@ public class HandAnimationManager : MonoBehaviour
       }
    }
 
+   /*
    private IEnumerator MoveToPosition(Transform part, Vector3 targetPos, float speed)
    {
       while (Vector3.Distance(part.position, targetPos) > 0.01f)
@@ -127,5 +132,5 @@ public class HandAnimationManager : MonoBehaviour
          yield return null;
       }
       part.position = targetPos;
-   }
+   }*/
 }

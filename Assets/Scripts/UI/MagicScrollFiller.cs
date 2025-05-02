@@ -67,7 +67,7 @@ public class MagicScrollFiller : MonoBehaviour
          CreatedCardsClear();
       }
       var grid = activeHand.GetComponent<GridLayoutGroup>();
-      grid.constraintCount = 2;
+      grid.constraintCount = 3;
 
       bool isFirstPassive = true;
 
