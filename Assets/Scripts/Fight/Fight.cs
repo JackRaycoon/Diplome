@@ -232,7 +232,8 @@ public class Fight : MonoBehaviour
    private void Update()
    {
       //Возврат по правой кнопки мыши
-      if (Input.GetKeyDown(KeyCode.Mouse1) && selectedSkill == null && !isEnemyTurn)
+      if (Input.GetKeyDown(KeyCode.Mouse1) && selectedSkill == null && !isEnemyTurn
+         && !BuffPanelController.isOpened && PlayerTeam.Count != 1)
       {
          CardShowerReset();
          SelectedCharacterID_Reset();
@@ -241,7 +242,7 @@ public class Fight : MonoBehaviour
          UpdatePortrait();
          FightUIController.hardUpdate = true;
       }
-      else if (Input.GetKeyDown(KeyCode.Mouse1) && !isEnemyTurn)
+      else if (Input.GetKeyDown(KeyCode.Mouse1) && !isEnemyTurn && !BuffPanelController.isOpened && selectedSkill != null)
       {
          selectedSkill = null;
          EnemyUITeam = new(EnemyTeam);

@@ -402,6 +402,37 @@ public class Fighter
       hp = max_hp + bonus_hp;
    }
 
+   internal Skill BuffToSkill(Buff buff)
+   {
+      string name = "";
+      switch (buff)
+      {
+         case Buff.DoubleNextAttack:
+            name = "Waiting";
+            break;
+         case Buff.OldFightersPlate:
+            name = "Old Fighter's Chest";
+            break;
+         case Buff.BestialInstinctBuff:
+            name = "Bestial Instinct";
+            break;
+         case Buff.Corpseless:
+            name = "Corpseless";
+            break;
+         case Buff.CurseDestruction:
+            name = "Curse of Destruction";
+            break;
+         case Buff.WeightMemories:
+            name = "The Weight of Memories";
+            break;
+         case Buff.CallPack:
+            name = "Call of the Pack";
+            break;
+      }
+      if (name == "") return null;
+      return SkillDB.Instance.GetSkillByName(name);
+   }
+
    public enum Buff
    {
       None,
@@ -417,5 +448,6 @@ public class Fighter
       TouchingMystery,
       CurseDestruction,
       WeightMemories,
+      CallPack,
    }
 }

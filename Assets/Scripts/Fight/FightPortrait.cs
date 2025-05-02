@@ -38,8 +38,20 @@ public class FightPortrait : MonoBehaviour
    {
       if (isInteractable)
       {
-         if (FightUIController.allInteractable) Fight.SelectTarget(id);
-         else Fight.SelectCharacter(id);
+         if (FightUIController.allInteractable) 
+            Fight.SelectTarget(id);
+         else if (Fight.PlayerUITeam.Count == 1 && !Fight.isEnemyTurn) 
+         {
+            BuffPanelController.buffFighter = (id < 6) ? Fight.PlayerTeam[id] : Fight.EnemyTeam[id - 6];
+            Debug.Log("CLICK");
+         }
+         else
+            Fight.SelectCharacter(id);
+      }
+      else if(Fight.PlayerUITeam.Count == 1 && !Fight.isEnemyTurn)
+      {
+         BuffPanelController.buffFighter = (id < 6) ? Fight.PlayerTeam[id] : Fight.EnemyTeam[id - 6];
+         Debug.Log("CLICK");
       }
    }
 

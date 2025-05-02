@@ -400,6 +400,7 @@ public class SkillDB
          if (Fight.IsEnemy(caster, wolf)) continue;
          if (wolf.Data.name.ToLower().Contains("wolf") && wolf != caster)
          {
+            wolf.buffs.Add(Fighter.Buff.CallPack);
             wolf.bonus_hp += 1;
             wolf.hp += 1;
             wolf.bonus_strengh++;
@@ -415,6 +416,7 @@ public class SkillDB
          if (Fight.IsEnemy(caster, wolf)) continue;
          if (wolf.Data.name.ToLower().Contains("wolf") && wolf != caster)
          {
+            wolf.buffs.Remove(Fighter.Buff.CallPack);
             wolf.bonus_hp -= 1;
             if(wolf.hp > wolf.max_hp + wolf.bonus_hp) wolf.hp = wolf.max_hp + wolf.bonus_hp;
             wolf.bonus_strengh--;

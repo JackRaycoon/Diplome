@@ -80,6 +80,7 @@ public class Skill_Image : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
 
    public void Action()
    {
+      //if(!Fight.isEnemyTurn) 
       if (!isClickable || isIntention) { return; }
 
       Fight.selectedSkill = skill;
