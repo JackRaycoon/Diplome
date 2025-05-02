@@ -882,7 +882,7 @@ public class Fight : MonoBehaviour
             selectedTargets.Add(SelectedCharacter());
             break;
          case SkillSO.SkillTarget.Mass_Enemies:
-            selectedTargets = new List<Fighter>(EnemyTeam);
+            selectedTargets = new List<Fighter>(enemies);
             if (!selectedSkill.skillData.isCorpseTargetToo)
             {
                for (int i = 0; i < selectedTargets.Count; i++)
@@ -911,17 +911,17 @@ public class Fight : MonoBehaviour
             }
             break;
          case SkillSO.SkillTarget.Random_Enemy:
-            selectedTargets = new List<Fighter>() { EnemyTeam[Random.Range(0, EnemyTeam.Count)] };
+            selectedTargets = new List<Fighter>() { enemies[Random.Range(0, enemies.Count)] };
             if (!selectedSkill.skillData.isCorpseTargetToo)
             {
                do
                {
-                  selectedTargets = new List<Fighter>() { EnemyTeam[Random.Range(0, EnemyTeam.Count)] };
+                  selectedTargets = new List<Fighter>() { enemies[Random.Range(0, enemies.Count)] };
                } while (selectedTargets[0].isDead);
             }
             break;
          case SkillSO.SkillTarget.Mass_Allies:
-            selectedTargets = new List<Fighter>(PlayerTeam);
+            selectedTargets = new List<Fighter>(allies);
             if (!selectedSkill.skillData.isCorpseTargetToo)
             {
                for (int i = 0; i < selectedTargets.Count; i++)
@@ -935,12 +935,12 @@ public class Fight : MonoBehaviour
             }
             break;
          case SkillSO.SkillTarget.Random_Ally:
-            selectedTargets = new List<Fighter>() { PlayerTeam[Random.Range(0, PlayerTeam.Count)] };
+            selectedTargets = new List<Fighter>() { allies[Random.Range(0, allies.Count)] };
             if (!selectedSkill.skillData.isCorpseTargetToo)
             {
                do
                {
-                  selectedTargets = new List<Fighter>() { PlayerTeam[Random.Range(0, PlayerTeam.Count)] };
+                  selectedTargets = new List<Fighter>() { allies[Random.Range(0, allies.Count)] };
                } while (selectedTargets[0].isDead);
             }
             break;

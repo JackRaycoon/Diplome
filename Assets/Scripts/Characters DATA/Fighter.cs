@@ -502,6 +502,12 @@ public class Fighter
          case Buff.Provocation:
             name = "Provocation";
             break;
+         case Buff.Poison:
+            name = "Poison";
+            break;
+         case Buff.DissolvingShadows:
+            name = "Dissolving in the Shadows";
+            break;
       }
       if (name == "") return null;
       return SkillDB.Instance.GetSkillByName(name);
