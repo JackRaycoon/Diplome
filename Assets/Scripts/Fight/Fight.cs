@@ -681,6 +681,16 @@ public class Fight : MonoBehaviour
             {
                chara.TakeDmg(1);
             }
+            if (chara.buffs.Contains(Fighter.Buff.Poison))
+            {
+               chara.TakeDmg(chara.poisonStacks);
+               chara.poisonStacks /= 2;
+               if(chara.poisonStacks <= 0)
+               {
+                  chara.poisonStacks = 0;
+                  chara.buffs.Remove(Fighter.Buff.Poison);
+               }
+            }
          }
 
          

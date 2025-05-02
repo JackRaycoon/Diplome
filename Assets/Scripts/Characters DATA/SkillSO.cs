@@ -59,6 +59,7 @@ public class SkillSO : ScriptableObject
       Water,
       Earth,
       Light,
-      Dark
+      Dark,
+      Poison
    }
 }

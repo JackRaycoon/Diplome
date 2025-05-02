@@ -25,6 +25,9 @@ public class Fighter
       }
    }
    public int bonus_hp; //если в бою чьи-то хп повысили или понизили
+
+   public int poisonStacks = 0;
+
    public int defence; //дополнительное здоровье, которое может превышать максимум
    public int armor; //дополнительное здоровье, которое может превышать максимум
    public Skill Intension = null; //Намерение использовать скилл
@@ -518,6 +521,7 @@ public class Fighter
       EchoForest,
       Provocation,
       ProvocationCaster,
+      Poison,
 
    }
 }

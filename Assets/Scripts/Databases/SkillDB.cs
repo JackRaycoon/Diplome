@@ -48,6 +48,7 @@ public class SkillDB
    private void InitializeSkillDatabase()
    {
       AddSkillCast("Basic Attack", BasicAttackCast, BasicAttackCalc);
+
       AddSkillCast("Raise Shields", RaiseShieldsCast, RaiseShieldsCalc);
       AddSkillCast("Fire Wave", FireWaveCast, FireWaveCalc);
       AddSkillCast("Healing Wounds", HealingWoundsCast, HealingWoundsCalc);
@@ -59,7 +60,11 @@ public class SkillDB
       AddSkillCast("Surge of Darkness", SurgeDarknessCast, SurgeDarknessCalc);
       AddSkillCast("Provocation", ProvocationCast);
 
+      //Special
       AddSkillPassive("Empty");
+      AddSkillPassive("Poison", PoisonCalc);
+      AddSkillPassive("Corpseless");
+
       AddSkillPassive("Call of the Pack", CallPackPassive, CallPackReverse);
       AddSkillPassive("Old Fighter's Chest", OldFightersChestCalc);
       AddSkillPassive("Bestial Instinct", BestialInstinctCalc);
@@ -71,9 +76,12 @@ public class SkillDB
       AddSkillPassive("Touching the Mystery");
       AddSkillPassive("Scream Into the Void");
       AddSkillPassive("Heart of Darkness", HeartDarknessPassive, HeartDarknessReverse);
-      AddSkillPassive("Corpseless");
       AddSkillPassive("Cursed Hand");
+
+      //Curse
       AddSkillPassive("The Weight of Memories");
+
+      //Echo
       AddSkillPassive("Echo of Hope");
       AddSkillPassive("Echo of Pain");
       AddSkillPassive("Echo of Forest", EchoForestCalc);
@@ -459,6 +467,13 @@ public class SkillDB
       var caster = targets[0];
       var agility = caster.agility + caster.bonus_agility;
       return new List<int> { 25 + Math.Clamp(agility / 2 - 2, 0, 50) };
+   }
+
+   //Poison
+   public List<int> PoisonCalc(List<Fighter> targets)
+   {
+      var caster = targets[0];
+      return new List<int> { caster.poisonStacks };
    }
 
    //Echo of Forest
