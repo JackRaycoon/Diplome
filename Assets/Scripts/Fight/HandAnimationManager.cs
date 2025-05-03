@@ -72,7 +72,7 @@ public class HandAnimationManager : MonoBehaviour
    {
       // Здесь можно поменять текст (если нужно)
       // Например:
-      Description.text = externalSkill.Name + "\n" + "<i>" + externalSkill.Description(caster) + "</i>";
+      Description.text = externalSkill.Name + "\n" + "<i>" + externalSkill.Description(true, caster) + "</i>";
 
       Vector3 target1 = pos_part1.position;
       Vector3 target2 = pos_part2.position;

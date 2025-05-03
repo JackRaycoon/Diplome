@@ -99,7 +99,7 @@ public class MagicScrollFiller : MonoBehaviour
          {
             go.transform.SetSiblingIndex(0);
             filler.DescriptionPanelOpenCloser();
-            filler.DescriptionUpdate("<size=17>Перейти к пассивным навыкам</size>");
+            filler.DescriptionUpdate("<size=15>Перейти к пассивным навыкам</size>");
             btn.onClick.AddListener(ToPassiveSkills);
          }
          else
@@ -116,7 +116,7 @@ public class MagicScrollFiller : MonoBehaviour
          btn.interactable = true;
          go.transform.SetSiblingIndex(0);
          filler.DescriptionPanelOpenCloser();
-         filler.DescriptionUpdate("<size=17>Перейти к пассивным навыкам</size>");
+         filler.DescriptionUpdate("<size=15>Перейти к пассивным навыкам</size>");
          btn.onClick.AddListener(ToPassiveSkills);
          createdCards.Add(go);
       }
@@ -165,7 +165,7 @@ public class MagicScrollFiller : MonoBehaviour
          {
             go.transform.SetSiblingIndex(0);
             filler.DescriptionPanelOpenCloser();
-            filler.DescriptionUpdate("<size=17>Перейти к проклятьям</size>");
+            filler.DescriptionUpdate("<size=15>Перейти к проклятьям</size>");
             btn.onClick.AddListener(ToCurseSkills);
          }
          else
@@ -183,7 +183,7 @@ public class MagicScrollFiller : MonoBehaviour
          btn.interactable = true;
          go.transform.SetSiblingIndex(0);
          filler.DescriptionPanelOpenCloser();
-         filler.DescriptionUpdate("<size=17>Перейти к проклятьям</size>");
+         filler.DescriptionUpdate("<size=15>Перейти к проклятьям</size>");
          btn.onClick.AddListener(ToCurseSkills);
          createdCards.Add(go);
       }
@@ -233,7 +233,7 @@ public class MagicScrollFiller : MonoBehaviour
          {
             go.transform.SetSiblingIndex(0);
             filler.DescriptionPanelOpenCloser();
-            filler.DescriptionUpdate("<size=17>Перейти к активным навыкам</size>");
+            filler.DescriptionUpdate("<size=15>Перейти к активным навыкам</size>");
             btn.onClick.AddListener(ToActiveSkills);
          }
          else
@@ -251,7 +251,7 @@ public class MagicScrollFiller : MonoBehaviour
          btn.interactable = true;
          go.transform.SetSiblingIndex(0);
          filler.DescriptionPanelOpenCloser();
-         filler.DescriptionUpdate("<size=17>Перейти к активным навыкам</size>");
+         filler.DescriptionUpdate("<size=15>Перейти к активным навыкам</size>");
          btn.onClick.AddListener(ToActiveSkills);
          createdCards.Add(go);
       }

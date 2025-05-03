@@ -13,6 +13,8 @@ public class CardFiller : MonoBehaviour
    public TextMeshProUGUI description;
    public GameObject descriptionPanel;
 
+   public bool isNeedCooldown = true;
+
    private string descriptionUpdate = "";
 
    void Update()
@@ -30,7 +32,9 @@ public class CardFiller : MonoBehaviour
       if(description != null)
       {
          skillName.text = skill.skillData._name;
-         description.text = $"<i>{skill.Description()}</i>";
+         if (skill.skillData.skill_target == SkillSO.SkillTarget.Passive)
+            isNeedCooldown = false;
+         description.text = $"<i>{skill.Description(isNeedCooldown)}</i>";
          if (descriptionUpdate != "")
          {
             skillName.text = "";

@@ -303,7 +303,7 @@ public class Room3D : MonoBehaviour
                   _ => "јктивный"
                };
      
-            room.eventRewardText += $" навык \"{skillData._name}\" Ц {skill.Description()}.\nЂ{skillData.quote}ї";
+            room.eventRewardText += $" навык \"{skillData._name}\" Ц {skill.Description(false)}.\nЂ{skillData.quote}ї";
 
             if (!target.CheckSkillCount(skill.skillData))
                room.eventRewardText += " (места нет)";

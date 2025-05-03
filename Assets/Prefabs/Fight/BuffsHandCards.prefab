@@ -673,6 +673,7 @@ MonoBehaviour:
   skillName: {fileID: 8040810712658410896}
   description: {fileID: 8040810712130020274}
   descriptionPanel: {fileID: 8040810712274269181}
+  isNeedCooldown: 0
 --- !u!114 &8040810712520689909
 MonoBehaviour:
   m_ObjectHideFlags: 0

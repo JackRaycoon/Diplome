@@ -58,7 +58,7 @@ public class Skill
       }
       private set { }
    }*/
-   public string Description(Fighter fighter = null)
+   public string Description(bool needCooldown, Fighter fighter = null)
    {
       var description = skillData.description;
       //Проверка на глобальные баффы, заменяющие описание
@@ -76,6 +76,9 @@ public class Skill
                break;
          }
       }
+
+      if(needCooldown)
+         description += $"\nВремя восстановления: {skillData.cooldown}";
 
       if (calc == null) return description;
       
