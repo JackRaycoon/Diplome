@@ -685,10 +685,19 @@ public class Fight : MonoBehaviour
          //Всё что нужно делать в конце раунда из баффов, начало раунда (если будет нужно) в методе StartRound();
          foreach (var chara in AllCharacter)
          {
-            if (chara.buffs.Contains(Fighter.Buff.CurseDestruction))
+            foreach(var buff in chara.buffs)
             {
-               chara.TakeDmg(1, SkillSO.SkillElement.Dark);
+               switch (buff)
+               {
+                  case Fighter.Buff.CurseVictim:
+                     chara.SacrificeHP(1);
+                     break;
+                  case Fighter.Buff.CurseDestruction:
+                     chara.TakeDmg(1, SkillSO.SkillElement.Dark);
+                     break;
+               }
             }
+
             if (chara.buffs.Contains(Fighter.Buff.Poison))
             {
                chara.TakeDmg(chara.poisonStacks, SkillSO.SkillElement.Poison);
@@ -887,7 +896,7 @@ public class Fight : MonoBehaviour
             selectedTargets.Add(selectedTarget);
             break;
          case SkillSO.SkillTarget.Caster:
-            selectedTargets.Add(SelectedCharacter());
+            selectedTargets.Add(caster);
             break;
          case SkillSO.SkillTarget.Mass_Enemies:
             selectedTargets = new List<Fighter>(enemies);

@@ -57,11 +57,19 @@ public class SkillDB
       AddSkillCast("Blade of the Wind", BladeWindCast, BladeWindCalc);
       AddSkillCast("Summon the Shadow", SummonShadowCast);
       AddSkillCast("Purple Haze", PurpleHazeCast, PurpleHazeCalc);
-      AddSkillCast("Curse of Destruction", CurseDestructionCast);
       AddSkillCast("Surge of Darkness", SurgeDarknessCast, SurgeDarknessCalc);
       AddSkillCast("Provocation", ProvocationCast);
       AddSkillCast("Dissolving in the Shadows", DissolvingShadowsCast);
       AddSkillCast("Poisoned Thorn", PoisonedThornCast, PoisonedThornCalc);
+      AddSkillCast("Bloody Note", BloodyNoteCast, BloodyNoteCalc);
+      AddSkillCast("Dissonance of Pain", DissonancePainCast, DissonancePainCalc);
+      AddSkillCast("Discreet Chord", DiscreetChordCast, DiscreetChordCalc);
+      AddSkillCast("Distorted Anthem", DistortedAnthemCast, DistortedAnthemCalc);
+      AddSkillCast("Last Octave", LastOctaveCast);
+
+      //Active Curses
+      AddSkillCast("Curse of Destruction", CurseDestructionCast);
+      AddSkillCast("Curse of Victim", CurseVictimCast);
 
       //Special
       AddSkillPassive("Empty");
@@ -81,13 +89,17 @@ public class SkillDB
       AddSkillPassive("Scream Into the Void");
       AddSkillPassive("Heart of Darkness", HeartDarknessPassive, HeartDarknessReverse);
       AddSkillPassive("Cursed Hand");
+      AddSkillPassive("Pain Silencing");
+
+      //Death
+      AddSkillDeath("Sacrificial Chant", SacrificialChantDeath);
 
       //Echo
       AddSkillPassive("Echo of Hope");
       AddSkillPassive("Echo of Pain");
       AddSkillPassive("Echo of Forest", EchoForestCalc);
 
-      //Curse
+      //Passive Curses
       AddSkillPassive("The Weight of Memories");
    }
 
@@ -164,7 +176,7 @@ public class SkillDB
    }*/
 
    //Basic Attack
-   public void BasicAttackCast(List<Fighter> targets)
+   private void BasicAttackCast(List<Fighter> targets)
    {
       int dmg = BasicAttackCalc(targets)[0];
       var caster = targets[0];
@@ -188,7 +200,7 @@ public class SkillDB
          }
       }
    }
-   public List<int> BasicAttackCalc(List<Fighter> targets)
+   private List<int> BasicAttackCalc(List<Fighter> targets)
    {
       var caster = targets[0];
       /*var max_characteristic = Mathf.Max(caster.strengh + caster.bonus_strengh, 
@@ -199,7 +211,7 @@ public class SkillDB
    }
 
    //Healing Wounds
-   public void HealingWoundsCast(List<Fighter> targets)
+   private void HealingWoundsCast(List<Fighter> targets)
    {
       int heal = HealingWoundsCalc(targets)[0];
       var target = targets[1];
@@ -209,45 +221,52 @@ public class SkillDB
          {
             if (heal >= 0)
             {
-               var needHP = target.max_hp + target.bonus_hp - target.hp;
-               var excess = heal - needHP;
-               if(excess > 0)
+               var excess = target.TakeHeal(heal);
+               if (excess > 0)
                {
                   var armor = excess / 2;
                   target.armor += (armor == 0) ? 1 : armor;
                }
             }
          }
-         target.TakeHeal(heal);
+         else
+            target.TakeHeal(heal);
       }
    }
-   public List<int> HealingWoundsCalc(List<Fighter> targets)
+   private List<int> HealingWoundsCalc(List<Fighter> targets)
    {
       var caster = targets[0];
       return new List<int> { caster.wisdow + caster.bonus_wisdow };
    }
 
    //Waiting
-   public void WaitingCast(List<Fighter> targets)
+   private void WaitingCast(List<Fighter> targets)
    {
       var caster = targets[0];
       caster.buffs.Add(Fighter.Buff.DoubleNextAttack);
    }
 
    //Curse of Destraction
-   public void CurseDestructionCast(List<Fighter> targets)
+   private void CurseDestructionCast(List<Fighter> targets)
    {
       var target = targets[1];
       target.buffs.Add(Fighter.Buff.CurseDestruction);
    }
 
+   //Curse of Victim
+   private void CurseVictimCast(List<Fighter> targets)
+   {
+      var target = targets[1];
+      target.buffs.Add(Fighter.Buff.CurseVictim);
+   }
+
    //Raise Shields
-   public void RaiseShieldsCast(List<Fighter> targets)
+   private void RaiseShieldsCast(List<Fighter> targets)
    {
       int armor = RaiseShieldsCalc(targets)[0];
       if (!targets[0].isDead) targets[0].armor += armor;
    }
-   public List<int> RaiseShieldsCalc(List<Fighter> targets)
+   private List<int> RaiseShieldsCalc(List<Fighter> targets)
    {
       var caster = targets[0];
       int defence = caster.defence;
@@ -256,7 +275,7 @@ public class SkillDB
    }
 
    //Fire Wave
-   public void FireWaveCast(List<Fighter> targets)
+   private void FireWaveCast(List<Fighter> targets)
    {
       int dmg = FireWaveCalc(targets)[0];
       targets.RemoveAt(0); //Убираем кастера
@@ -265,7 +284,7 @@ public class SkillDB
          if (!target.isDead) target.TakeDmg(dmg, SkillSO.SkillElement.Fire);
       }
    }
-   public List<int> FireWaveCalc(List<Fighter> targets)
+   private List<int> FireWaveCalc(List<Fighter> targets)
    {
       var caster = targets[0];
       var sum = caster.strengh + caster.bonus_strengh + 
@@ -274,7 +293,7 @@ public class SkillDB
    }
 
    //Blade of the Wind
-   public void BladeWindCast(List<Fighter> targets)
+   private void BladeWindCast(List<Fighter> targets)
    {
       var list = BladeWindCalc(targets);
       int dmg = list[0];
@@ -292,7 +311,7 @@ public class SkillDB
          }
       }
    }
-   public List<int> BladeWindCalc(List<Fighter> targets)
+   private List<int> BladeWindCalc(List<Fighter> targets)
    {
       var caster = targets[0];
       var sumWisdow = caster.wisdow + caster.bonus_wisdow;
@@ -301,14 +320,14 @@ public class SkillDB
    }
 
    //Summon the Shadow
-   public void SummonShadowCast(List<Fighter> targets)
+   private void SummonShadowCast(List<Fighter> targets)
    {
       var caster = targets[0];
       var target = Fight.RandomEnemy(caster);
       bool isEnemyCast = Fight.IsEnemy(Fight.PlayerTeam[0], caster);
 
       if (target.isDead) return;
-      Fighter shadow = new("Shadow")
+      Fighter shadow = new("Summons/Shadow")
       {
          strengh = target.strengh / 2,
          bonus_strengh = target.bonus_strengh / 2,
@@ -349,7 +368,7 @@ public class SkillDB
    }
 
    //Purple Haze
-   public void PurpleHazeCast(List<Fighter> targets)
+   private void PurpleHazeCast(List<Fighter> targets)
    {
       var list = PurpleHazeCalc(targets);
       int dmg = list[0];
@@ -370,13 +389,13 @@ public class SkillDB
          }
       }
    }
-   public List<int> PurpleHazeCalc(List<Fighter> targets)
+   private List<int> PurpleHazeCalc(List<Fighter> targets)
    {
       return new List<int> { ((int)SaveLoadController.runInfo.currentLocation + 1) * 10 };
    }
 
    //Surge of Darkness
-   public void SurgeDarknessCast(List<Fighter> targets)
+   private void SurgeDarknessCast(List<Fighter> targets)
    {
       var list = SurgeDarknessCalc(targets);
       int dmg = list[0];
@@ -399,7 +418,7 @@ public class SkillDB
          }
       }
    }
-   public List<int> SurgeDarknessCalc(List<Fighter> targets)
+   private List<int> SurgeDarknessCalc(List<Fighter> targets)
    {
       var caster = targets[0];
       int wisdow = caster.wisdow + caster.bonus_wisdow;
@@ -410,7 +429,7 @@ public class SkillDB
    }
 
    //Poisoned Thorn
-   public void PoisonedThornCast(List<Fighter> targets)
+   private void PoisonedThornCast(List<Fighter> targets)
    {
       var list = PoisonedThornCalc(targets);
       int dmg = list[0];
@@ -428,7 +447,7 @@ public class SkillDB
          target.poisonStacks += poison;
       }
    }
-   public List<int> PoisonedThornCalc(List<Fighter> targets)
+   private List<int> PoisonedThornCalc(List<Fighter> targets)
    {
       var caster = targets[0];
       int wisdow = caster.wisdow + caster.bonus_wisdow;
@@ -436,8 +455,146 @@ public class SkillDB
       return new List<int> { agility, wisdow };
    }
 
+   //Bloody Note
+   private void BloodyNoteCast(List<Fighter> targets)
+   {
+      var list = BloodyNoteCalc(targets);
+      int dmg = list[0];
+
+      var caster = targets[0];
+      var target = targets[1];
+
+      if (!target.isDead)
+      {
+         caster.SacrificeHP(dmg);
+         target.TakeDmg(dmg, SkillSO.SkillElement.Physical);
+      }
+   }
+   private List<int> BloodyNoteCalc(List<Fighter> targets)
+   {
+      var caster = targets[0];
+      int hp = (int)((caster.max_hp + caster.bonus_hp) * 0.2f);
+      if (hp <= 0) hp = 1;
+      return new List<int> { hp };
+   }
+
+   //Dissonance of Pain
+   private void DissonancePainCast(List<Fighter> targets)
+   {
+      var list = DissonancePainCalc(targets);
+      int dmg = list[0];
+
+      var caster = targets[0];
+      targets.Remove(caster);
+      caster.SacrificeHP(dmg);
+      foreach (var target in targets)
+      {
+         if (!target.isDead)
+         {
+            target.TakeDmg(dmg, SkillSO.SkillElement.Physical);
+            if (Random.Range(0, 100) < dmg)
+            {
+               var pool = GetPoolByName("CurseSkills");
+               var listSk = pool.activeSkillList;
+               var skill = Instance.GetSkillByName(listSk[Random.Range(0, listSk.Count)].name);
+               Fight.additionalCastSkills.Insert(0, new(new List<Fighter> { target }, false, skill));
+            }
+         }
+      }
+   }
+   private List<int> DissonancePainCalc(List<Fighter> targets)
+   {
+      var caster = targets[0];
+      int hp = (int)(caster.hp * 0.4f);
+      if (hp <= 0) hp = 1;
+      return new List<int> { hp };
+   }
+
+   //Discreet Chord
+   private void DiscreetChordCast(List<Fighter> targets)
+   {
+      var list = DiscreetChordCalc(targets);
+      int dmg = list[0];
+
+      var caster = targets[0];
+      targets.Remove(caster);
+      caster.SacrificeHP(dmg);
+      int i = 0;
+      while(dmg > 0 && i < 10000)
+      {
+         var target = targets[Random.Range(0, targets.Count)];
+         if (!target.isDead)
+         {
+            target.armor++;
+            dmg--;
+         }
+         i++;
+      }
+   }
+   private List<int> DiscreetChordCalc(List<Fighter> targets)
+   {
+      var caster = targets[0];
+      int hp = (int)((caster.max_hp + caster.bonus_hp) * 0.3f);
+      if (hp <= 0) hp = 1;
+      return new List<int> { hp };
+   }
+
+   //Distorted Anthem
+   private void DistortedAnthemCast(List<Fighter> targets)
+   {
+      var list = DistortedAnthemCalc(targets);
+      int dmg = list[0];
+
+      var caster = targets[0];
+      targets.Remove(caster);
+      caster.SacrificeHP(dmg);
+      foreach(var target in targets)
+      {
+         var skill = Instance.GetSkillByName("Curse of Victim");
+         Fight.additionalCastSkills.Insert(0, new(new List<Fighter> { target }, false, skill));
+      }
+   }
+   private List<int> DistortedAnthemCalc(List<Fighter> targets)
+   {
+      var caster = targets[0];
+      int hp = (int)((caster.max_hp + caster.bonus_hp) * 0.25f);
+      if (hp <= 0) hp = 1;
+      return new List<int> { hp };
+   }
+
+   //Last Octave
+   private void LastOctaveCast(List<Fighter> targets)
+   {
+      var caster = targets[0];
+      int hp = caster.hp;
+
+      targets.Remove(caster);
+      caster.SacrificeHP(hp);
+      foreach (var target in targets)
+      {
+         target.TakeHeal(hp);
+         if (Fight.AlreadyTurn.Contains(target))
+         {
+            Fight.AlreadyTurn.Remove(target);
+            //Кулдауны
+            var keys = new List<Skill>(target.cooldowns.Keys);
+            for (int i = 0; i < keys.Count; i++)
+            {
+               Skill skill = keys[i];
+               target.cooldowns[skill]--;
+
+               if (target.cooldowns[skill] == 0)
+               {
+                  target.cooldowns.Remove(skill);
+               }
+            }
+            target.MakeIntention();
+         }
+      }
+   }
+
    //Provocation
-   public void ProvocationCast(List<Fighter> targets)
+   private void ProvocationCast(List<Fighter> targets)
    {
       var caster = targets[0];
       targets.Remove(caster);
@@ -453,7 +610,7 @@ public class SkillDB
    }
 
    //Dissolving in the Shadows
-   public void DissolvingShadowsCast(List<Fighter> targets)
+   private void DissolvingShadowsCast(List<Fighter> targets)
    {
       var caster = targets[0];
       caster.buffs.Add(Fighter.Buff.DoubleNextAttack);
@@ -461,7 +618,7 @@ public class SkillDB
    }
 
    //Call of the Pack
-   public void CallPackPassive(Fighter caster, List<Fighter> targets)
+   private void CallPackPassive(Fighter caster, List<Fighter> targets)
    {
       foreach(Fighter wolf in targets)
       {
@@ -477,7 +634,7 @@ public class SkillDB
          }
       }
    }
-   public void CallPackReverse(Fighter caster, List<Fighter> targets)
+   private void CallPackReverse(Fighter caster, List<Fighter> targets)
    {
       foreach (Fighter wolf in targets)
       {
@@ -495,13 +652,13 @@ public class SkillDB
    }
 
    //Old Fighter's Chest
-   public List<int> OldFightersChestCalc(List<Fighter> targets)
+   private List<int> OldFightersChestCalc(List<Fighter> targets)
    {
       return new List<int> { (int)SaveLoadController.runInfo.currentLocation + 1 };
    }
 
    //Bestial Instinct
-   public List<int> BestialInstinctCalc(List<Fighter> targets)
+   private List<int> BestialInstinctCalc(List<Fighter> targets)
    {
       var caster = targets[0];
       var agility = caster.agility + caster.bonus_agility;
@@ -509,14 +666,14 @@ public class SkillDB
    }
 
    //Poison
-   public List<int> PoisonCalc(List<Fighter> targets)
+   private List<int> PoisonCalc(List<Fighter> targets)
    {
       var caster = targets[0];
       return new List<int> { caster.poisonStacks };
    }
 
    //Echo of Forest
-   public List<int> EchoForestCalc(List<Fighter> targets)
+   private List<int> EchoForestCalc(List<Fighter> targets)
    {
       var caster = targets[0];
       var agility = caster.agility + caster.bonus_agility;
@@ -524,7 +681,7 @@ public class SkillDB
    }
 
    //Heart of the Darkness
-   public void HeartDarknessPassive(Fighter caster, List<Fighter> targets)
+   private void HeartDarknessPassive(Fighter caster, List<Fighter> targets)
    {
       int darkBonus = SaveLoadController.runInfo.badKarma / 5;
       caster.bonus_hp += SaveLoadController.runInfo.badKarma;
@@ -533,7 +690,7 @@ public class SkillDB
       caster.bonus_agility += darkBonus;
       caster.bonus_wisdow += darkBonus;
    }
-   public void HeartDarknessReverse(Fighter caster, List<Fighter> targets)
+   private void HeartDarknessReverse(Fighter caster, List<Fighter> targets)
    {
       int darkBonus = SaveLoadController.runInfo.badKarma / 3;
       caster.bonus_hp -= darkBonus * 4;
@@ -541,5 +698,30 @@ public class SkillDB
       caster.bonus_strengh -= darkBonus;
       caster.bonus_agility -= darkBonus;
       caster.bonus_wisdow -= darkBonus;
+   }
+
+   //Sacrificial Chant
+   private void SacrificialChantDeath(List<Fighter> targets)
+   {
+      var caster = targets[0];
+      targets = new(Fight.EnemyTeam);
+      if (!Fight.EnemyTeam.Contains(caster))
+         targets = new(Fight.PlayerTeam);
+      targets.Remove(caster);
+      foreach(var target in targets)
+      {
+         if (!target.isDead)
+         {
+            int heal = (caster.max_hp + caster.bonus_hp) / 2;
+            if (heal <= 0) heal = 1;
+
+            var excess = target.TakeHeal(heal);
+            if (excess > 0)
+            {
+               var armor = excess / 2;
+               target.armor += (armor == 0) ? 1 : armor;
+            }
+         }
+      }
    }
 }

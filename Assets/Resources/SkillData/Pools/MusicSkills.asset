@@ -10,18 +10,13 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 9807ccf0c390d974b9520e60e841da4f, type: 3}
-  m_Name: MonsterSkills
+  m_Name: MusicSkills
   m_EditorClassIdentifier: 
   activeSkillList:
-  - {fileID: 11400000, guid: d969dcfa4de915740be04b380be2f79c, type: 2}
-  - {fileID: 11400000, guid: b037fe05e2f631645a6d4a5f9947538c, type: 2}
-  - {fileID: 11400000, guid: 3556302bd2eb0174aae54d24d298a8eb, type: 2}
-  - {fileID: 11400000, guid: 3616e7fb522fd0f42ab442beb9f0aa61, type: 2}
-  - {fileID: 11400000, guid: 316a6ee8b95eb0a46832eaf84a6db659, type: 2}
   - {fileID: 11400000, guid: d2e407d86321ce443a2af6770ff3db15, type: 2}
+  - {fileID: 11400000, guid: 316a6ee8b95eb0a46832eaf84a6db659, type: 2}
+  - {fileID: 11400000, guid: 3616e7fb522fd0f42ab442beb9f0aa61, type: 2}
   - {fileID: 11400000, guid: 6940b2c9c6fd182429dcf0594fa49fa1, type: 2}
   - {fileID: 11400000, guid: 3db21f514ea3dcd4cbacffa7a9bf660d, type: 2}
   passiveSkillList:
-  - {fileID: 11400000, guid: 3fcab60c463d96c4fbda43d843228794, type: 2}
-  - {fileID: 11400000, guid: 884d94cf9adccd5499bd67f5375230df, type: 2}
   - {fileID: 11400000, guid: bd07467375744c2459187c119de51aa1, type: 2}

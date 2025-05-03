@@ -254,7 +254,13 @@ public class Fighter
       if (cooldown != 0 && needCooldown)
          cooldowns.Add(skill, cooldown);
 
-      if (isDoubleNextAttack)
+      //Проверка на баффы после применения заклинания
+      if (buffs.Contains(Buff.PainSilencing))
+      {
+         SacrificeHP((int)((max_hp + bonus_hp) * 0.03f));
+      }
+
+      if (isDoubleNextAttack && !isDead)
       {
          CastSkill(Fight.ChooseTarget(skill, this, Fight.RandomEnemy(this)), false, skill);
       }
@@ -428,6 +434,10 @@ public class Fighter
                      break;
                }
                break;
+            case Buff.PainSilencing:
+               if(dmg > 1)
+                  dmg = 1;
+               break;
          }
       }
 
@@ -450,16 +460,35 @@ public class Fighter
       }
    }
 
-   public void TakeHeal(int heal)
+   public void SacrificeHP(int hp)
    {
+      int dmg = hp;
+      if (dmg <= 0) dmg = 1;
+
+      if (dmg >= 0)
+      {
+         hp -= dmg;
+         if (hp <= 0)
+         {
+            hp = 0;
+            Death();
+         }
+      }
+   }
+
+   public int TakeHeal(int heal)
+   {
+      int excess = 0;
       if (heal >= 0)
       {
+         excess = heal - (max_hp + bonus_hp - hp);
          hp += heal;
          if (hp > max_hp + bonus_hp)
          {
             hp = max_hp + bonus_hp;
          }
       }
+      return excess;
    }
 
    public void FullHeal()
@@ -487,6 +516,9 @@ public class Fighter
          case Buff.CurseDestruction:
             name = "Curse of Destruction";
             break;
+         case Buff.CurseVictim:
+            name = "Curse of Victim";
+            break;
          case Buff.WeightMemories:
             name = "The Weight of Memories";
             break;
@@ -507,6 +539,12 @@ public class Fighter
             break;
          case Buff.DissolvingShadows:
             name = "Dissolving in the Shadows";
+            break;
+         case Buff.PainSilencing:
+            name = "Pain Silencing";
+            break;
+         case Buff.SacrificialChant:
+            name = "Sacrificial Chant";
             break;
       }
       if (name == "") return null;
@@ -536,6 +574,8 @@ public class Fighter
       ProvocationCaster,
       Poison,
       DissolvingShadows,
-
+      PainSilencing,
+      SacrificialChant,
+      CurseVictim,
    }
 }

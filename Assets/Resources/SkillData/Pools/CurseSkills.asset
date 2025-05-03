@@ -14,4 +14,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   activeSkillList:
   - {fileID: 11400000, guid: c9a91a7ca731aa540830ec71341aed53, type: 2}
+  - {fileID: 11400000, guid: b330d35da6a1dfa4ea4c6caafeb96429, type: 2}
   passiveSkillList: []

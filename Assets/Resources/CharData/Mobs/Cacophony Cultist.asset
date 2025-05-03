@@ -1,0 +1,37 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe0d30022cbdbdc469fd8a301de89b48, type: 3}
+  m_Name: Cacophony Cultist
+  m_EditorClassIdentifier: 
+  character_name: "\u041A\u0443\u043B\u044C\u0442\u0438\u0441\u0442 \u043A\u0430\u043A\u043E\u0444\u043E\u043D\u0438\u0438"
+  charClass: 0
+  character_description: 
+  portrait_human: {fileID: 0}
+  portrait_halfhuman: {fileID: 0}
+  portrait_monster: {fileID: 21300000, guid: 9b7f9b35258ab4744a47a0d3378fb83b, type: 3}
+  portrait_summon: {fileID: 21300000, guid: 9b7f9b35258ab4744a47a0d3378fb83b, type: 3}
+  other_portraits: []
+  skills:
+  - {fileID: 11400000, guid: 884d94cf9adccd5499bd67f5375230df, type: 2}
+  - {fileID: 11400000, guid: bd07467375744c2459187c119de51aa1, type: 2}
+  - {fileID: 11400000, guid: d2e407d86321ce443a2af6770ff3db15, type: 2}
+  - {fileID: 11400000, guid: 316a6ee8b95eb0a46832eaf84a6db659, type: 2}
+  - {fileID: 11400000, guid: 3616e7fb522fd0f42ab442beb9f0aa61, type: 2}
+  - {fileID: 11400000, guid: 6940b2c9c6fd182429dcf0594fa49fa1, type: 2}
+  - {fileID: 11400000, guid: 3db21f514ea3dcd4cbacffa7a9bf660d, type: 2}
+  _availableSkills: []
+  strengh: 0
+  agility: 0
+  wisdow: 0
+  constitution: 10
+  defence: 0
+  priorityStats: 
