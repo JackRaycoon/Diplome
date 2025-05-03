@@ -460,9 +460,9 @@ public class Fighter
       }
    }
 
-   public void SacrificeHP(int hp)
+   public void SacrificeHP(int _hp)
    {
-      int dmg = hp;
+      int dmg = _hp;
       if (dmg <= 0) dmg = 1;
 
       if (dmg >= 0)

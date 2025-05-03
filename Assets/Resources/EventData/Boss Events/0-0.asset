@@ -104,13 +104,11 @@ MonoBehaviour:
   textChoice: 
   isHidden: 0
   choices:
-  - {fileID: 11400000, guid: a166038a09f7a27418deb1301a5546a7, type: 2}
+  - {fileID: 11400000, guid: 82c0502763a5111478824b54bb076711, type: 2}
   checkTrap: 0
   enemies:
-  - {fileID: 11400000, guid: d7ec80e4941c95a4397043c4da0ef60e, type: 2}
-  - {fileID: 11400000, guid: d7ec80e4941c95a4397043c4da0ef60e, type: 2}
-  - {fileID: 11400000, guid: d7ec80e4941c95a4397043c4da0ef60e, type: 2}
-  enemiesCount: 0100
+  - {fileID: 11400000, guid: 001226de763939e4d9b17202c162dc28, type: 2}
+  enemiesCount: 0200
   isFog: 0
   isNotOver: 0
   overHpProcent: 0
