@@ -243,6 +243,7 @@ public class Fight : MonoBehaviour
          PlayerUITeam = new List<Fighter>(PlayerTeam);
          UpdatePortrait();
          FightUIController.hardUpdate = true;
+         skipBtn.SetActive(false);
       }
       else if (Input.GetKeyDown(KeyCode.Mouse1) && !isEnemyTurn && !BuffPanelController.isOpened && selectedSkill != null)
       {
@@ -258,6 +259,8 @@ public class Fight : MonoBehaviour
          _selected = true;
          PlayerUITeam = new List<Fighter> { PlayerTeam[SelectedCharacterID] };
          UpdatePortrait();
+         if(PlayerTeam.Count != 1)
+            skipBtn.SetActive(true);
       }
 
       //Обновление по требованию
@@ -455,13 +458,13 @@ public class Fight : MonoBehaviour
       if (skipTurn)
          goto SkipTurn;
 
-      SelectedCharacter();
-
-      skipBtn.SetActive(true);
       //Ждём пока не выберется скилл
       ChangeSkill:
       EnemyUITeam = new List<Fighter>(EnemyTeam);
       UpdatePortrait();
+      if(PlayerTeam.Count == 1)
+         skipBtn.SetActive(true);
+
       while (selectedSkill == null)
       {
          yield return null;
@@ -470,6 +473,7 @@ public class Fight : MonoBehaviour
             goto StartTurn;
          }
       }
+      
       //Кто отображается в списке персонажей справа
       PlayerUITeam = new List<Fighter>() { SelectedCharacter() };
       switch (selectedSkill.skillData.skill_target)
