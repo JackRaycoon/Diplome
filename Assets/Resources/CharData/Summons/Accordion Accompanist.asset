@@ -1,0 +1,34 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe0d30022cbdbdc469fd8a301de89b48, type: 3}
+  m_Name: Accordion Accompanist
+  m_EditorClassIdentifier: 
+  character_name: "\u0411\u0430\u044F\u043D\u043D\u044B\u0439 \u0430\u043A\u043A\u043E\u043C\u043F\u0430\u043D\u0438\u0430\u0442\u043E\u0440"
+  charClass: 0
+  character_description: 
+  portrait_human: {fileID: 0}
+  portrait_halfhuman: {fileID: 0}
+  portrait_monster: {fileID: 21300000, guid: ea6f90b34ca01e24b942e462c8357651, type: 3}
+  portrait_summon: {fileID: 21300000, guid: ea6f90b34ca01e24b942e462c8357651, type: 3}
+  other_portraits: []
+  skills:
+  - {fileID: 11400000, guid: 96ab1f65ba643824e89b9e9b950c2977, type: 2}
+  - {fileID: 11400000, guid: 542bf48f601970145979b7ef2d75458a, type: 2}
+  - {fileID: 11400000, guid: d6bda0aa05900b140a94a769b59226ae, type: 2}
+  - {fileID: 11400000, guid: ffdd25f89ee04f7459f2c1bde0cab6c1, type: 2}
+  _availableSkills: []
+  strengh: 0
+  agility: 0
+  wisdow: 2
+  constitution: 2
+  defence: 0
+  priorityStats: 0300000002000000

@@ -52,6 +52,7 @@ public class Fighter
    {
     SkillDB.Instance.GetSkillByName("Basic Attack")
    };
+   public List<Skill> skillsBattle; //в бою используем этот список, мало ли изменится что-нибудь в бою
 
    public Fighter(string name)
    {
@@ -199,11 +200,10 @@ public class Fighter
       }
    }
 
-   public void CastSkill(List<Fighter> targets, bool needCooldown = true, Skill skill = null)
+   public void CastSkill(List<Fighter> targets, Skill skill, bool needCooldown = true)
    {
-      skill ??= Intension;
-
       bool isDoubleNextAttack = false;
+      List<Fighter> doubleTargets = targets;
 
       //Проверка на баффы у кастующего
       for (int i = 0; i < buffs.Count; i++)
@@ -213,6 +213,7 @@ public class Fighter
             case Buff.DoubleNextAttack:
                if (skill.skillData.skill_type != SkillSO.SkillType.Attack) continue;
                isDoubleNextAttack = true;
+               doubleTargets = Fight.ChooseTarget(skill, this, Fight.RandomEnemy(this));
                buffs.RemoveAt(i);
                i--;
                break;
@@ -247,6 +248,11 @@ public class Fighter
             case Buff.DissolvingShadows:
                buffs.Remove(Buff.DissolvingShadows);
                break;
+            case Buff.Accompaniment:
+               buffs.Remove(Buff.Accompaniment);
+               isDoubleNextAttack = true;
+               SacrificeHP(max_hp);
+               break;
          }
       }
       skill.Cast(this, targets);
@@ -262,7 +268,7 @@ public class Fighter
 
       if (isDoubleNextAttack && !isDead)
       {
-         CastSkill(Fight.ChooseTarget(skill, this, Fight.RandomEnemy(this)), false, skill);
+         Fight.additionalCastSkills.Add(new(doubleTargets, false, skill));
       }
    }
 
@@ -285,8 +291,10 @@ public class Fighter
       foreach (Fighter character in Fight.AllCharacter)
          if (character.isSpawn) allSpawned.Add(character);
 
+      skillsBattle = new(skills);
+
       //Свои абилки
-      foreach (Skill skill in skills)
+      foreach (Skill skill in skillsBattle)
       {
          skill.battlecry?.Invoke();
          skill.passive?.Invoke(this, allSpawned);
@@ -296,7 +304,7 @@ public class Fighter
       foreach (Fighter character in allSpawned)
       {
          if (character != null && character != this)
-            foreach (Skill skill in character.skills)
+            foreach (Skill skill in character.skillsBattle)
             {
                //passive
                skill.passive?.Invoke(character, new List<Fighter> { this });
@@ -304,7 +312,7 @@ public class Fighter
       }
 
       //Баффы от пассивок
-      foreach (var skill in skills)
+      foreach (var skill in skillsBattle)
       {
          var skillData = skill.skillData;
          if (skillData.passiveBuff != Buff.None)
@@ -325,30 +333,32 @@ public class Fighter
       //Количество скиллов без пассивок и перезаряжаемых скиллов
       //int skillCount = 0;
       List<Skill> availableSkills = new();
-      foreach (Skill skill in skills)
+      foreach (Skill skill in skillsBattle)
       {
          if (skill.skillData.skill_target != SkillSO.SkillTarget.Passive
             && !cooldowns.Keys.Contains(skill))
             availableSkills.Add(skill);
       }
+      if (buffs.Contains(Buff.NoAttack))
+         availableSkills.Remove(SkillDB.Instance.GetSkillByName("Basic Attack"));
+      availableSkills.Remove(prevIntension);
       //bool reroll;
       var count = availableSkills.Count;
       if (count > 0)
+      {
          do
          {
             Intension = availableSkills[Random.Range(0, count)];
-         } while (count > 1 && Intension == prevIntension);
-      /*do
+         } while (count > 1);
+      }
+      else 
+      {
+         if (cooldowns.Keys.Contains(prevIntension))
          {
-            var _skills = skills;
-            Intension = _skills[Random.Range(0, _skills.Count)];
-            if (prevIntension != null)
-               reroll = Intension.skillData.skill_target == SkillSO.SkillTarget.Passive ||
-                        cooldowns.Keys.Contains(Intension) ||
-                        (skillCount > 1 && Intension == prevIntension);
-            else reroll = Intension.skillData.skill_target == SkillSO.SkillTarget.Passive ||
-                  cooldowns.Keys.Contains(Intension);
-         } while (reroll);*/
+            Intension = null;
+            //Fight.skipTurn = true;
+         }
+      }
    }
 
    public void Death()
@@ -386,7 +396,7 @@ public class Fighter
          }
       }
 
-      foreach (Skill skill in skills)
+      foreach (Skill skill in skillsBattle)
       {
          skill.death?.Invoke(new List<Fighter> { this });
          skill.reverse?.Invoke(this, Fight.AllCharacter);
@@ -395,7 +405,7 @@ public class Fighter
 
    public Skill GetPassiveSkill(Buff buff)
    {
-      foreach(var skill in skills)
+      foreach(var skill in skillsBattle)
       {
          if (skill.skillData.passiveBuff == buff)
             return skill;
@@ -488,6 +498,7 @@ public class Fighter
             hp = max_hp + bonus_hp;
          }
       }
+      if (excess < 0) excess = 0;
       return excess;
    }
 
@@ -546,6 +557,12 @@ public class Fighter
          case Buff.SacrificialChant:
             name = "Sacrificial Chant";
             break;
+         case Buff.Accompaniment:
+            name = "Accompaniment";
+            break;
+         case Buff.NoAttack:
+            name = "No Attack";
+            break;
       }
       if (name == "") return null;
       return SkillDB.Instance.GetSkillByName(name);
@@ -577,5 +594,8 @@ public class Fighter
       PainSilencing,
       SacrificialChant,
       CurseVictim,
+      Accompaniment,
+      NoAttack,
+
    }
 }

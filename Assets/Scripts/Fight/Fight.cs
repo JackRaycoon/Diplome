@@ -39,6 +39,8 @@ public class Fight : MonoBehaviour
 
    public List<GameObject> SkillsCards;
 
+   public GameObject skipBtn;
+
    public GameObject WinLosePanel;
    public TMP_Text WinLoseText;
    public TMP_Text RoundNum;
@@ -57,6 +59,7 @@ public class Fight : MonoBehaviour
    public static bool isWin, isLose, isAllDoTurn;
    public static bool endFight = false;
    public static bool isEnemyTurn = false;
+   public static bool skipTurn = false;
 
    public static List<CastSkillStructure> additionalCastSkills = new();
 
@@ -80,6 +83,7 @@ public class Fight : MonoBehaviour
       cast = false;
       isEnemyTurn = false;
       endFight = false;
+      skipTurn = false;
       additionalCastSkills = new();
 
       PlayerTeam = SaveLoadController.runInfo.PlayerTeam;
@@ -317,12 +321,19 @@ public class Fight : MonoBehaviour
             switch (buff)
             {
                case Fighter.Buff.QuickRebuff:
-                  character.CastSkill(new List<Fighter>() { RandomEnemy(character) }, false, SkillDB.Instance.GetSkillByName("Basic Attack"));
+                  character.CastSkill(new List<Fighter>() { RandomEnemy(character) }, SkillDB.Instance.GetSkillByName("Basic Attack"), false);
                   break;
                case Fighter.Buff.EchoHope:
                   int heal = (int)(character.max_hp * 0.15f);
                   if (heal == 0) heal = 1;
                   character.TakeHeal(heal);
+                  break;
+               case Fighter.Buff.NoAttack:
+                  var skill = SkillDB.Instance.GetSkillByName("Basic Attack");
+                  if (character.skillsBattle.Contains(skill))
+                  {
+                     character.skillsBattle.Remove(skill);
+                  }
                   break;
             }
          }
@@ -356,14 +367,37 @@ public class Fight : MonoBehaviour
       //Всё что нужно делать в начале раунда из баффов
       foreach (var chara in AllCharacter)
       {
-         if (chara.buffs.Contains(Fighter.Buff.WeightMemories))
+         foreach(var buff in chara.buffs)
          {
-            chance = 30;
-            res = Random.Range(0, 100);
-            chara.isFear = res < chance;
-            if (res < chance)
+            switch (buff)
             {
-               AlreadyTurn.Add(chara);
+               case Fighter.Buff.Accompaniment:
+                  List<Fighter> list = new(EnemyTeam);
+                  if (!EnemyTeam.Contains(chara))
+                  {
+                     list = new(PlayerTeam);
+                  }
+                  bool contains = false;
+                  foreach(var figh in list)
+                  {
+                     if(figh.Data.name == "Ancient Evil")   
+                     {
+                        contains = true;
+                        break;
+                     }
+                  }
+                  if (!contains)
+                     chara.buffs.Remove(Fighter.Buff.Accompaniment);
+                  break;
+               case Fighter.Buff.WeightMemories:
+                  chance = 30;
+                  res = Random.Range(0, 100);
+                  chara.isFear = res < chance;
+                  if (res < chance)
+                  {
+                     AlreadyTurn.Add(chara);
+                  }
+                  break;
             }
          }
       }
@@ -415,6 +449,7 @@ public class Fight : MonoBehaviour
       if (allPlayerCharactersDoTurn) goto Skip;
       SelectedCharacterID_Reset();
       StartTurn:
+      skipBtn.SetActive(false);
       selectedSkill = null;
       selectedTarget = null;
       CardShowerReset();
@@ -425,8 +460,15 @@ public class Fight : MonoBehaviour
       ChangeSkill:
       EnemyUITeam = new List<Fighter>(EnemyTeam);
       UpdatePortrait();
-      while (selectedSkill == null) yield return null;
-
+      while (selectedSkill == null)
+      {
+         yield return null;
+         if (skipTurn)
+         {
+            goto SkipTurn;
+         }
+      }
+      skipBtn.SetActive(true);
       //Кто отображается в списке персонажей справа
       PlayerUITeam = new List<Fighter>() { caster };
       switch (selectedSkill.skillData.skill_target)
@@ -487,11 +529,16 @@ public class Fight : MonoBehaviour
       UpdatePortrait();
       FightUIController.hardUpdate = true;
 
-      caster.CastSkill(selectedTargets, true, selectedSkill);
+      caster.CastSkill(selectedTargets, selectedSkill);
+
+      SkipTurn:
 
       AlreadyTurn.Add(caster);
 
-      yield return new WaitForSeconds(2f);
+      skipBtn.SetActive(false);
+
+      if (!skipTurn)
+         yield return new WaitForSeconds(2f);
       //Если применение скилла повлекло за собой применение других скиллов
       while (additionalCastSkills.Count > 0)
       {
@@ -508,7 +555,7 @@ public class Fight : MonoBehaviour
          UpdatePortrait();
          FightUIController.hardUpdate = true;
 
-         caster.CastSkill(selectedTargets, additionalCastSkills[0].needCooldown, selectedSkill);
+         caster.CastSkill(selectedTargets, selectedSkill, additionalCastSkills[0].needCooldown);
          additionalCastSkills.RemoveAt(0);
          yield return new WaitForSeconds(2f);
       }
@@ -520,6 +567,7 @@ public class Fight : MonoBehaviour
       selectedTarget = null;
       SelectedCharacterID_Reset();
       _selected = false;
+      skipTurn = false;
 
       cast = false;
       UpdatePortrait();
@@ -554,6 +602,9 @@ public class Fight : MonoBehaviour
 
       caster = notTurnEnemies[Random.Range(0, notTurnEnemies.Count)];
 
+      if (caster.Intension == null)
+         goto SkipTurn;
+
       //EnemyUITeam = new List<Fighter>() { selectedEnemy };
       //UpdatePortrait();
       //Реализовать логику выбора цели
@@ -585,7 +636,10 @@ public class Fight : MonoBehaviour
 
       yield return new WaitForSeconds(2f);
 
-      caster.CastSkill(selectedTargets);
+      caster.CastSkill(selectedTargets, caster.Intension);
+
+      SkipTurn:
+      AlreadyTurn.Add(caster);
 
       //Если применение скилла повлекло за собой применение других скиллов
       while (additionalCastSkills.Count > 0)
@@ -604,7 +658,7 @@ public class Fight : MonoBehaviour
          FightUIController.hardUpdate = true;
 
          yield return new WaitForSeconds(2f);
-         caster.CastSkill(selectedTargets, additionalCastSkills[0].needCooldown, selectedSkill);
+         caster.CastSkill(selectedTargets, selectedSkill, additionalCastSkills[0].needCooldown);
          additionalCastSkills.RemoveAt(0);
       }
       yield return null;
@@ -613,7 +667,6 @@ public class Fight : MonoBehaviour
       yield return null;
       PlayerUITeam = new List<Fighter>(PlayerTeam);
       EnemyUITeam = new List<Fighter>(EnemyTeam);
-      AlreadyTurn.Add(caster);
       FightUIController.allDisable = false;
 
       UpdatePortrait();
@@ -628,6 +681,7 @@ public class Fight : MonoBehaviour
    }
 
    bool isDoubleTurn = false;
+
    private void CheckRoundChange(Fighter whoMakeTurn)
    {
       for (int i = 0; i < EnemyTeam.Count; i++)
@@ -1001,7 +1055,7 @@ public class Fight : MonoBehaviour
          int i = 0;
          if(!isEnemyTurn)
          {
-            foreach (Skill skill in PlayerUITeam[0].skills)
+            foreach (Skill skill in PlayerUITeam[0].skillsBattle)
             {
                if (skill.skillData.skill_target == SkillSO.SkillTarget.Passive) continue;
                var SkCard = SkillsCards[i];
@@ -1072,5 +1126,10 @@ public class Fight : MonoBehaviour
       {
          lRenderer.enabled = true;
       }
+   }
+
+   public void SkipBtn()
+   {
+      skipTurn = true;
    }
 }

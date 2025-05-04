@@ -53,19 +53,23 @@ public class SkillDB
       AddSkillCast("Raise Shields", RaiseShieldsCast, RaiseShieldsCalc);
       AddSkillCast("Fire Wave", FireWaveCast, FireWaveCalc);
       AddSkillCast("Healing Wounds", HealingWoundsCast, HealingWoundsCalc);
-      AddSkillCast("Waiting", WaitingCast);
       AddSkillCast("Blade of the Wind", BladeWindCast, BladeWindCalc);
-      AddSkillCast("Summon the Shadow", SummonShadowCast);
       AddSkillCast("Purple Haze", PurpleHazeCast, PurpleHazeCalc);
       AddSkillCast("Surge of Darkness", SurgeDarknessCast, SurgeDarknessCalc);
-      AddSkillCast("Provocation", ProvocationCast);
-      AddSkillCast("Dissolving in the Shadows", DissolvingShadowsCast);
       AddSkillCast("Poisoned Thorn", PoisonedThornCast, PoisonedThornCalc);
       AddSkillCast("Bloody Note", BloodyNoteCast, BloodyNoteCalc);
       AddSkillCast("Dissonance of Pain", DissonancePainCast, DissonancePainCalc);
       AddSkillCast("Discreet Chord", DiscreetChordCast, DiscreetChordCalc);
       AddSkillCast("Distorted Anthem", DistortedAnthemCast, DistortedAnthemCalc);
+      AddSkillCast("Resonance of the Chord", ResonanceChordCast, ResonanceChordCalc);
+      AddSkillCast("Crescendo Finale", CrescendoFinaleCast, CrescendoFinaleCalc);
+
+      AddSkillCast("Provocation", ProvocationCast);
+      AddSkillCast("Waiting", WaitingCast);
       AddSkillCast("Last Octave", LastOctaveCast);
+      AddSkillCast("Dissolving in the Shadows", DissolvingShadowsCast);
+      AddSkillCast("Summon the Shadow", SummonShadowCast);
+
 
       //Active Curses
       AddSkillCast("Curse of Destruction", CurseDestructionCast);
@@ -75,6 +79,7 @@ public class SkillDB
       AddSkillPassive("Empty");
       AddSkillPassive("Poison", PoisonCalc);
       AddSkillPassive("Corpseless");
+      AddSkillPassive("No Attack");
 
       //Passive
       AddSkillPassive("Call of the Pack", CallPackPassive, CallPackReverse);
@@ -90,6 +95,7 @@ public class SkillDB
       AddSkillPassive("Heart of Darkness", HeartDarknessPassive, HeartDarknessReverse);
       AddSkillPassive("Cursed Hand");
       AddSkillPassive("Pain Silencing");
+      AddSkillPassive("Accompaniment");
 
       //Death
       AddSkillDeath("Sacrificial Chant", SacrificialChantDeath);
@@ -344,7 +350,7 @@ public class SkillDB
       if (shadow.constitution == 0) shadow.constitution = 1;
       shadow.FullHeal();
 
-      foreach(var skill in target.skills)
+      foreach(var skill in target.skillsBattle)
       {
          shadow.AddSkill(skill);
       }
@@ -560,6 +566,91 @@ public class SkillDB
       int hp = (int)((caster.max_hp + caster.bonus_hp) * 0.25f);
       if (hp <= 0) hp = 1;
       return new List<int> { hp };
+   }
+
+   //Resonance of the Chord
+   private void ResonanceChordCast(List<Fighter> targets)
+   {
+      var list = ResonanceChordCalc(targets);
+      int count = list[0];
+
+      var caster = targets[0];
+      targets.Remove(caster);
+      var target = targets[Random.Range(0, targets.Count)];
+      for (int i = 0; i < count && targets.Count > 0; i++)
+      {
+         if (!target.isDead)
+         {
+            switch (Random.Range(0, 3))
+            {
+               case 0:
+                  target.bonus_strengh++;
+                  break;
+               case 1:
+                  target.bonus_agility++;
+                  break;
+               case 2:
+                  target.bonus_wisdow++;
+                  break;
+            }
+            target = targets[Random.Range(0, targets.Count)];
+         }
+         else
+         {
+            targets.Remove(target);
+            target = targets[Random.Range(0, targets.Count)];
+            i--;
+         }
+      }
+   }
+   private List<int> ResonanceChordCalc(List<Fighter> targets)
+   {
+      var caster = targets[0];
+      int wisdow = caster.wisdow + caster.bonus_wisdow;
+      return new List<int> { wisdow + 1 };
+   }
+
+   //Crescendo Finale
+   private void CrescendoFinaleCast(List<Fighter> targets)
+   {
+      var list = CrescendoFinaleCalc(targets);
+      int count = Random.Range(0, list[0] + 1);
+
+      var caster = targets[0];
+      targets.Remove(caster);
+      var target = targets[Random.Range(0, targets.Count)];
+
+      List<Fighter> allies = new(Fight.EnemyTeam);
+      if (!allies.Contains(caster))
+         allies = new(Fight.PlayerTeam);
+
+      for (int i = 0; i < count && targets.Count > 0; i++)
+      {
+         if (!target.isDead)
+         {
+            if (allies.Contains(target))
+            {
+               target.armor += target.TakeHeal(1);
+            }
+            else
+            {
+               target.TakeDmg(1, SkillSO.SkillElement.Physical);
+            }
+            target = targets[Random.Range(0, targets.Count)];
+         }
+         else
+         {
+            targets.Remove(target);
+            target = targets[Random.Range(0, targets.Count)];
+            i--;
+         }
+      }
+   }
+   private List<int> CrescendoFinaleCalc(List<Fighter> targets)
+   {
+      var caster = targets[0];
+      int wisdow = caster.wisdow + caster.bonus_wisdow;
+      return new List<int> { 1 + wisdow * 5 };
    }
 
    //Last Octave
