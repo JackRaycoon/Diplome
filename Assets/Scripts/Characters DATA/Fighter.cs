@@ -346,10 +346,7 @@ public class Fighter
       var count = availableSkills.Count;
       if (count > 0)
       {
-         do
-         {
-            Intension = availableSkills[Random.Range(0, count)];
-         } while (count > 1);
+         Intension = availableSkills[Random.Range(0, count)];
       }
       else 
       {

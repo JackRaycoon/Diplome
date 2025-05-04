@@ -226,8 +226,6 @@ public class Fight : MonoBehaviour
          character.buffs = new();
       }
 
-      UpdatePortrait();
-
       FightUIController.hardUpdate = true;
 
       FightStart();
@@ -311,6 +309,7 @@ public class Fight : MonoBehaviour
          character.Spawn();
       }
 
+      UpdatePortrait();
       //MakeIntention();
 
       //StartFight Buffs
@@ -445,7 +444,6 @@ public class Fight : MonoBehaviour
 
    IEnumerator PlayerTurn()
    {
-      Fighter caster = null;
       if (allPlayerCharactersDoTurn) goto Skip;
       SelectedCharacterID_Reset();
       StartTurn:
@@ -454,8 +452,12 @@ public class Fight : MonoBehaviour
       selectedTarget = null;
       CardShowerReset();
 
-      caster = SelectedCharacter();
+      if (skipTurn)
+         goto SkipTurn;
 
+      SelectedCharacter();
+
+      skipBtn.SetActive(true);
       //Ждём пока не выберется скилл
       ChangeSkill:
       EnemyUITeam = new List<Fighter>(EnemyTeam);
@@ -465,12 +467,11 @@ public class Fight : MonoBehaviour
          yield return null;
          if (skipTurn)
          {
-            goto SkipTurn;
+            goto StartTurn;
          }
       }
-      skipBtn.SetActive(true);
       //Кто отображается в списке персонажей справа
-      PlayerUITeam = new List<Fighter>() { caster };
+      PlayerUITeam = new List<Fighter>() { SelectedCharacter() };
       switch (selectedSkill.skillData.skill_target)
       {
          case SkillSO.SkillTarget.Solo_Enemy:
@@ -481,7 +482,7 @@ public class Fight : MonoBehaviour
          case SkillSO.SkillTarget.All:
          case SkillSO.SkillTarget.Random_Target:
             var list = new List<Fighter>(AllCharacter);
-            list.Remove(caster);
+            list.Remove(SelectedCharacter());
             EnemyUITeam = list;
             break;
          case SkillSO.SkillTarget.Solo_Ally:
@@ -490,7 +491,7 @@ public class Fight : MonoBehaviour
             EnemyUITeam = new List<Fighter>(PlayerTeam);
             break;
          case SkillSO.SkillTarget.Caster:
-            EnemyUITeam = new List<Fighter>() { caster };
+            EnemyUITeam = new List<Fighter>() { SelectedCharacter() };
             break;
             
       }
@@ -516,9 +517,16 @@ public class Fight : MonoBehaviour
             FightUIController.allInteractable = false;
             goto ChangeSkill;
          }
+
+         if (skipTurn)
+         {
+            FightUIController.allInteractable = false;
+            _selected = false;
+            goto StartTurn;
+         }
       }
       //Выбираем цели для каста
-      var selectedTargets = ChooseTarget(selectedSkill, caster, selectedTarget);
+      var selectedTargets = ChooseTarget(selectedSkill, SelectedCharacter(), selectedTarget);
       
       FightUIController.allInteractable = false;
       _selected = false;
@@ -529,11 +537,11 @@ public class Fight : MonoBehaviour
       UpdatePortrait();
       FightUIController.hardUpdate = true;
 
-      caster.CastSkill(selectedTargets, selectedSkill);
+      SelectedCharacter().CastSkill(selectedTargets, selectedSkill);
 
       SkipTurn:
 
-      AlreadyTurn.Add(caster);
+      AlreadyTurn.Add(SelectedCharacter());
 
       skipBtn.SetActive(false);
 
@@ -547,7 +555,7 @@ public class Fight : MonoBehaviour
          selectedSkill = additionalCastSkills[0].skill;
 
          Skill_Image.externalSkill = selectedSkill;
-         Skill_Image.externalCaster = caster;
+         Skill_Image.externalCaster = SelectedCharacter();
 
          PlayerUITeam = new List<Fighter> { PlayerTeam[SelectedCharacterID] };
          EnemyUITeam = selectedTargets;
@@ -555,7 +563,7 @@ public class Fight : MonoBehaviour
          UpdatePortrait();
          FightUIController.hardUpdate = true;
 
-         caster.CastSkill(selectedTargets, selectedSkill, additionalCastSkills[0].needCooldown);
+         SelectedCharacter().CastSkill(selectedTargets, selectedSkill, additionalCastSkills[0].needCooldown);
          additionalCastSkills.RemoveAt(0);
          yield return new WaitForSeconds(2f);
       }
@@ -574,7 +582,7 @@ public class Fight : MonoBehaviour
 
       Skip:
       CardShowerReset();
-      CheckRoundChange(caster);
+      CheckRoundChange(SelectedCharacter());
       if (!isWin && !isLose) 
       {
          if (isAllDoTurn) StartRound();
