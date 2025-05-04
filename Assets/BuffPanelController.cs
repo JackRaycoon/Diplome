@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class BuffPanelController : MonoBehaviour
@@ -53,11 +54,16 @@ public class BuffPanelController : MonoBehaviour
       {
          Destroy(child.gameObject);
       }
-      
+      List<Skill> skills = new();
       foreach(var buff in character.buffs)
       {
          var skill = character.BuffToSkill(buff);
-         if (skill == null) continue;
+         if (skill != null)
+            skills.Add(skill);
+      }
+
+      foreach (var skill in skills.OrderBy(s => s.skillData.name))
+      {
          GameObject go = Instantiate(handCardPrefab, buffTransform);
          go.GetComponent<CardFiller>().skill = skill;
       }

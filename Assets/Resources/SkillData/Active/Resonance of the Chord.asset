@@ -24,7 +24,7 @@ MonoBehaviour:
   skill_target: 3
   skill_type: 2
   skill_elem: 0
-  cooldown: 2
+  cooldown: 4
   isAllAvailable: 0
   isCorpseTargetToo: 0
   isCurse: 0
