@@ -129,15 +129,6 @@ public class SkillDB
       skillDatabase.Add(name, skill);
    }
 
-   private void AddSkillEvTurn(string name, Action<List<Fighter>> everyTurn)
-   {
-      Skill skill = new(name, true)
-      {
-         every_turn = everyTurn
-      };
-      skillDatabase.Add(name, skill);
-   }
-
    private void AddSkillPassive(string name, Action<Fighter, List<Fighter>> passive, Action<Fighter, List<Fighter>> reverse, Func<List<Fighter>, List<int>> calc = null)
    {
       Skill skill = new(name, true)
@@ -161,25 +152,6 @@ public class SkillDB
       Skill skill = new(name, true);
       skillDatabase.Add(name, skill);
    }
-
-   //Надо ли?
-   public enum SkillTYPE
-   {
-      All_Allies
-   }
-
-   /*public void EveryTurn(List<Fighter> targets) //первый в targets всегда caster
-   {
-      //var Board = GameScript.EnemyBoard;
-      //foreach (Card card in GameScript.PlayerBoard) if (card == caster) { Board = GameScript.PlayerBoard; break; }
-      //foreach (Card target in Board)
-      //{
-      //   if (target != null && target != caster && UnityEngine.Random.Range(1, 101) <= 30)
-      //   {
-      //      target.ATK++;
-      //   }
-      //}
-   }*/
 
    //Basic Attack
    private void BasicAttackCast(List<Fighter> targets)

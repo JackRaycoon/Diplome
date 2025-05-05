@@ -78,7 +78,7 @@ public class Fighter
       //skills = new();
       foreach (SkillSO skillSO in Data.skills)
       {
-         AddSkill(skillSO);
+         AddSkillWithoutChecks(skillSO);
       }
    }
 
@@ -90,6 +90,11 @@ public class Fighter
          skills.Add(skill);
          CheckAddSkillGlobal(skill);
       }
+   }
+   public void AddSkillWithoutChecks(SkillSO skillData)
+   {
+      var skill = SkillDB.Instance.GetSkillByName(skillData.name);
+      skills.Add(skill);
    }
    public void AddSkill(Skill skill)
    {
@@ -296,7 +301,7 @@ public class Fighter
       //Свои абилки
       foreach (Skill skill in skillsBattle)
       {
-         skill.battlecry?.Invoke();
+         //skill.battlecry?.Invoke();
          skill.passive?.Invoke(this, allSpawned);
       }
 
