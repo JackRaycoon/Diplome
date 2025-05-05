@@ -4,11 +4,15 @@ using UnityEngine;
 
 public class KeyManager : MonoBehaviour
 {
-   private static readonly string aesKeyPlayerPrefKey = "aesKey";
-   private static readonly string aesIVPlayerPrefKey = "aesIV";
-   private static readonly string hmacKeyPlayerPrefKey = "hmacKey";
+   private static readonly string aesKeyPlayerPrefKey = HashKeyName("cfg_1A9z" + GetDeviceSuffix());
+   private static readonly string aesIVPlayerPrefKey = HashKeyName("cfg_XxB7" + GetDeviceSuffix());
+   private static readonly string hmacKeyPlayerPrefKey = HashKeyName("cfg_Hk92" + GetDeviceSuffix());
 
-   // Функция для генерации случайных ключей
+   private static string GetDeviceSuffix()
+   {
+      return SystemInfo.deviceUniqueIdentifier.Substring(0, 4); // Для "уникальности"
+   }
+
    private static byte[] GenerateRandomKey(int length)
    {
       using (var rng = new RNGCryptoServiceProvider())
@@ -19,48 +23,97 @@ public class KeyManager : MonoBehaviour
       }
    }
 
-   // Функция для сохранения ключей в PlayerPrefs (с шифрованием)
+   private static byte[] GetDeviceKey()
+   {
+      string deviceId = SystemInfo.deviceUniqueIdentifier;
+      using (var sha256 = SHA256.Create())
+      {
+         return sha256.ComputeHash(Encoding.UTF8.GetBytes(deviceId));
+      }
+   }
+
+   private static string HashKeyName(string name)
+   {
+      using (var sha256 = SHA256.Create())
+      {
+         byte[] hash = sha256.ComputeHash(Encoding.UTF8.GetBytes(name + SystemInfo.deviceUniqueIdentifier));
+         return System.Convert.ToBase64String(hash).Substring(0, 16); // Можно урезать
+      }
+   }
+
+   private static string EncryptKey(byte[] key)
+   {
+      byte[] deviceKey = GetDeviceKey();
+      using (var aes = Aes.Create())
+      {
+         aes.Key = deviceKey;
+         aes.GenerateIV();
+         aes.Mode = CipherMode.CBC;
+         aes.Padding = PaddingMode.PKCS7;
+
+         using (var encryptor = aes.CreateEncryptor())
+         {
+            byte[] encrypted = encryptor.TransformFinalBlock(key, 0, key.Length);
+            // Сохраняем вместе IV и зашифрованные данные
+            byte[] combined = new byte[aes.IV.Length + encrypted.Length];
+            aes.IV.CopyTo(combined, 0);
+            encrypted.CopyTo(combined, aes.IV.Length);
+            return System.Convert.ToBase64String(combined);
+         }
+      }
+   }
+
+   private static byte[] DecryptKey(string encryptedKey)
+   {
+      byte[] combined = System.Convert.FromBase64String(encryptedKey);
+      byte[] iv = new byte[16];
+      byte[] encrypted = new byte[combined.Length - 16];
+      System.Array.Copy(combined, 0, iv, 0, 16);
+      System.Array.Copy(combined, 16, encrypted, 0, encrypted.Length);
+
+      byte[] deviceKey = GetDeviceKey();
+
+      using (var aes = Aes.Create())
+      {
+         aes.Key = deviceKey;
+         aes.IV = iv;
+         aes.Mode = CipherMode.CBC;
+         aes.Padding = PaddingMode.PKCS7;
+
+         using (var decryptor = aes.CreateDecryptor())
+         {
+            return decryptor.TransformFinalBlock(encrypted, 0, encrypted.Length);
+         }
+      }
+   }
+
    public static void GenerateAndSaveKeys()
    {
-      // Генерация ключей
-      byte[] aesKey = GenerateRandomKey(32); // 256 бит для AES
-      byte[] aesIV = GenerateRandomKey(16);  // 128 бит для AES
-      byte[] hmacKey = GenerateRandomKey(32); // 256 бит для HMAC
+      byte[] aesKey = GenerateRandomKey(32);
+      byte[] aesIV = GenerateRandomKey(16);
+      byte[] hmacKey = GenerateRandomKey(32);
 
-      // Преобразование в Base64 для хранения в PlayerPrefs
-      string aesKeyBase64 = System.Convert.ToBase64String(aesKey);
-      string aesIVBase64 = System.Convert.ToBase64String(aesIV);
-      string hmacKeyBase64 = System.Convert.ToBase64String(hmacKey);
-
-      // Сохраняем ключи в PlayerPrefs
-      PlayerPrefs.SetString(aesKeyPlayerPrefKey, aesKeyBase64);
-      PlayerPrefs.SetString(aesIVPlayerPrefKey, aesIVBase64);
-      PlayerPrefs.SetString(hmacKeyPlayerPrefKey, hmacKeyBase64);
-
-      // Не забываем сохранить PlayerPrefs
+      PlayerPrefs.SetString(aesKeyPlayerPrefKey, EncryptKey(aesKey));
+      PlayerPrefs.SetString(aesIVPlayerPrefKey, EncryptKey(aesIV));
+      PlayerPrefs.SetString(hmacKeyPlayerPrefKey, EncryptKey(hmacKey));
       PlayerPrefs.Save();
    }
 
-   // Функция для извлечения ключей из PlayerPrefs
    public static (byte[] aesKey, byte[] aesIV, byte[] hmacKey) GetSavedKeys()
    {
-      // Получаем Base64-строки из PlayerPrefs
-      string aesKeyBase64 = PlayerPrefs.GetString(aesKeyPlayerPrefKey, null);
-      string aesIVBase64 = PlayerPrefs.GetString(aesIVPlayerPrefKey, null);
-      string hmacKeyBase64 = PlayerPrefs.GetString(hmacKeyPlayerPrefKey, null);
+      string aesKeyEncrypted = PlayerPrefs.GetString(aesKeyPlayerPrefKey, null);
+      string aesIVEncrypted = PlayerPrefs.GetString(aesIVPlayerPrefKey, null);
+      string hmacKeyEncrypted = PlayerPrefs.GetString(hmacKeyPlayerPrefKey, null);
 
-      if (aesKeyBase64 == null || aesIVBase64 == null || hmacKeyBase64 == null ||
-         aesKeyBase64 == "" || aesIVBase64 == "" || hmacKeyBase64 == "")
+      if (string.IsNullOrEmpty(aesKeyEncrypted) || string.IsNullOrEmpty(aesIVEncrypted) || string.IsNullOrEmpty(hmacKeyEncrypted))
       {
-         // Если ключи не найдены в PlayerPrefs, генерируем новые
          GenerateAndSaveKeys();
          return GetSavedKeys();
       }
 
-      // Преобразуем из Base64 обратно в байты
-      byte[] aesKey = System.Convert.FromBase64String(aesKeyBase64);
-      byte[] aesIV = System.Convert.FromBase64String(aesIVBase64);
-      byte[] hmacKey = System.Convert.FromBase64String(hmacKeyBase64);
+      byte[] aesKey = DecryptKey(aesKeyEncrypted);
+      byte[] aesIV = DecryptKey(aesIVEncrypted);
+      byte[] hmacKey = DecryptKey(hmacKeyEncrypted);
 
       return (aesKey, aesIV, hmacKey);
    }
