@@ -16040,17 +16040,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1ea4847cdd21232419ba40bb919cbbcf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  room:
-    roomId: 0
-    isFogOfWar: 0
-    isUnlocked: 0
-    roomType: 0
-    eventPath: 
-    eventName: 
-    eventRewardClaim: 0
-    eventRewardText: 
-    hiddenVariant: 
-    doorOpened: 
   eventTitle: {fileID: 762759504554706445}
   eventText: {fileID: 5293277953365692765}
   eventBtnsText:

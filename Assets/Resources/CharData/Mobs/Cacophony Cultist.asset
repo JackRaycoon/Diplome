@@ -28,6 +28,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 3616e7fb522fd0f42ab442beb9f0aa61, type: 2}
   - {fileID: 11400000, guid: 6940b2c9c6fd182429dcf0594fa49fa1, type: 2}
   - {fileID: 11400000, guid: 3db21f514ea3dcd4cbacffa7a9bf660d, type: 2}
+  - {fileID: 11400000, guid: 542bf48f601970145979b7ef2d75458a, type: 2}
   _availableSkills: []
   strengh: 0
   agility: 0

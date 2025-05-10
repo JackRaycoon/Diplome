@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 using Random = UnityEngine.Random;
 
 public class Room3D : MonoBehaviour
@@ -303,11 +304,12 @@ public class Room3D : MonoBehaviour
                   _ => "јктивный"
                };
      
-            room.eventRewardText += $" навык \"{skillData._name}\" Ц {skill.Description(false)}.\nЂ{skillData.quote}ї";
+            room.eventRewardText += $" навык \"{skillData._name}\".\nЂ{skillData.quote}ї";
 
             if (!target.CheckSkillCount(skill.skillData))
+            {
                room.eventRewardText += " (места нет)";
-
+            }
             target.AddSkill(skill);
             if(skillData.globalPassiveBuff != RunInfo.GlobalBuff.None)
             {
@@ -445,6 +447,8 @@ public class Room3D : MonoBehaviour
          if (i == room.hiddenVariant.Count)
             room.hiddenVariant.Add(isVisible);
          eventBtns[i].SetActive(room.hiddenVariant[i]);
+         if (eventData.isHidden)
+            eventBtns[i].GetComponent<Image>().color = new Color(0.35f, 0.00f, 0.30f);
          eventBtnsText[i].text = eventData.textChoice;
          i++;
       }
