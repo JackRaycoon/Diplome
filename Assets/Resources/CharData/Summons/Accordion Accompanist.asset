@@ -25,10 +25,11 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 542bf48f601970145979b7ef2d75458a, type: 2}
   - {fileID: 11400000, guid: d6bda0aa05900b140a94a769b59226ae, type: 2}
   - {fileID: 11400000, guid: ffdd25f89ee04f7459f2c1bde0cab6c1, type: 2}
+  - {fileID: 11400000, guid: 9d0116810892b8444a0ca6b1cc8f70f3, type: 2}
   _availableSkills: []
   strengh: 0
   agility: 0
   wisdow: 2
   constitution: 2
   defence: 0
-  priorityStats: 0300000002000000
+  priorityStats: 0100000002000000

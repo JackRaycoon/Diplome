@@ -69,6 +69,7 @@ public class SkillDB
       AddSkillCast("Last Octave", LastOctaveCast);
       AddSkillCast("Dissolving in the Shadows", DissolvingShadowsCast);
       AddSkillCast("Summon the Shadow", SummonShadowCast);
+      AddSkillCast("Accompaniment to Evil", AccompanimentEvilCast);
 
 
       //Active Curses
@@ -96,6 +97,7 @@ public class SkillDB
       AddSkillPassive("Cursed Hand");
       AddSkillPassive("Pain Silencing");
       AddSkillPassive("Accompaniment");
+      AddSkillPassive("Wandering Musician");
 
       //Death
       AddSkillDeath("Sacrificial Chant", SacrificialChantDeath);
@@ -301,7 +303,8 @@ public class SkillDB
    private void SummonShadowCast(List<Fighter> targets)
    {
       var caster = targets[0];
-      var target = Fight.RandomEnemy(caster);
+      //var target = Fight.RandomEnemy(caster);
+      var target = targets[1];
       bool isEnemyCast = Fight.IsEnemy(Fight.PlayerTeam[0], caster);
 
       if (target.isDead) return;
@@ -341,6 +344,37 @@ public class SkillDB
          {
             Fight.PlayerTeam.Add(shadow as PlayableCharacter);
             shadow.Spawn();
+         }
+      }
+   }
+
+   //Accompaniment to Evil
+   private void AccompanimentEvilCast(List<Fighter> targets)
+   {
+      var caster = targets[0];
+      bool isEnemyCast = Fight.IsEnemy(Fight.PlayerTeam[0], caster);
+
+      for(int i = 0; i < 2; i++)
+      {
+         Fighter summon = new("Summons/Accordion Accompanist");
+
+         summon.FullHeal();
+
+         if (isEnemyCast)
+         {
+            if (Fight.EnemyTeam.Count < 6)
+            {
+               Fight.EnemyTeam.Add(summon);
+               summon.Spawn();
+            }
+         }
+         else
+         {
+            if (Fight.PlayerTeam.Count < 6)
+            {
+               Fight.PlayerTeam.Add(summon as PlayableCharacter);
+               summon.Spawn();
+            }
          }
       }
    }

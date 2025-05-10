@@ -20,11 +20,12 @@ MonoBehaviour:
   portrait_monster: {fileID: 21300000, guid: 58f2645f5be5fd740a24f5ab375a66b4, type: 3}
   portrait_summon: {fileID: 21300000, guid: 58f2645f5be5fd740a24f5ab375a66b4, type: 3}
   other_portraits: []
-  skills: []
+  skills:
+  - {fileID: 11400000, guid: cc4df4ae68ec4df419b4707ccdd47072, type: 2}
   _availableSkills: []
-  strengh: 0
-  agility: 0
-  wisdow: 0
-  constitution: 0
+  strengh: 8
+  agility: 8
+  wisdow: 8
+  constitution: 20
   defence: 0
   priorityStats: 

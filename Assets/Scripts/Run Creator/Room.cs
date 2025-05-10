@@ -57,6 +57,21 @@ public class Room
    [IgnoreDataMember]
    public Vector2Int Coords { get => new(coordX,coordY); }
 
+   public static bool operator ==(Room a, Room b)
+   {
+      if (a is null && b is null)
+         return true;
+      if (a is null || b is null)
+         return false;
+      if (a.Coords.x == b.Coords.x && a.Coords.y == b.Coords.y) 
+         return true;
+      return false;
+   }
+   public static bool operator !=(Room a, Room b)
+   {
+      return !(a == b);
+   }
+
    public enum RoomType
    {
       Common,

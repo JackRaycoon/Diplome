@@ -108,7 +108,8 @@ MonoBehaviour:
   checkTrap: 0
   enemies:
   - {fileID: 11400000, guid: 001226de763939e4d9b17202c162dc28, type: 2}
-  enemiesCount: 0200
+  - {fileID: 11400000, guid: 5bfbb4b4cb915ed45978333f47aa02d7, type: 2}
+  enemiesCount: 02000100
   isFog: 0
   isNotOver: 0
   overHpProcent: 0

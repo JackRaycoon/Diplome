@@ -19,7 +19,6 @@ public class BuffPanelController : MonoBehaviour
 
    private void Update()
    {
-      Debug.Log("Update");
       if(Input.GetKeyDown(KeyCode.Mouse1) && isOpened)
       {
          Close();

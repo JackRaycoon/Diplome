@@ -199,6 +199,12 @@ public class Fight : MonoBehaviour
                            PlayerTeam.Add(ally);
                      }
                      break;
+                  case Fighter.Buff.WanderingMusician:
+                     Fighter summon = new("Summons/Accordion Accompanist");
+                     summon.FullHeal();
+                     if (PlayerTeam.Count < 6)
+                        PlayerTeam.Add(summon as PlayableCharacter);
+                     break;
                }
             }
          }

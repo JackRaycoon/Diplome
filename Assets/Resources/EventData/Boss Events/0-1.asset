@@ -102,11 +102,13 @@ MonoBehaviour:
   isLost: 0
   minSoul: 10
   maxSoul: 10
-  rewardSkillList: []
+  rewardSkillList:
+  - {fileID: 11400000, guid: d295960d700b4424593538c71839fdce, type: 2}
   rewardSkillPool: {fileID: 0}
   allSkillsFromList: 0
   ignoreSkillPools: 0
-  chanceToReceiveSkill: []
+  chanceToReceiveSkill:
+  - 100
   randomRewardTarget: 0
   strengthRewardMin: 0
   strengthRewardMax: 0

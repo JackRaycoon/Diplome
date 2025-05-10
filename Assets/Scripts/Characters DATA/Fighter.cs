@@ -598,6 +598,7 @@ public class Fighter
       CurseVictim,
       Accompaniment,
       NoAttack,
+      WanderingMusician,
 
    }
 }
