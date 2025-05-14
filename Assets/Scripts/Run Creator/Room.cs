@@ -74,8 +74,9 @@ public class Room
 
    public enum RoomType
    {
+      StartRoom,
       Common,
-      Shop,
-      Boss
+      Boss,
+      Shop
    }
 }

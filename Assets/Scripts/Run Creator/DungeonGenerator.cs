@@ -83,13 +83,13 @@ public class DungeonGenerator : MonoBehaviour
          RoomBehaviour roomBeh;
          roomBeh = room.roomType switch
          {
-            Room.RoomType.Common => Instantiate(roomPrefab, new Vector3(offsetRoom * room.Coords.x, -0.01f, offsetRoom * room.Coords.y),
-            Quaternion.identity,
-            transform).GetComponent<RoomBehaviour>(),
             Room.RoomType.Shop => throw new NotImplementedException(),
             Room.RoomType.Boss => Instantiate(bossRoomPrefab, new Vector3(offsetRoom * room.Coords.x, -0.01f, offsetRoom * room.Coords.y),
             Quaternion.identity,
             transform).GetComponent<RoomBehaviour>(),
+            _ => Instantiate(roomPrefab, new Vector3(offsetRoom * room.Coords.x, -0.01f, offsetRoom * room.Coords.y),
+            Quaternion.identity,
+            transform).GetComponent<RoomBehaviour>()
          };
          /*roomBeh = Instantiate(roomPrefab, new Vector3(offsetRoom * room.Coords.x, -0.01f, offsetRoom * room.Coords.y),
             Quaternion.identity,
@@ -262,6 +262,7 @@ public class DungeonGenerator : MonoBehaviour
             room.eventData = Resources.Load<EventData>(path + name);
             room.eventPath = path;
             room.eventName = name;
+            room.roomType = Room.RoomType.StartRoom;
             SaveLoadController.runInfo.currentRoom = room; 
          }
          else
@@ -373,8 +374,9 @@ public class DungeonGenerator : MonoBehaviour
       room.eventData = chosen;
       room.eventPath = folderPath + "/";
       room.eventName = chosen.name;
+      room.roomType = Room.RoomType.Common;
 
-      if(!usedCategories.Contains(category))
+      if (!usedCategories.Contains(category))
          usedCategories.Add(category);
       return chosen;
    }

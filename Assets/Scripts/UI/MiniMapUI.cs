@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class MiniMapUI : MonoBehaviour
 {
@@ -12,6 +13,9 @@ public class MiniMapUI : MonoBehaviour
    [SerializeField] GameObject playerMiniMapPrefab;
    [SerializeField] GameObject horizontalCorridorMiniMapPrefab, verticalCorridorMiniMapPrefab;
    [SerializeField] private float distanceBetweenRooms;
+
+   [Tooltip("Стартовая, обычная, босс, торговец")]
+   public List<Sprite> typeRoomsSprites;
 
    public static bool isNeedUpdate = false;
    private Vector3 shift = new(0,0,0);
@@ -168,8 +172,13 @@ public class MiniMapUI : MonoBehaviour
       {
          var fullUI = child.GetComponent<MiniMapFullUI>();
          if (fullUI.room == null) continue;
-         child.GetChild(0).gameObject.SetActive(fullUI.room.isUnlocked);
-         fullUI.fullMapAnalogue.transform.GetChild(0).gameObject.SetActive(fullUI.room.isUnlocked);
+         Image imageTypeRoom = child.GetChild(0).GetComponent<Image>();
+         imageTypeRoom.gameObject.SetActive(fullUI.room.isUnlocked);
+         imageTypeRoom.sprite = typeRoomsSprites[(int)fullUI.room.roomType];
+
+         imageTypeRoom = fullUI.fullMapAnalogue.transform.GetChild(0).GetComponent<Image>();
+         imageTypeRoom.gameObject.SetActive(fullUI.room.isUnlocked);
+         imageTypeRoom.sprite = typeRoomsSprites[(int)fullUI.room.roomType];
       }
    }
 

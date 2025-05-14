@@ -66,7 +66,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: f78b2b041894f5a4abe214bf0de00208, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 0328332123655dc479e41c83c212e9d9, type: 3}
   m_Type: 0
   m_PreserveAspect: 1
   m_FillCenter: 1
@@ -243,6 +243,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f920d0508d8066a48abaec660d2acf10, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  isFogOfWar: 1
-  isUnlocked: 0
   fullMapAnalogue: {fileID: 0}

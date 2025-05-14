@@ -276,6 +276,11 @@ MonoBehaviour:
   horizontalCorridorMiniMapPrefab: {fileID: 4431419463046804111, guid: b08a2fc5247617a499132795a3857320, type: 3}
   verticalCorridorMiniMapPrefab: {fileID: 1296473084709329170, guid: 553235170493ca44280dd917d1f89d8d, type: 3}
   distanceBetweenRooms: 150
+  typeRoomsSprites:
+  - {fileID: 21300000, guid: 4e586d51bb73c2b4297116629bfc9b8f, type: 3}
+  - {fileID: 21300000, guid: b6c1ccdeabafc6d49a1f8df38af28706, type: 3}
+  - {fileID: 21300000, guid: 9cb3405edd2dd6c459eae3445d36a3c3, type: 3}
+  - {fileID: 21300000, guid: a2f5616cccc3bf446b9db4a9b7133ab2, type: 3}
 --- !u!1 &374152848
 GameObject:
   m_ObjectHideFlags: 0
