@@ -98,6 +98,9 @@ public class SkillDB
       AddSkillPassive("Pain Silencing");
       AddSkillPassive("Accompaniment");
       AddSkillPassive("Wandering Musician");
+      AddSkillPassive("Vengeful Light");
+      AddSkillPassive("Angelic Grace");
+      AddSkillPassive("Angelic Power");
 
       //Death
       AddSkillDeath("Sacrificial Chant", SacrificialChantDeath);
@@ -165,7 +168,7 @@ public class SkillDB
       {
          if (!target.isDead)
          {
-            target.TakeDmg(dmg, SkillSO.SkillElement.Physical);
+            target.TakeDmg(caster, dmg, SkillSO.SkillElement.Physical);
             if (caster.buffs.Contains(Fighter.Buff.CursedHand)
                && SaveLoadController.runInfo.globalBuffs.Contains(RunInfo.GlobalBuff.CursedHand))
             {
@@ -194,6 +197,7 @@ public class SkillDB
    private void HealingWoundsCast(List<Fighter> targets)
    {
       int heal = HealingWoundsCalc(targets)[0];
+      var caster = targets[0];
       var target = targets[1];
       if (!target.isDead)
       {
@@ -201,7 +205,7 @@ public class SkillDB
          {
             if (heal >= 0)
             {
-               var excess = target.TakeHeal(heal);
+               var excess = target.TakeHeal(caster, heal);
                if (excess > 0)
                {
                   var armor = excess / 2;
@@ -210,7 +214,7 @@ public class SkillDB
             }
          }
          else
-            target.TakeHeal(heal);
+            target.TakeHeal(caster, heal);
       }
    }
    private List<int> HealingWoundsCalc(List<Fighter> targets)
@@ -258,10 +262,11 @@ public class SkillDB
    private void FireWaveCast(List<Fighter> targets)
    {
       int dmg = FireWaveCalc(targets)[0];
-      targets.RemoveAt(0); //Убираем кастера
+      var caster = targets[0];
+      targets.Remove(caster); //Убираем кастера
       foreach (Fighter target in targets)
       {
-         if (!target.isDead) target.TakeDmg(dmg, SkillSO.SkillElement.Fire);
+         if (!target.isDead) target.TakeDmg(caster, dmg, SkillSO.SkillElement.Fire);
       }
    }
    private List<int> FireWaveCalc(List<Fighter> targets)
@@ -279,10 +284,11 @@ public class SkillDB
       int dmg = list[0];
       int count = list[1];
 
+      var caster = targets[0];
       var target = targets[1];
       for (int i = 0; i < count; i++)
       {
-         if (!target.isDead) target.TakeDmg(dmg, SkillSO.SkillElement.Wind);
+         if (!target.isDead) target.TakeDmg(caster, dmg, SkillSO.SkillElement.Wind);
          else
          {
             target = Fight.RandomEnemy(targets[0]);
@@ -391,7 +397,7 @@ public class SkillDB
       {
          if (!target.isDead)
          {
-            target.TakeDmg(dmg, SkillSO.SkillElement.Dark);
+            target.TakeDmg(caster, dmg, SkillSO.SkillElement.Dark);
 
             var pool = GetPoolByName("CurseSkills");
             var listSk = pool.activeSkillList;
@@ -418,7 +424,7 @@ public class SkillDB
 
       if (!target.isDead)
       {
-         target.TakeDmg(dmg, SkillSO.SkillElement.Dark);
+         target.TakeDmg(caster, dmg, SkillSO.SkillElement.Dark);
 
          if(Random.Range(0, 100) < chance)
          {
@@ -452,7 +458,7 @@ public class SkillDB
 
       if (!target.isDead)
       {
-         target.TakeDmg(dmg, SkillSO.SkillElement.Poison);
+         target.TakeDmg(caster, dmg, SkillSO.SkillElement.Poison);
 
          if (!target.buffs.Contains(Fighter.Buff.Poison))
             target.buffs.Add(Fighter.Buff.Poison);
@@ -479,7 +485,7 @@ public class SkillDB
       if (!target.isDead)
       {
          caster.SacrificeHP(dmg);
-         target.TakeDmg(dmg, SkillSO.SkillElement.Physical);
+         target.TakeDmg(caster, dmg, SkillSO.SkillElement.Physical);
       }
    }
    private List<int> BloodyNoteCalc(List<Fighter> targets)
@@ -503,7 +509,7 @@ public class SkillDB
       {
          if (!target.isDead)
          {
-            target.TakeDmg(dmg, SkillSO.SkillElement.Physical);
+            target.TakeDmg(caster, dmg, SkillSO.SkillElement.Physical);
             if (Random.Range(0, 100) < dmg)
             {
                var pool = GetPoolByName("CurseSkills");
@@ -636,11 +642,11 @@ public class SkillDB
          {
             if (allies.Contains(target))
             {
-               target.armor += target.TakeHeal(1);
+               target.armor += target.TakeHeal(caster, 1);
             }
             else
             {
-               target.TakeDmg(1, SkillSO.SkillElement.Physical);
+               target.TakeDmg(caster, 1, SkillSO.SkillElement.Physical);
             }
             target = targets[Random.Range(0, targets.Count)];
          }
@@ -669,7 +675,7 @@ public class SkillDB
       caster.SacrificeHP(hp);
       foreach (var target in targets)
       {
-         target.TakeHeal(hp);
+         target.TakeHeal(caster, hp);
          if (Fight.AlreadyTurn.Contains(target))
          {
             Fight.AlreadyTurn.Remove(target);
@@ -812,7 +818,7 @@ public class SkillDB
             int heal = (caster.max_hp + caster.bonus_hp) / 2;
             if (heal <= 0) heal = 1;
 
-            var excess = target.TakeHeal(heal);
+            var excess = target.TakeHeal(caster, heal);
             if (excess > 0)
             {
                var armor = excess / 2;

@@ -28,6 +28,7 @@ public class PlayableCharacter : Fighter
       currentPhase = charSD.currentPhase;
       isDead = charSD.isDead;
       isSpawn = charSD.isSpawn;
+      effectStacks = new(charSD.effectStacks);
       skills = new();
       foreach(var skillName in charSD.skillNameList)
       {

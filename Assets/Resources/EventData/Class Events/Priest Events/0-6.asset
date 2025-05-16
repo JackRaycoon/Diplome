@@ -1,0 +1,60 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 378e67e22a5d3a546933c1bef4f501bb, type: 3}
+  m_Name: 0-6
+  m_EditorClassIdentifier: 
+  eventID: 0
+  eventID_Part: 6
+  eventName: 
+  eventText: 
+  eventTextWomanCharacter: 
+  eventType: 0
+  isLockableEvent: 0
+  textChoice: "\u042F \u0437\u0430\u043C\u0435\u0442\u0438\u043B\u0430 \u0441\u0442\u0440\u0430\u043D\u043D\u044B\u0439
+    \u043E\u0441\u043A\u043E\u043B\u043E\u043A, \u0432\u043E\u0442\u043A\u043D\u0443\u0442\u044B\u0439
+    \u0432 \u043A\u0440\u044B\u043B\u043E \u0430\u043D\u0433\u0435\u043B\u0430. \u041F\u043E\u043F\u044B\u0442\u0430\u0442\u044C\u0441\u044F
+    \u0432\u044B\u043D\u0443\u0442\u044C."
+  isHidden: 1
+  choices: []
+  checkTrap: 0
+  enemies: []
+  enemiesCount: 
+  isFog: 0
+  isNotOver: 0
+  overHpProcent: 0
+  randomEnemies: 0
+  minEnemyCount: 0
+  maxEnemyCount: 0
+  enemiesChances: []
+  isLost: 0
+  minSoul: 0
+  maxSoul: 0
+  rewardSkillList: []
+  rewardSkillPool: {fileID: 0}
+  allSkillsFromList: 0
+  ignoreSkillPools: 0
+  chanceToReceiveSkill: []
+  randomRewardTarget: 0
+  strengthRewardMin: 0
+  strengthRewardMax: 0
+  agilityRewardMin: 0
+  agilityRewardMax: 0
+  wisdowRewardMin: 0
+  wisdowRewardMax: 0
+  constitutionRewardMin: 0
+  constitutionRewardMax: 0
+  armorRewardMin: 0
+  armorRewardMax: 0
+  healRewardMin: 0
+  healRewardMax: 0
+  karmaMin: 0
+  karmaMax: 0

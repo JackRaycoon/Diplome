@@ -26,6 +26,8 @@ public class Fighter
    }
    public int bonus_hp; //если в бою чьи-то хп повысили или понизили
 
+   //Сохраняемые эффекты (между боями)
+   public Dictionary<Effect, int> effectStacks = new();
    public int poisonStacks = 0;
 
    public int defence; //дополнительное здоровье, которое может превышать максимум
@@ -377,6 +379,23 @@ public class Fighter
             return;
          }
       }
+
+      //Баффы перед смертью
+      foreach (var buff in buffs)
+      {
+         switch (buff)
+         {
+            case Buff.AngelicGrace:
+               hp = max_hp + bonus_hp;
+               buffs.Remove(Buff.AngelicGrace);
+               effectStacks.Remove(Effect.AngelicGrace);
+               var grace = SkillDB.Instance.GetSkillByName("Angelic Grace");
+               skills.Remove(grace);
+               skillsBattle.Remove(grace);
+               return;
+         }
+      }
+
       isDead = true;
 
       //Баффы при смерти
@@ -415,10 +434,22 @@ public class Fighter
       return null;
    }
 
-   public void TakeDmg(int dmg, SkillSO.SkillElement element)
+   public void TakeDmg(Fighter takeFrom, int dmg, SkillSO.SkillElement element, int counterRecursion = 0)
    {
+      if (counterRecursion > 10000) return;
+      //Buffs for DmgCaster, not include poison and curse
+      if (takeFrom != null)
+         foreach (var buff in takeFrom.buffs)
+         {
+            switch (buff)
+            {
+               case Buff.OldFightersPlate:
+                  break;
+            }
+         }
+
       //Buffs
-      foreach(var buff in buffs)
+      foreach (var buff in buffs)
       {
          switch (buff)
          {
@@ -449,6 +480,13 @@ public class Fighter
             case Buff.PainSilencing:
                if(dmg > 1)
                   dmg = 1;
+               break;
+            case Buff.AngelicPower:
+               int heal = dmg / 3;
+               if (heal < 1) heal = 1;
+               TakeHeal(this, heal, counterRecursion);
+               var enemy = Fight.RandomEnemy(this);
+               enemy.TakeDmg(takeFrom, heal * 2, SkillSO.SkillElement.Light, counterRecursion);
                break;
          }
       }
@@ -488,8 +526,9 @@ public class Fighter
       }
    }
 
-   public int TakeHeal(int heal)
+   public int TakeHeal(Fighter takeFrom, int heal, int counterRecursion = 0)
    {
+      if (counterRecursion > 10000) return 0;
       int excess = 0;
       if (heal >= 0)
       {
@@ -501,6 +540,20 @@ public class Fighter
          }
       }
       if (excess < 0) excess = 0;
+
+      //Buffs for HealCaster
+      if (takeFrom != null)
+         foreach (var buff in takeFrom.buffs)
+         {
+            switch (buff)
+            {
+               case Buff.VengefulLight:
+                  var enemy = Fight.RandomEnemy(takeFrom);
+                  enemy.TakeDmg(takeFrom, excess, SkillSO.SkillElement.Light, counterRecursion);
+                  break;
+            }
+         }
+
       return excess;
    }
 
@@ -565,11 +618,25 @@ public class Fighter
          case Buff.NoAttack:
             name = "No Attack";
             break;
+         case Buff.VengefulLight:
+            name = "Vengeful Light";
+            break;
+         case Buff.AngelicGrace:
+            name = "Angelic Grace";
+            break;
+         case Buff.AngelicPower:
+            name = "Angelic Power";
+            break;
       }
       if (name == "") return null;
       return SkillDB.Instance.GetSkillByName(name);
    }
 
+   public enum Effect
+   {
+      AngelicGrace,
+
+   }
    public enum Buff
    {
       None,
@@ -599,6 +666,9 @@ public class Fighter
       Accompaniment,
       NoAttack,
       WanderingMusician,
+      VengefulLight,
+      AngelicGrace,
+      AngelicPower,
 
    }
 }

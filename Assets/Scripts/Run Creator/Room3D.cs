@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -191,7 +192,7 @@ public class Room3D : MonoBehaviour
                hero.constitution += rewardCountConstitution;
                if (hero.constitution < 0) hero.constitution = 0;
 
-               hero.TakeHeal(rewardCountConstitution * 5);
+               hero.TakeHeal(null, rewardCountConstitution * 5);
                if (hero.max_hp < hero.hp) hero.hp = hero.max_hp;
             }
          }
@@ -227,7 +228,7 @@ public class Room3D : MonoBehaviour
                room.eventRewardText += $"{rewardCountHeal} здоровья";
                isNext = true;
 
-               hero.TakeHeal(rewardCountHeal);
+               hero.TakeHeal(null, rewardCountHeal);
                if (hero.hp <= 0)
                   hero.hp = 1;
             }
@@ -311,6 +312,25 @@ public class Room3D : MonoBehaviour
                room.eventRewardText += " (места нет)";
             }
             target.AddSkill(skill);
+            switch (skillData.passiveBuff)
+            {
+               case Fighter.Buff.AngelicGrace:
+                  if (target.effectStacks.Keys.Contains(Fighter.Effect.AngelicGrace))
+                  {
+                     target.effectStacks[Fighter.Effect.AngelicGrace]++;
+                     if (target.effectStacks[Fighter.Effect.AngelicGrace] == 3)
+                     {
+                        target.effectStacks.Remove(Fighter.Effect.AngelicGrace);
+                        target.skills.Remove(SkillDB.Instance.GetSkillByName("Angelic Grace"));
+                        target.AddSkill(SkillDB.Instance.GetSkillByName("Angelic Power"));
+                     }
+                  }
+                  else
+                  {
+                     target.effectStacks.Add(Fighter.Effect.AngelicGrace, 1);
+                  }
+                  break;
+            }
             if(skillData.globalPassiveBuff != RunInfo.GlobalBuff.None)
             {
                SaveLoadController.GlobalBuffsUpdate();

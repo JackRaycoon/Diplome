@@ -334,7 +334,7 @@ public class Fight : MonoBehaviour
                case Fighter.Buff.EchoHope:
                   int heal = (int)(character.max_hp * 0.15f);
                   if (heal == 0) heal = 1;
-                  character.TakeHeal(heal);
+                  character.TakeHeal(character, heal);
                   break;
                case Fighter.Buff.NoAttack:
                   var skill = SkillDB.Instance.GetSkillByName("Basic Attack");
@@ -765,14 +765,14 @@ public class Fight : MonoBehaviour
                      chara.SacrificeHP(1);
                      break;
                   case Fighter.Buff.CurseDestruction:
-                     chara.TakeDmg(1, SkillSO.SkillElement.Dark);
+                     chara.TakeDmg(null, 1, SkillSO.SkillElement.Dark);
                      break;
                }
             }
 
             if (chara.buffs.Contains(Fighter.Buff.Poison))
             {
-               chara.TakeDmg(chara.poisonStacks, SkillSO.SkillElement.Poison);
+               chara.TakeDmg(null, chara.poisonStacks, SkillSO.SkillElement.Poison);
                chara.poisonStacks /= 2;
                if(chara.poisonStacks <= 0)
                {

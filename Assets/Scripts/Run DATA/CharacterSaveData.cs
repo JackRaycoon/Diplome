@@ -22,6 +22,8 @@ public class CharacterSaveData
    [DataMember]
    public bool isSpawn;
    [DataMember]
+   public Dictionary<Fighter.Effect, int> effectStacks = new();
+   [DataMember]
    public List<string> skillNameList = new(); //Или использовать структуру для сохранения, если будут усиления конкретно скиллов
 
    public CharacterSaveData() { }
@@ -38,6 +40,7 @@ public class CharacterSaveData
       isDead = chara.isDead;
       isSpawn = chara.isSpawn;
 
+      effectStacks = new(chara.effectStacks);
       skillNameList = new();
       foreach(var skill in chara.skills)
       {
