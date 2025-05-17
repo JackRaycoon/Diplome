@@ -669,6 +669,7 @@ public class Fighter
       VengefulLight,
       AngelicGrace,
       AngelicPower,
+      AngelicGuardian,
 
    }
 }

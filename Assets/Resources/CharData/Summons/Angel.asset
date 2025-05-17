@@ -1,0 +1,30 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe0d30022cbdbdc469fd8a301de89b48, type: 3}
+  m_Name: Angel
+  m_EditorClassIdentifier: 
+  character_name: "\u0410\u043D\u0433\u0435\u043B"
+  charClass: 0
+  character_description: 
+  portrait_human: {fileID: 0}
+  portrait_halfhuman: {fileID: 0}
+  portrait_monster: {fileID: 21300000, guid: 7bc285d67258a3740be3ec1de4c6a09c, type: 3}
+  portrait_summon: {fileID: 21300000, guid: 7bc285d67258a3740be3ec1de4c6a09c, type: 3}
+  other_portraits: []
+  skills: []
+  _availableSkills: []
+  strengh: 2
+  agility: 1
+  wisdow: 4
+  constitution: 4
+  defence: 5
+  priorityStats: 0300000002000000

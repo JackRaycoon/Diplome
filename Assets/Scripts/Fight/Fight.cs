@@ -205,6 +205,12 @@ public class Fight : MonoBehaviour
                      if (PlayerTeam.Count < 6)
                         PlayerTeam.Add(summon as PlayableCharacter);
                      break;
+                  case Fighter.Buff.AngelicGuardian:
+                     summon = new("Summons/Angel");
+                     summon.FullHeal();
+                     if (PlayerTeam.Count < 6)
+                        PlayerTeam.Add(summon as PlayableCharacter);
+                     break;
                }
             }
          }

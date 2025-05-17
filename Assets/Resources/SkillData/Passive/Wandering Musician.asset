@@ -31,5 +31,5 @@ MonoBehaviour:
   isAllAvailable: 0
   isCorpseTargetToo: 0
   isCurse: 0
-  passiveBuff: 0
+  passiveBuff: 26
   globalPassiveBuff: 0

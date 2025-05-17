@@ -4,6 +4,7 @@ using UnityEngine;
 using System;
 using Random = UnityEngine.Random;
 using static UnityEngine.GraphicsBuffer;
+using System.Linq;
 
 public class SkillDB
 {
@@ -99,8 +100,9 @@ public class SkillDB
       AddSkillPassive("Accompaniment");
       AddSkillPassive("Wandering Musician");
       AddSkillPassive("Vengeful Light");
-      AddSkillPassive("Angelic Grace");
+      AddSkillPassive("Angelic Grace", AngelicGraceCalc);
       AddSkillPassive("Angelic Power");
+      AddSkillPassive("Angelic Guardian");
 
       //Death
       AddSkillDeath("Sacrificial Chant", SacrificialChantDeath);
@@ -766,6 +768,13 @@ public class SkillDB
       var caster = targets[0];
       var agility = caster.agility + caster.bonus_agility;
       return new List<int> { 25 + Math.Clamp(agility / 2 - 2, 0, 50) };
+   }
+
+   //Angelic Grace
+   private List<int> AngelicGraceCalc(List<Fighter> targets)
+   {
+      var caster = targets[0];
+      return new List<int> { caster.effectStacks.Keys.Contains(Fighter.Effect.AngelicGrace) ? caster.effectStacks[Fighter.Effect.AngelicGrace] : 3};
    }
 
    //Poison
