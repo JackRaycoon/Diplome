@@ -21,6 +21,9 @@ public class Buttons : MonoBehaviour
 
    public List<Button> slotsContinue;
 
+   public List<TextMeshProUGUI> sliderTexts;
+   public List<Slider> sliders;
+
    private bool isOpened;
    private int openID = -1;
    private Coroutine animate;
@@ -214,7 +217,18 @@ public class Buttons : MonoBehaviour
       Application.OpenURL(link);
    }
 
-   
+   public void UpdateSlider(int id)
+   {
+      switch (id)
+      {
+         case 1://Громкость звуков
+            sliderTexts[id - 1].text = $"Громкость звука: {sliders[id-1].value}%";
+            break;
+         case 2://Громкость музыки
+            sliderTexts[id - 1].text = $"Громкость музыки: {sliders[id - 1].value}%";
+            break;
+      }
+   }
 
    IEnumerator ChangeMenu()
    {
