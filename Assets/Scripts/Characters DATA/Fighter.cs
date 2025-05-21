@@ -627,6 +627,9 @@ public class Fighter
          case Buff.AngelicPower:
             name = "Angelic Power";
             break;
+         case Buff.ScarBetrayal:
+            name = "Scar of Betrayal";
+            break;
       }
       if (name == "") return null;
       return SkillDB.Instance.GetSkillByName(name);
@@ -670,6 +673,7 @@ public class Fighter
       AngelicGrace,
       AngelicPower,
       AngelicGuardian,
+      ScarBetrayal,
 
    }
 }

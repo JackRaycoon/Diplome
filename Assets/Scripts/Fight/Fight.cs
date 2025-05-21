@@ -412,6 +412,9 @@ public class Fight : MonoBehaviour
                      AlreadyTurn.Add(chara);
                   }
                   break;
+               case Fighter.Buff.ScarBetrayal:
+                  chara.SacrificeHP(1);
+                  break;
             }
          }
       }

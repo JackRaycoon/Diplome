@@ -114,6 +114,7 @@ public class SkillDB
 
       //Passive Curses
       AddSkillPassive("The Weight of Memories");
+      AddSkillPassive("Scar of Betrayal");
    }
 
    // астер всегда на самой первой позиции листа целей.
