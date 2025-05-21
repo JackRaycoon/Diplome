@@ -12,4 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9807ccf0c390d974b9520e60e841da4f, type: 3}
   m_Name: ArcherSkills
   m_EditorClassIdentifier: 
-  skillList: []
+  activeSkillList:
+  - {fileID: 11400000, guid: d3e9dc8105e1bab4aa5c9e74350ae2c4, type: 2}
+  passiveSkillList:
+  - {fileID: 11400000, guid: c2ae22f4ef5a7fa4599c968652abf761, type: 2}
+  - {fileID: 11400000, guid: 4981538b3dbf9b74693e7d1f2308c813, type: 2}
+  - {fileID: 11400000, guid: 6cb861b9b01eb2b4caf936d39a916c51, type: 2}
+  - {fileID: 11400000, guid: 985b63bcac7a8d045885cb63162eeaec, type: 2}

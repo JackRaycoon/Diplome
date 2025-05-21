@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 1501669505}
   - component: {fileID: 1501669504}
   m_Layer: 5
-  m_Name: Skeleton
+  m_Name: EffectIcon
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -60,7 +60,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_RaycastTarget: 1
+  m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
@@ -131,7 +131,13 @@ MonoBehaviour:
   id: 0
   isInteractable: 0
   Dark: {fileID: 9019132655577722219}
-  Skeleton: {fileID: 1501669502}
+  EffectImage: {fileID: 1501669504}
+  effects:
+  - {fileID: 21300000, guid: 8b325461318f06d49b3885274e02796c, type: 3}
+  - {fileID: 10901, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 21300000, guid: d4355c61f3e0b084ea96b13d6d852c88, type: 3}
+  - {fileID: 10913, guid: 0000000000000000f000000000000000, type: 0}
+  forCheckOrder: 0
 --- !u!1 &1913268805360765660
 GameObject:
   m_ObjectHideFlags: 0
@@ -742,8 +748,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: 10/10
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 9dcbab94ae2a08b4ea57978d64a765e6, type: 2}
+  m_sharedMaterial: {fileID: -780465184510917948, guid: 9dcbab94ae2a08b4ea57978d64a765e6, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -767,7 +773,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 26
+  m_fontSize: 14
   m_fontSizeBase: 28
   m_fontWeight: 400
   m_enableAutoSizing: 1

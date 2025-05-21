@@ -1,0 +1,19 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9807ccf0c390d974b9520e60e841da4f, type: 3}
+  m_Name: EchosSkills
+  m_EditorClassIdentifier: 
+  activeSkillList: []
+  passiveSkillList:
+  - {fileID: 11400000, guid: 895bf12a70b74a248be333d15ce18eca, type: 2}
+  - {fileID: 11400000, guid: 9c91d6bbadaa2244685f506d5e83a1b8, type: 2}
+  - {fileID: 11400000, guid: 985b63bcac7a8d045885cb63162eeaec, type: 2}

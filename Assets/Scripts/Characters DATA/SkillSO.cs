@@ -10,12 +10,23 @@ public class SkillSO : ScriptableObject
    public Sprite icon;
    [TextArea] public string description;
    [TextArea] public string quote;
+   public SkillTarget skill_target;
    public SkillType skill_type;
-   [Tooltip("Каким классам доступен скилл, враги по дефолту входят в доступные")]
-   public List<PlayableCharacter.Class> availableClasses;
+   public SkillElement skill_elem;
+   public short cooldown = 1;
+   //[Tooltip("Каким классам доступен скилл, враги по дефолту входят в доступные")]
+   //public List<PlayableCharacter.Class> availableClasses;
+   public bool isAllAvailable;
    public bool isCorpseTargetToo = false;
+   [Tooltip("Является ли эта пассивка проклятием?")]
+   public bool isCurse;
 
-   public enum SkillType
+   [Tooltip("Для пассивных скиллов, какой бафф они выдают в начале игры.\n" +
+      "Чисто для того, чтобы программно было проще сделать.")]
+   public Fighter.Buff passiveBuff;
+   public RunInfo.GlobalBuff globalPassiveBuff;
+
+   public enum SkillTarget
    {
       Solo_Enemy, //По одному врагу
       Mass_Enemies, //По всем врагам
@@ -26,7 +37,29 @@ public class SkillSO : ScriptableObject
       Random_Ally,//Случайный союзник
       Random_Target, //Случайный персонаж
       Caster, //На себя 
-      Passive_Battle,
-      Passive_Global
+      Passive
    };
+   public enum SkillType
+   {
+      Attack,
+      Defence,
+      Buff,
+      Heal,
+      Summon,
+      Access,
+      Special,
+      Map,
+      Debuff
+   }
+   public enum SkillElement
+   {
+      Physical, //физический урон
+      Fire,
+      Wind,
+      Water,
+      Earth,
+      Light,
+      Dark,
+      Poison
+   }
 }

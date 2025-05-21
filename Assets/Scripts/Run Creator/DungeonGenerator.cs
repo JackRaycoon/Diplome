@@ -12,6 +12,7 @@ public class DungeonGenerator : MonoBehaviour
 {
    [SerializeField] DungeonSettings settings;
    [SerializeField] GameObject roomPrefab;
+   [SerializeField] GameObject bossRoomPrefab;
    [SerializeField] GameObject corridorPrefab;
    [SerializeField] float offsetRoom;
    [SerializeField] float offsetCorridor;
@@ -23,8 +24,10 @@ public class DungeonGenerator : MonoBehaviour
    private List<GameObject> createdRoomsGO = new();
    private List<Corridor> createdCorridors = new();
    private List<GameObject> createdCorridorsGO = new();
-   private Dictionary<Vector2Int, RoomState> deletedRooms = new();
-   private Dictionary<Corridor, CorridorState> deletedCorridors = new();
+   //private Dictionary<Vector2Int, RoomState> deletedRooms = new();
+   private List<Room> deletedRooms = new();
+   //private Dictionary<Corridor, CorridorState> deletedCorridors = new();
+   private List<Corridor> deletedCorridors = new();
 
    public static bool isNeedUpdate = false;
 
@@ -77,9 +80,20 @@ public class DungeonGenerator : MonoBehaviour
          if (Math.Abs(currentRoom.Coords.x - room.Coords.x) > 2
                || Math.Abs(currentRoom.Coords.y - room.Coords.y) > 2) continue;
          //Создаём комнаты, которые в пределах пары комнат от текущей
-         RoomBehaviour roomBeh = Instantiate(roomPrefab, new Vector3(offsetRoom * room.Coords.x, -0.01f, offsetRoom * room.Coords.y),
+         RoomBehaviour roomBeh;
+         roomBeh = room.roomType switch
+         {
+            Room.RoomType.Shop => throw new NotImplementedException(),
+            Room.RoomType.Boss => Instantiate(bossRoomPrefab, new Vector3(offsetRoom * room.Coords.x, -0.01f, offsetRoom * room.Coords.y),
             Quaternion.identity,
-            transform).GetComponent<RoomBehaviour>();
+            transform).GetComponent<RoomBehaviour>(),
+            _ => Instantiate(roomPrefab, new Vector3(offsetRoom * room.Coords.x, -0.01f, offsetRoom * room.Coords.y),
+            Quaternion.identity,
+            transform).GetComponent<RoomBehaviour>()
+         };
+         /*roomBeh = Instantiate(roomPrefab, new Vector3(offsetRoom * room.Coords.x, -0.01f, offsetRoom * room.Coords.y),
+            Quaternion.identity,
+            transform).GetComponent<RoomBehaviour>();*/
          roomBeh.gameObject.GetComponent<Room3D>().room = room;
          createdRooms.Add(room);
          createdRoomsGO.Add(roomBeh.gameObject);
@@ -103,13 +117,15 @@ public class DungeonGenerator : MonoBehaviour
                status[3] = true;
             }
          }
-         roomBeh.UpdateRoom(status);
+         roomBeh.status = status;
+         roomBeh.UpdateRoom();
 
-         //Восстанавливаем состояние
-         if (deletedRooms.Keys.Contains(room.Coords))
+         //Восстанавливаем состояние (пока только двери)
+         roomBeh.LoadDoorState(room.doorOpened);
+         /*if (deletedRooms.Contains(room))
          {
-            Debug.Log("Здесь как-то сделаем восстановление дверей");
-         }
+            roomBeh.LoadDoorState(room.doorOpened);
+         }*/
       }
       //Удаляем комнаты, которые слишком далеко от игрока
       for(int i = 0; i<createdRoomsGO.Count; i++)
@@ -118,14 +134,8 @@ public class DungeonGenerator : MonoBehaviour
          if (Math.Abs(currentRoom.Coords.x - room.Coords.x) > 2
                || Math.Abs(currentRoom.Coords.y - room.Coords.y) > 2)
          {
-            var roomBeh = createdRoomsGO[i].GetComponent<RoomBehaviour>();
-            bool[] bmas = { 
-               roomBeh.doors[0].GetComponent<KeyDoorController>().doorOpen, 
-               roomBeh.doors[1].GetComponent<KeyDoorController>().doorOpen,
-               roomBeh.doors[2].GetComponent<KeyDoorController>().doorOpen,
-               roomBeh.doors[3].GetComponent<KeyDoorController>().doorOpen };
-            if (deletedRooms.Keys.Contains(room.Coords)) deletedRooms.Remove(room.Coords);
-            deletedRooms.Add(room.Coords, new(bmas));
+            if (deletedRooms.Contains(room)) deletedRooms.Remove(room);
+            deletedRooms.Add(room);
             createdRooms.Remove(createdRoomsGO[i].GetComponent<Room3D>().room);
             Destroy(createdRoomsGO[i]);
             createdRoomsGO.Remove(createdRoomsGO[i]);
@@ -159,7 +169,7 @@ public class DungeonGenerator : MonoBehaviour
          createdCorridorsGO.Add(go);
          go.GetComponent<Corridor3D>().corridor = corridor;
          //Восстанавливаем состояние
-         if (deletedCorridors.Keys.Contains(corridor))
+         if (deletedCorridors.Contains(corridor))
          {
             Debug.Log("Здесь как-то сделаем восстановление коридоров");
          }
@@ -174,8 +184,8 @@ public class DungeonGenerator : MonoBehaviour
                || Math.Abs(currentRoom.Coords.x - corridor.room2.Coords.x) > 2
                || Math.Abs(currentRoom.Coords.y - corridor.room2.Coords.y) > 2)
          {
-            if (deletedCorridors.Keys.Contains(corridor)) deletedCorridors.Remove(corridor);
-            deletedCorridors.Add(corridor, new());
+            if (deletedCorridors.Contains(corridor)) deletedCorridors.Remove(corridor);
+            deletedCorridors.Add(corridor);
             createdCorridors.Remove(createdCorridorsGO[i].GetComponent<Corridor3D>().corridor);
             Destroy(createdCorridorsGO[i]);
             createdCorridorsGO.Remove(createdCorridorsGO[i]);
@@ -237,6 +247,7 @@ public class DungeonGenerator : MonoBehaviour
       List<Room> rooms = new();
       Vector2Int nextCoords = Vector2Int.zero;
       int roomsToCreate = Random.Range(settings.minNumberOfRooms, settings.maxNumberOfRooms);
+      int countRooms = roomsToCreate;
       List<Vector2Int> usedCoords = new();
 
       while(roomsToCreate > 0)
@@ -247,21 +258,34 @@ public class DungeonGenerator : MonoBehaviour
          if (room.Coords.x == 0 && room.Coords.y == 0) 
          {
             string path = $"EventData/Start Events/";
-            string name = $"{(int)SaveLoadController.runInfo.PlayerTeam[0].charClass - 2}-0";
+            string name = $"{(int)SaveLoadController.runInfo.PlayerTeam[0].Data.charClass - 2}-0";
             room.eventData = Resources.Load<EventData>(path + name);
             room.eventPath = path;
             room.eventName = name;
+            room.roomType = Room.RoomType.StartRoom;
             SaveLoadController.runInfo.currentRoom = room; 
          }
          else
          {
             //Генератор ивента будет тут
-            int eventID = 0;
-            string path = $"EventData/";
-            string name = $"{eventID}-0";
-            room.eventData = Resources.Load<EventData>(path + name);
-            room.eventPath = path;
-            room.eventName = name;
+            GenerateRandomEvent(room, countRooms - 2, (countRooms - 2) - roomsToCreate);
+            //int eventID = 0;
+            //string path = $"EventData/";
+            //string name = $"{eventID}-0";
+            //room.eventData = Resources.Load<EventData>(path + name);
+            //room.eventPath = path;
+            //room.eventName = name;
+
+            if (roomsToCreate == 1)
+            {
+               //Также ивент встречи босса
+               room.roomType = Room.RoomType.Boss;
+               string path2 = $"EventData/Boss Events/";
+               string name2 = $"{0}-0";
+               room.eventData = Resources.Load<EventData>(path2 + name2);
+               room.eventPath = path2;
+               room.eventName = name2;
+            }
          }
          rooms.Add(room);
          usedCoords.Add(nextCoords);
@@ -269,6 +293,109 @@ public class DungeonGenerator : MonoBehaviour
       }
       return rooms;
    }
+
+   public enum EventCategory
+   {
+      Combat,
+      Good,
+      Trap,
+      Class
+   }
+
+   private int bias = 0; // может быть отрицательным
+   private List<EventCategory> usedCategories = new();
+
+   public EventData GenerateRandomEvent(Room room, int totalEventRooms, int currentEventIndex)
+   {
+      string basePath = "EventData/";
+      Dictionary<EventCategory, string> folderMap = new()
+    {
+        { EventCategory.Combat, "Combat Events" },
+        { EventCategory.Good, "Good Events" },
+        { EventCategory.Trap, "Trap Events" },
+        { EventCategory.Class, $"Class Events/{SaveLoadController.runInfo.PlayerTeam[0].Data.charClass} Events" }
+    };
+
+      // Обязательный классовый ивент
+      if (currentEventIndex == totalEventRooms - 1 && !usedCategories.Contains(EventCategory.Class))
+      {
+         return GenerateSpecificCategory(EventCategory.Class, folderMap, basePath, room);
+      }
+
+      // Базовые веса
+      float baseCombatWeight = 0.3f;
+      float baseGoodWeight = 0.2f;
+      float baseTrapWeight = 0.3f;
+      float baseClassWeight = 0.2f;
+
+      // Смещение
+      float biasOffset = bias * 0.025f; //Изменение на 2.5%
+      float goodWeight = Mathf.Clamp01(baseGoodWeight + biasOffset);
+      float trapWeight = Mathf.Clamp01(baseTrapWeight - biasOffset);
+
+      // Перенормируем Combat, Class
+      float fixedWeight = baseCombatWeight + baseClassWeight;
+      float variableWeight = goodWeight + trapWeight;
+      float total = fixedWeight + variableWeight;
+
+      Dictionary<EventCategory, float> weights = new()
+    {
+        { EventCategory.Combat, baseCombatWeight / total },
+        { EventCategory.Good,   goodWeight / total },
+        { EventCategory.Trap,   trapWeight / total },
+        { EventCategory.Class,  baseClassWeight / total }
+    };
+
+      EventCategory chosenCategory = GetRandomCategoryByWeight(weights);
+      EventData chosenEvent = GenerateSpecificCategory(chosenCategory, folderMap, basePath, room);
+
+      // Обновляем bias
+      if (chosenCategory == EventCategory.Combat || chosenCategory == EventCategory.Trap)
+         bias--;
+      else if (chosenCategory == EventCategory.Good)
+         bias++;
+
+      return chosenEvent;
+   }
+
+   private EventData GenerateSpecificCategory(EventCategory category, Dictionary<EventCategory, string> folderMap, string basePath, Room room)
+   {
+      string folderPath = basePath + folderMap[category];
+      List<EventData> events = new(Resources.LoadAll<EventData>(folderPath));
+      events.RemoveAll(e => e.eventID_Part != 0);
+
+      if (events.Count == 0)
+      {
+         Debug.LogWarning($"No usable events in category {category} at {folderPath}");
+         return null;
+      }
+
+      EventData chosen = events[UnityEngine.Random.Range(0, events.Count)];
+      room.eventData = chosen;
+      room.eventPath = folderPath + "/";
+      room.eventName = chosen.name;
+      room.roomType = Room.RoomType.Common;
+
+      if (!usedCategories.Contains(category))
+         usedCategories.Add(category);
+      return chosen;
+   }
+
+   private EventCategory GetRandomCategoryByWeight(Dictionary<EventCategory, float> weights)
+   {
+      float roll = UnityEngine.Random.value;
+      float cumulative = 0f;
+
+      foreach (var pair in weights)
+      {
+         cumulative += pair.Value;
+         if (roll <= cumulative)
+            return pair.Key;
+      }
+
+      return EventCategory.Combat;
+   }
+
 
    private Vector2Int GetNextCoords(Vector2Int nextCoords)
    {

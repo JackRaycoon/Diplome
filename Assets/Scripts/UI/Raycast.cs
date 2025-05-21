@@ -7,7 +7,8 @@ using UnityEngine.UI;
 public class Raycast : MonoBehaviour
 {
    [Header("3D Raycast")]
-   [SerializeField] private int rayLength = 5;
+   private float rayLength = 1.25f;
+   private float rayUILength = 1.75f;
    [SerializeField] private LayerMask layerMaskInteract;
    [SerializeField] private string excluseLayerName = null;
 
@@ -87,6 +88,8 @@ public class Raycast : MonoBehaviour
             {
                if (result.gameObject.TryGetComponent<Button>(out var button))
                {
+                  float distance = Vector3.Distance(Camera.main.transform.position, result.gameObject.transform.position);
+                  if (distance > rayUILength) continue;
                   CrosshairChange(true);
 
                   if (Input.GetKeyDown(openDoorKey))

@@ -10,11 +10,15 @@ public class RoomBehaviour : MonoBehaviour
    public GameObject[] doors;
    public GameObject[] lampOn;
    public GameObject[] lampOff;
+   public GameObject[] particles; 
+
    private Room3D room3d;
 
    public GameObject eventCanvasGO;
    private Canvas eventCanvas;
    private CanvasGroup eventCanvasCG;
+
+   public bool[] status;
 
    public List<KeyItemController.ObjectType> doorsObjectTypes = new();
 
@@ -27,19 +31,23 @@ public class RoomBehaviour : MonoBehaviour
       eventCanvasCG.alpha = 1;
       eventCanvas.worldCamera = Camera.main;
 
-      foreach(GameObject go in doors)
+      for(short i = 0; i < doors.Length; i++)
       {
-         doorsObjectTypes.Add(go.GetComponent<KeyItemController>().objectType);
+         var key = doors[i].GetComponent<KeyItemController>();
+         doorsObjectTypes.Add(key.objectType);
+         doors[i].GetComponent<KeyDoorController>().roomSide = i;
       }
    }
-   public void UpdateRoom(bool[] status) //true for doors
+   public void UpdateRoom() //true for doors
    {
       for (int i = 0; i < status.Length; i++)
       {
+         var key = doors[i].GetComponent<KeyItemController>();
          entrances[i].SetActive(status[i]);
          walls[i].SetActive(!status[i]);
          lampOn[i].SetActive(status[i]);
          lampOff[i].SetActive(!status[i]);
+         doors[i].SetActive(key.objectType != KeyItemController.ObjectType.FogDoor);
       }
    }
    bool isFilled = false;
@@ -103,5 +111,39 @@ public class RoomBehaviour : MonoBehaviour
       {
          doors[i].GetComponent<KeyItemController>().objectType = doorsObjectTypes[i];
       }
+   }
+
+   public void LoadDoorState(bool[] doorStates)
+   {
+      for (int i = 0; i < doors.Length; i++)
+      {
+         var door = doors[i].GetComponent<KeyDoorController>();
+         if (doorStates[i])
+            door.doorAnim.Play("DoorOpen", 0, 1f);
+         else
+            door.doorAnim.Play("DoorClose", 0, 1f);
+         door.doorAnim.Update(0f);
+         door.doorOpen = doorStates[i];
+      }
+   }
+
+   public void WallUp()
+   {
+      for(int i = 0; i<doors.Length; i++)
+      {
+         entrances[i].SetActive(false);
+         doors[i].SetActive(false);
+         walls[i].SetActive(true);
+      }
+   }
+   public void UnWallUp()
+   {
+      UpdateRoom();
+   }
+
+   public void FogOff()
+   {
+      foreach (var go in particles)
+         go.SetActive(false);
    }
 }

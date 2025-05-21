@@ -1,10 +1,11 @@
-using KeySystem;
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using TMPro;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
+using Random = UnityEngine.Random;
 
 public class Room3D : MonoBehaviour
 {
@@ -15,6 +16,7 @@ public class Room3D : MonoBehaviour
    public List<TextMeshProUGUI> eventBtnsText;
    public List<GameObject> eventBtns;
    public GameObject fightBtn;
+   public GameObject trapBtn;
 
    private EventData data;
 
@@ -35,17 +37,25 @@ public class Room3D : MonoBehaviour
    }
    private void Update()
    {
-      if(room != null && !isFilled)
+      if(room != null && data != null && !isFilled)
       {
          isFilled = true;
          FillEvent();
+      }
+      if(data != null 
+         && data.eventType == EventData.EventType.BossWin && SaveLoadController.runInfo.currentRoom != room)
+      {
+         Debug.Log("Меню победы в забеге, можно кидать на сцену статистики например и удалять сейв сразу.");
       }
    }
 
    public void FillEvent()
    {
 
-      if (data.eventType == EventData.EventType.EnteranceEvent && 
+      if ((data.eventType == EventData.EventType.EnteranceEvent ||
+         data.eventType == EventData.EventType.Trap ||
+         data.eventType == EventData.EventType.FightEvent ||
+         data.eventType == EventData.EventType.BossEvent) &&
          SaveLoadController.runInfo.currentRoom != room)
       {
          eventCG.alpha = 0;
@@ -54,12 +64,37 @@ public class Room3D : MonoBehaviour
          isFilled = false;
          return;
       }
+
+      bool unlock = false;
+      //GlobalBuffs
+      foreach (var buff in SaveLoadController.runInfo.globalBuffs)
+      {
+         switch (buff)
+         {
+            case RunInfo.GlobalBuff.SilentBlood:
+               if ((data.eventType == EventData.EventType.FightEvent
+                  || data.eventType == EventData.EventType.BossEvent)  &&
+                  data.isLockableEvent && 
+                  SaveLoadController.runInfo.PlayerTeam.Count == 1)
+                  unlock = true;
+               break;
+         }
+      }
+
       eventCG.alpha = 1;
       eventCG.interactable = true;
       eventCG.blocksRaycasts = true;
 
       eventTitle.text = data.eventName;
+
       string text = data.eventText;
+      switch (SaveLoadController.runInfo.PlayerTeam[0].Data.name)
+      {
+         case "Archer":
+         case "Priest":
+            text = data.eventTextWomanCharacter;
+            break;
+      }
 
       //Награды
       if(data.choices.Count == 0 && !room.eventRewardClaim)
@@ -67,22 +102,26 @@ public class Room3D : MonoBehaviour
          //Добавляем информацию о награде
          room.eventRewardText = "";
          room.eventRewardText += "\n\n";
-         room.eventRewardText += "Получено: ";
+         if (data.isLost)
+            room.eventRewardText += "Потеряно: ";
+         else
+            room.eventRewardText += "Получено: ";
          bool isNext = false;
 
-         if(data.minGold != 0)
+         if (data.maxSoul != 0)
          {
-            int rewardCountGold = Random.Range(data.minGold, data.maxGold + 1);
-            if(rewardCountGold != 0)
+            int rewardCountSoul = Random.Range(data.minSoul, data.maxSoul + 1);
+            if(rewardCountSoul != 0)
             {
                if (isNext)
                {
                   room.eventRewardText += ", ";
                }
-               room.eventRewardText += $"{rewardCountGold} золота";
+               room.eventRewardText += $"{rewardCountSoul} {SoulWord(rewardCountSoul)}";
                isNext = true;
 
-               SaveLoadController.runInfo.goldCount += rewardCountGold;
+               SaveLoadController.runInfo.souls += rewardCountSoul;
+               if (SaveLoadController.runInfo.souls < 0) SaveLoadController.runInfo.souls = 0;
             }
          }
          if (data.strengthRewardMax != 0)
@@ -97,7 +136,9 @@ public class Room3D : MonoBehaviour
                room.eventRewardText += $"{rewardCountStrength} силы";
                isNext = true;
 
-               SaveLoadController.runInfo.PlayerTeam[0].strengh += rewardCountStrength;
+               var hero = SaveLoadController.runInfo.PlayerTeam[0];
+               hero.strengh += rewardCountStrength;
+               if (hero.strengh < 0) hero.strengh = 0;
             }
          }
          if (data.agilityRewardMax != 0)
@@ -112,7 +153,10 @@ public class Room3D : MonoBehaviour
                room.eventRewardText += $"{rewardCountAgility} ловкости";
                isNext = true;
 
-               SaveLoadController.runInfo.PlayerTeam[0].agility += rewardCountAgility;
+               var hero = SaveLoadController.runInfo.PlayerTeam[0];
+               hero.agility += rewardCountAgility;
+               if (hero.agility < 0) hero.agility = 0;
+
             }
          }
          if (data.wisdowRewardMax != 0)
@@ -127,7 +171,9 @@ public class Room3D : MonoBehaviour
                room.eventRewardText += $"{rewardCountWisdow} мудрости";
                isNext = true;
 
-               SaveLoadController.runInfo.PlayerTeam[0].wisdow += rewardCountWisdow;
+               var hero = SaveLoadController.runInfo.PlayerTeam[0];
+               hero.wisdow += rewardCountWisdow;
+               if (hero.wisdow < 0) hero.wisdow = 0;
             }
          }
          if (data.constitutionRewardMax != 0)
@@ -144,11 +190,10 @@ public class Room3D : MonoBehaviour
 
                var hero = SaveLoadController.runInfo.PlayerTeam[0];
                hero.constitution += rewardCountConstitution;
-               hero.hp += rewardCountConstitution * 5;
-               if (hero.hp > hero.max_hp)
-               {
-                  hero.hp = hero.max_hp;
-               }
+               if (hero.constitution < 0) hero.constitution = 0;
+
+               hero.TakeHeal(null, rewardCountConstitution * 5);
+               if (hero.max_hp < hero.hp) hero.hp = hero.max_hp;
             }
          }
          if (data.armorRewardMax != 0)
@@ -160,15 +205,20 @@ public class Room3D : MonoBehaviour
                {
                   room.eventRewardText += ", ";
                }
-               room.eventRewardText += $"{rewardCountArmor} брони";
+               room.eventRewardText += $"{rewardCountArmor} защиты";
                isNext = true;
 
-               SaveLoadController.runInfo.PlayerTeam[0].defence += rewardCountArmor;
+               var hero = SaveLoadController.runInfo.PlayerTeam[0];
+               hero.defence += rewardCountArmor;
+               if (hero.defence < 0) hero.defence = 0;
             }
          }
          if (data.healRewardMax != 0)
          {
-            int rewardCountHeal = Random.Range(data.healRewardMin, data.healRewardMax + 1);
+            var hero = SaveLoadController.runInfo.PlayerTeam[0];
+            int randomKoef = Random.Range(data.healRewardMin, data.healRewardMax + 1);
+            int rewardCountHeal = (int)(hero.max_hp * (randomKoef / 100.0f));
+            
             if(rewardCountHeal != 0)
             {
                if (isNext)
@@ -178,12 +228,25 @@ public class Room3D : MonoBehaviour
                room.eventRewardText += $"{rewardCountHeal} здоровья";
                isNext = true;
 
-               var hero = SaveLoadController.runInfo.PlayerTeam[0];
-               hero.hp += rewardCountHeal;
-               if (hero.hp > hero.max_hp)
+               hero.TakeHeal(null, rewardCountHeal);
+               if (hero.hp <= 0)
+                  hero.hp = 1;
+            }
+         }
+         if (data.karmaMax != 0)
+         {
+            ushort rewardCountKarma = (ushort)Random.Range(data.karmaMin, data.karmaMax + 1);
+            if (rewardCountKarma != 0)
+            {
+               if (isNext)
                {
-                  hero.hp = hero.max_hp;
+                  room.eventRewardText += ", ";
                }
+               room.eventRewardText += $"тьма внутри вас набирает силу";
+               isNext = true;
+
+               SaveLoadController.runInfo.badKarma += rewardCountKarma;
+               if (SaveLoadController.runInfo.badKarma < 0) SaveLoadController.runInfo.badKarma = 0;
             }
          }
 
@@ -191,7 +254,7 @@ public class Room3D : MonoBehaviour
          List<SkillSO> rewardSkills = new(data.rewardSkillList);
          if (data.rewardSkillPool != null) 
          {
-            rewardSkills = new(data.rewardSkillPool.skillList);
+            rewardSkills = new(data.rewardSkillPool.allSkillList);
             isPool = true;
          }
 
@@ -205,15 +268,26 @@ public class Room3D : MonoBehaviour
          {
             var skillData = rewardSkills[j];
             var skill = SkillDB.Instance.GetSkillByName(skillData.name);
-            if (!isPool && !DidSkillDrop(rewardChances[j]))
+            if (!isPool && !DidChanceDrop(rewardChances[j]))
             {
                continue;
             }
-            var classes = skillData.availableClasses;
             List<PlayableCharacter> availableCharacters = new();
             foreach (PlayableCharacter character in SaveLoadController.runInfo.PlayerTeam)
             {
-               if (skillData.availableClasses.Contains(character.charClass))
+               bool available = false;
+               foreach(var pool in character.AvailableSkills)
+               {
+                  if (pool.allSkillList.Contains(skillData))
+                  {
+                     available = true;
+                     break;
+                  }
+               }
+               if (
+                  available ||
+                  skillData.isAllAvailable || data.ignoreSkillPools
+                  )
                {
                   availableCharacters.Add(character);
                }
@@ -222,15 +296,45 @@ public class Room3D : MonoBehaviour
             PlayableCharacter target = availableCharacters[Random.Range(0, availableCharacters.Count)];
 
             room.eventRewardText += "\n";
-            room.eventRewardText += skillData.skill_type switch
-            {
-               SkillSO.SkillType.Passive_Battle => "Пассивный (бой)",
-               SkillSO.SkillType.Passive_Global => "Пассивный (глобальный)",
-               _ => "Активный"
-            };
-            room.eventRewardText += $" навык \"{skillData._name}\" – {skill.Description(target)}.\n«{skillData.quote}»";
+            if (skillData.isCurse)
+               room.eventRewardText += "Проклятый";
+            else
+               room.eventRewardText += skillData.skill_target switch
+               {
+                  SkillSO.SkillTarget.Passive => "Пассивный",
+                  _ => "Активный"
+               };
+     
+            room.eventRewardText += $" навык \"{skillData._name}\".\n«{skillData.quote}»";
 
+            if (!target.CheckSkillCount(skill.skillData))
+            {
+               room.eventRewardText += " (места нет)";
+            }
             target.AddSkill(skill);
+            switch (skillData.passiveBuff)
+            {
+               case Fighter.Buff.AngelicGrace:
+                  if (target.effectStacks.Keys.Contains(Fighter.Effect.AngelicGrace))
+                  {
+                     target.effectStacks[Fighter.Effect.AngelicGrace]++;
+                     if (target.effectStacks[Fighter.Effect.AngelicGrace] == 3)
+                     {
+                        target.effectStacks.Remove(Fighter.Effect.AngelicGrace);
+                        target.skills.Remove(SkillDB.Instance.GetSkillByName("Angelic Grace"));
+                        target.AddSkill(SkillDB.Instance.GetSkillByName("Angelic Power"));
+                     }
+                  }
+                  else
+                  {
+                     target.effectStacks.Add(Fighter.Effect.AngelicGrace, 1);
+                  }
+                  break;
+            }
+            if(skillData.globalPassiveBuff != RunInfo.GlobalBuff.None)
+            {
+               SaveLoadController.GlobalBuffsUpdate();
+            }
             isNext = true;
             if (!data.allSkillsFromList) break;
          }
@@ -239,48 +343,180 @@ public class Room3D : MonoBehaviour
          room.eventRewardClaim = true;
       }
       text += room.eventRewardText;
+
+      //Описание врагов для боя
+      if(data.eventType == EventData.EventType.FightEvent ||
+         data.eventType == EventData.EventType.BossEvent)
+      {
+         text += "\n\n";
+         text += "Враги: ";
+         if (data.randomEnemies || data.isFog)
+         {
+            text += "скрыты за пеленой тумана.";
+         }
+         else
+         {
+            var enemies = data.enemies;
+            for (int j = 0; j < enemies.Count; j++)
+            {
+               text += enemies[j].character_name + $"(x{data.enemiesCount[j]})";
+               if (j != enemies.Count - 1) text += ", ";
+            }
+            text += ".";
+         }
+      }
       eventText.text = text;
 
-      if (data.isLockableEvent) 
+      if (data.isLockableEvent && !unlock) 
       {
          StartCoroutine(LockRoom());
       }
       else roomB.LockDoors(true);
 
-      //Битва, потом дополнить
-      fightBtn.SetActive(data.enemies.Count > 0);
-      if (data.enemies.Count > 0)
+      if (data.eventType == EventData.EventType.BossEvent)
+      {
+         roomB.WallUp();
+      }
+      if(data.eventType == EventData.EventType.BossWin)
+      {
+         roomB.UnWallUp();
+         roomB.FogOff();
+      }
+
+
+         //Битва
+      fightBtn.SetActive(data.eventType == EventData.EventType.FightEvent 
+            || data.eventType == EventData.EventType.BossEvent);
+      trapBtn.SetActive(data.eventType == EventData.EventType.Trap);
+
+      if (data.eventType == EventData.EventType.FightEvent 
+         || data.eventType == EventData.EventType.BossEvent)
       {
          foreach (var go in eventBtns) go.SetActive(false);
          enemiesForFight = new();
-         foreach (CharacterSO enemy in data.enemies)
+
+         if (data.randomEnemies)
          {
-            enemiesForFight.Add(new Fighter(enemy));
+            int count = Random.Range(data.minEnemyCount, data.maxEnemyCount + 1);
+
+            // Проверка на корректность данных
+            if (data.enemies.Count != data.enemiesChances.Count)
+            {
+               Debug.LogError("Количество врагов и количество шансов не совпадает!");
+               return;
+            }
+
+            for (int j = 0; j < count; j++)
+            {
+               int roll = Random.Range(0, 10000);
+               int cumulative = 0;
+               CharacterSO selectedEnemy = null;
+
+               for (int k = 0; k < data.enemies.Count; k++)
+               {
+                  cumulative += (int)(data.enemiesChances[k] * 100);
+                  if (roll < cumulative)
+                  {
+                     selectedEnemy = data.enemies[k];
+                     break;
+                  }
+               }
+
+               if (selectedEnemy != null)
+               {
+                  enemiesForFight.Add(new Fighter(selectedEnemy));
+               }
+               else
+               {
+                  Debug.LogWarning("Не удалось выбрать врага, возможно сумма шансов < 100?");
+               }
+            }
          }
+         else
+         {
+            for (int j = 0; j < data.enemies.Count; j++)
+            {
+               for(int k = 0; k < data.enemiesCount[j]; k++)
+                  enemiesForFight.Add(new Fighter(data.enemies[j]));
+            }
+         }
+         return;
+      }
+
+
+      //Кнопки выбора
+      if(data.eventType == EventData.EventType.Trap)
+      {
+         foreach (var go in eventBtns) go.SetActive(false);
+
          return;
       }
       int i = 0;
       foreach (var eventData in data.choices)
       {
-         eventBtns[i].SetActive(true);
+         bool isVisible = true;
+         if (eventData.isHidden)
+         {
+            //Проверка мудрости увидел ли скрытый вариант
+            var mainChar = SaveLoadController.runInfo.PlayerTeam[0];
+            int chance = (mainChar.wisdow + mainChar.bonus_wisdow) * Fight.procentPerOneCharacteristic;
+            if (chance > Fight.limitProcent) chance = Fight.limitProcent;
+            int res = Random.Range(0, 100);
+            isVisible = res < chance;
+         }
+         if (i == room.hiddenVariant.Count)
+            room.hiddenVariant.Add(isVisible);
+         eventBtns[i].SetActive(room.hiddenVariant[i]);
+         if (eventData.isHidden)
+            eventBtns[i].GetComponent<Image>().color = new Color(0.35f, 0.00f, 0.30f);
          eventBtnsText[i].text = eventData.textChoice;
          i++;
       }
-
       for (; i < eventBtns.Count; i++)
       {
          eventBtns[i].SetActive(false);
       }
+
+      MiniMapUI.isNeedUpdate = true;
    }
 
-   bool DidSkillDrop(float chanceToReceiveSkill)
+   bool DidChanceDrop(float chance)
    {
-      int scaledChance = Mathf.RoundToInt(chanceToReceiveSkill * 100);
-      int roll = UnityEngine.Random.Range(0, 10000);
+      int scaledChance = Mathf.RoundToInt(chance * 100);
+      int roll = Random.Range(0, 10000);
       return roll < scaledChance;
    }
 
+   string SoulWord(int rewardCountSoul)
+   {
+      string soulWord;
+      int lastDigit = rewardCountSoul % 10;
+      int lastTwoDigits = rewardCountSoul % 100;
 
+      if (lastTwoDigits >= 11 && lastTwoDigits <= 14)
+      {
+         soulWord = "душ";
+      }
+      else
+      {
+         switch (lastDigit)
+         {
+            case 1:
+               soulWord = "душа";
+               break;
+            case 2:
+            case 3:
+            case 4:
+               soulWord = "души";
+               break;
+            default:
+               soulWord = "душ";
+               break;
+         }
+      }
+
+      return soulWord;
+   }
    private void Shuffle(List<SkillSO> list, List<float> list2, bool ignoreList2)
    {
       if (list.Count != list2.Count && !ignoreList2)
@@ -329,19 +565,51 @@ public class Room3D : MonoBehaviour
 
    public void ChoiceBtnClick(int choiceID)
    {
-      if(choiceID == 3)
+      switch (choiceID)
       {
-         SaveLoadController.Save();
-         Fight.eventRoom = room;
-         SaveLoadController.StartFight(enemiesForFight);
-      }
-      else
-      {
-         room.eventData = data.choices[choiceID];
-         data = room.eventData;
-         room.eventName = $"{data.eventID}-{data.eventID_Part}";
-         FillEvent();
-         SaveLoadController.Save();
+         case 3:
+            SaveLoadController.Save();
+            Fight.eventRoom = room;
+            SaveLoadController.StartFight(enemiesForFight);
+            break;
+         case 4:
+            //Проверка на ловкость чтобы понять избежал ли ловушки
+            var mainChar = SaveLoadController.runInfo.PlayerTeam[0];
+            int chance = 0;
+            switch (data.checkTrap)
+            {
+               case EventData.Characteristic.None:
+               case EventData.Characteristic.Agility:
+                  chance = (mainChar.agility) * Fight.procentPerOneCharacteristic;
+                  break;
+               case EventData.Characteristic.Strengh:
+                  chance = (mainChar.strengh) * Fight.procentPerOneCharacteristic;
+                  break;
+               case EventData.Characteristic.Wisdow:
+                  chance = (mainChar.wisdow) * Fight.procentPerOneCharacteristic;
+                  break;
+               case EventData.Characteristic.Consitution:
+                  chance = (mainChar.constitution) * Fight.procentPerOneCharacteristic;
+                  break;
+               case EventData.Characteristic.Armor:
+                  chance = (mainChar.armor) * Fight.procentPerOneCharacteristic;
+                  break;
+            }
+            if (chance > Fight.limitProcent) chance = Fight.limitProcent;
+            int res = Random.Range(0, 100);
+            room.eventData = (res < chance) ? data.choices[1] : data.choices[0];
+            data = room.eventData;
+            room.eventName = $"{data.eventID}-{data.eventID_Part}";
+            FillEvent();
+            SaveLoadController.Save();
+            break;
+         default:
+            room.eventData = data.choices[choiceID];
+            data = room.eventData;
+            room.eventName = $"{data.eventID}-{data.eventID_Part}";
+            FillEvent();
+            SaveLoadController.Save();
+            break;
       }
    }
 }

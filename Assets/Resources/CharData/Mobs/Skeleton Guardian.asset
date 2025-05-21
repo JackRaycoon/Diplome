@@ -1,0 +1,31 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe0d30022cbdbdc469fd8a301de89b48, type: 3}
+  m_Name: Skeleton Guardian
+  m_EditorClassIdentifier: 
+  character_name: "\u0421\u043A\u0435\u043B\u0435\u0442-\u0441\u0442\u0440\u0430\u0436"
+  charClass: 0
+  character_description: 
+  portrait_human: {fileID: 0}
+  portrait_halfhuman: {fileID: 0}
+  portrait_monster: {fileID: 21300000, guid: cab351a7f07fa3b428a239995aaf8f86, type: 3}
+  portrait_summon: {fileID: 21300000, guid: cab351a7f07fa3b428a239995aaf8f86, type: 3}
+  other_portraits: []
+  skills:
+  - {fileID: 11400000, guid: dcbbf588075b6f244869645534a6cc08, type: 2}
+  _availableSkills: []
+  strengh: 3
+  agility: 0
+  wisdow: 0
+  constitution: 4
+  defence: 5
+  priorityStats: 0400000003000000

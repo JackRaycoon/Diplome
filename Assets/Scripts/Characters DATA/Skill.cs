@@ -2,6 +2,10 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System;
+using System.Linq;
+using static Fighter;
+using UnityEditor.Experimental.GraphView;
+using static UnityEngine.GraphicsBuffer;
 
 public class Skill
 {
@@ -9,16 +13,14 @@ public class Skill
 
    public Action<List<Fighter>> cast; //Применение скилла
    public Func<List<Fighter>, List<int>> calc; //Рассчёт скилла (урон, длительность и тд)
-   public Action battlecry; //Применяется автоматически при появлении на поле
-   public Action death; //Применяется автоматически при смерти персонажа
-   public Action<List<Fighter>> every_turn; //Каждый ход какое-то действие
+   public Action<List<Fighter>> death; //Применяется автоматически при смерти персонажа
 
    public Action<Fighter, List<Fighter>> passive; //Пассивный эффект "пока я жив вы получаете то-то"
    public Action<Fighter, List<Fighter>> reverse; //Отмена пассивного эффекта, когда его источник пропадает
 
-   public Skill(string name)
+   public Skill(string name, bool isPassive)
    {
-      skillData = Resources.Load<SkillSO>("SkillData/" + name);
+      skillData = Resources.Load<SkillSO>($"SkillData/{(isPassive ? "Passive" : "Active")}/" + name);
    }
    /*public Skill(SkillSO skillSO, Fighter _skillOwner)
    {
@@ -38,7 +40,7 @@ public class Skill
    {
       get
       {
-         return $"<b><size=55>{skillData._name}</size></b>";
+         return $"<size=60>{skillData._name}</size>\n";
       }
       private set { }
    }
@@ -54,20 +56,69 @@ public class Skill
       }
       private set { }
    }*/
-   public string Description(Fighter fighter = null)
+   public string Description(bool needCooldown, Fighter fighter = null)
    {
-      if (calc == null) return skillData.description;
-      if (fighter != null) 
-         return string.Format(skillData.description, calc(new List<Fighter> { fighter })[0]);
+      var description = skillData.description;
+      //Проверка на глобальные баффы, заменяющие описание
+      foreach (var buff in SaveLoadController.runInfo.globalBuffs)
+      {
+         switch (buff)
+         {
+            case RunInfo.GlobalBuff.TouchingMystery:
+               if (skillData.name == "Healing Wounds" && (fighter == null || fighter.buffs.Contains(Buff.TouchingMystery)) )
+                  description += ". Половина избыточного лечения становится бронёй";
+               break;
+            case RunInfo.GlobalBuff.CursedHand:
+               if (skillData.name == "Basic Attack" && (fighter == null || fighter.buffs.Contains(Buff.CursedHand)) )
+                  description += ". Накладывает на противника случайное проклятие";
+               break;
+         }
+      }
 
-      if (Fight.isEnemyTurn)
-         return string.Format(skillData.description, calc(new List<Fighter> { Fight.EnemyUITeam[0] })[0]);
+      if(needCooldown)
+         description += $"\nВремя восстановления: {skillData.cooldown}";
+
+      if (calc == null) return description;
+      
+      List<int> values;
+      if (fighter != null)
+         values = calc(new List<Fighter> { fighter });
+      /*else if (Fight.isEnemyTurn)
+         values = calc(new List<Fighter> { Fight.EnemyUITeam[0] });
       else
-         return string.Format(skillData.description, calc(new List<Fighter> { Fight.SelectedCharacter() })[0]);
+         values = calc(new List<Fighter> { Fight.SelectedCharacter() });*/
+      else
+      {
+         values = calc(new List<Fighter> { SaveLoadController.runInfo.PlayerTeam[0] });
+      }
+
+      return string.Format(description, values.Cast<object>().ToArray());
    }
+
 
    public void Cast(Fighter caster, List<Fighter> targets)
    {
+      //Проверка на баффы у целей, на промахи тут, на урон при получении урона
+      for (int i = 0; i < targets.Count; i++)
+      {
+         var target = targets[i];
+         for (int j = 0; j < target.buffs.Count; j++)
+         {
+            var buff = target.buffs[j];
+            switch (buff)
+            {
+               case Buff.BestialInstinctBuff:
+                  if (skillData.skill_type != SkillSO.SkillType.Attack) continue;
+                  if (UnityEngine.Random.Range(1, 101) >
+                     target.GetPassiveSkill(Buff.BestialInstinct).calc(new List<Fighter> { target })[0]) continue;
+
+                  Debug.Log("Промах по: " + target.Data.character_name);
+                  targets.Remove(target);
+                  i--;
+                  break;
+            }
+         }
+      }
       var list = new List<Fighter>(targets);
       list.Insert(0, caster);
       cast?.Invoke(list);

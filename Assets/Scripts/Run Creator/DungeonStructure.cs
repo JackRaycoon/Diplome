@@ -1,13 +1,16 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.Serialization;
 using UnityEngine;
 
-[Serializable]
+[DataContract]
 public class DungeonStructure
 {
+   [DataMember]
    public List<Room> rooms;
+   [DataMember]
    public List<Corridor> corridors;
-   [NonSerialized]
+   [IgnoreDataMember]
    public Dictionary<Room, List<Room>> roomToConnectedRooms;
 }

@@ -7,7 +7,7 @@ namespace KeySystem
 {
    public class KeyDoorController : MonoBehaviour
    {
-      private Animator doorAnim;
+      public Animator doorAnim;
       public bool doorOpen = false;
 
       [Header("Animation Names")]
@@ -25,6 +25,8 @@ namespace KeySystem
 
       private BoxCollider bCollider;
       private bool playerInTrigger;
+
+      public short roomSide = -1;
 
       public Room room;
 
@@ -91,6 +93,9 @@ namespace KeySystem
             doorOpen = false;
             StartCoroutine(PauseDoorInteraction(true));
          }
+
+         //Сохраняем новое состояние
+         room.doorOpened[roomSide] = doorOpen;
       }
 
       void ShowDoorLocked()
@@ -112,6 +117,9 @@ namespace KeySystem
                }
                go.gameObject.SetActive(true);
             }
+            AnimatorStateInfo stateInfo = doorAnim.GetCurrentAnimatorStateInfo(0);
+            bool isPlaying = !doorAnim.IsInTransition(0) && stateInfo.normalizedTime < 1f;
+            if (isPlaying) return;
             doorAnim.Play(lockedAnimationName, 0, 0.0f);
             StartCoroutine(PauseDoorInteraction(false));
          }

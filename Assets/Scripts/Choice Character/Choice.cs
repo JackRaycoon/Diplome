@@ -1,12 +1,13 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using TMPro;
 using UnityEngine;
 
 public class Choice :MonoBehaviour
 {
    public SpriteRenderer pictureLeftLeft, pictureLeft, pictureCenter, pictureRight, pictureRightRight;
-   readonly List<PlayableCharacter> allCharacters = new();
+   private List<PlayableCharacter> allCharacters = new();
    private List<PlayableCharacter> allCharactersTemp;
    private static int playerCount;
 
@@ -18,9 +19,12 @@ public class Choice :MonoBehaviour
 
    private void Start()
    {
-      allCharacters.Add(new PlayableCharacter("Playable Warrior"));
-      allCharacters.Add(new PlayableCharacter("Playable Archer"));
-      allCharacters.Add(new PlayableCharacter("Playable Priest"));
+      var list = new List<CharacterSO>(Resources.LoadAll<CharacterSO>("CharData/Playable/"));
+      foreach(var data in list)
+      {
+         allCharacters.Add(new PlayableCharacter(data.name));
+      }
+      allCharacters = allCharacters.OrderBy(c => c.Data.charClass).ToList();
 
       allCharactersTemp = new(allCharacters);
 

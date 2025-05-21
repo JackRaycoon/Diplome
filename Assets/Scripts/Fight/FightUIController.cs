@@ -1,6 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class FightUIController : MonoBehaviour
@@ -14,9 +16,14 @@ public class FightUIController : MonoBehaviour
    public GameObject portraitPrefab;
    public List<RenderTexture> heroesRenderTextures;
    public List<RenderTexture> enemiesRenderTextures;
+   public List<RenderTexture> addictsRenderTextures;
+
+   public Skill_Image toCopy;
 
    public static bool allInteractable, allDisable;
    private bool _allInteractable, _allDisable;
+
+   public Loading loader;
 
    //public static bool hardUpdate = false;
 
@@ -26,6 +33,8 @@ public class FightUIController : MonoBehaviour
 
    void Start()
     {
+      loader.StartScene();
+
       UpdateCount(1);
       UpdateCount(2);
    }
@@ -73,8 +82,21 @@ public class FightUIController : MonoBehaviour
          for (int i = 0; i < _countHeroes; i++)
          {
             var go = Instantiate(portraitPrefab, heroes.transform);
+            /*var skI = go.GetComponent<Skill_Image>();
+            skI.part1 = toCopy.part1;
+            skI.part2 = toCopy.part2;
+            skI.Veil = toCopy.Veil;
+            skI.pos_part1 = toCopy.pos_part1;
+            skI.pos_part2 = toCopy.pos_part2;
+            skI.pos_Veil = toCopy.pos_Veil;
+            skI.CenterSkill = toCopy.CenterSkill;
+            skI.Description = toCopy.Description;
+            skI.isClickable = false;*/
+
             var fp = go.GetComponent<FightPortrait>();
-            go.transform.GetChild(0).GetComponent<RawImage>().texture = heroesRenderTextures[i];
+            List<RenderTexture> renderTextures = new(heroesRenderTextures);
+            foreach (var rt in addictsRenderTextures) renderTextures.Add(rt);
+            go.transform.GetChild(0).GetComponent<RawImage>().texture = renderTextures[i];
             //fp.id = (_oneID_heroes != -1) ? _oneID_heroes : i;
             //_oneID_heroes = -1;
             //oneID_heroes = -1;
@@ -90,30 +112,12 @@ public class FightUIController : MonoBehaviour
             if (allDisable) go.GetComponent<FightPortrait>().isInteractable = false;
             if (_countHeroes == 1 && Fight.selectedSkill != null) fp.isInteractable = false;
          }
-         switch (_countHeroes)
-         {
-            case 1:
-               CharacterUpdate(heroes, 400, 480, 80, 80, 68, 50, 70, 1, 10, 80);
-               break;
-            case 2:
-               CharacterUpdate(heroes, 300, 360, 60, 70, 51, 40, 50, 1, 5, 70);
-               break;
-            case 3:
-            case 4:
-               CharacterUpdate(heroes, 250, 300, 50, 65, 34, 30, 40, 2, 0, 60);
-               break;
-            case 5:
-            case 6:
-               CharacterUpdate(heroes, 200, 240, 40, 60, 23, 15, 30, 2, 0, 50);
-               break;
-         }
+         UpdateSize(_countHeroes, heroes);
       }
 
       //ENEMIES
       if (commandNum == 2)
       {
-         //if (one_enemies != null && _countEnemies != 1)
-         //   one_enemies = null;
          foreach (Transform child in enemies.transform)
          {
             Destroy(child.gameObject);
@@ -121,47 +125,64 @@ public class FightUIController : MonoBehaviour
          for (int i = 0; i < _countEnemies; i++)
          {
             var go = Instantiate(portraitPrefab, enemies.transform);
+            Skill_Image skI = go.GetComponent<Skill_Image>() ?? go.AddComponent<Skill_Image>();
+            skI.part1 = toCopy.part1;
+            skI.part2 = toCopy.part2;
+            skI.Veil = toCopy.Veil;
+            skI.pos_part1 = toCopy.pos_part1;
+            skI.pos_part2 = toCopy.pos_part2;
+            skI.pos_Veil = toCopy.pos_Veil;
+            skI.CenterSkill = toCopy.CenterSkill;
+            skI.Description = toCopy.Description;
+            skI.isClickable = false;
+            if (Fight.EnemyUITeam[i].Intension != null)
+               skI.skill = Fight.EnemyUITeam[i].Intension;
+            skI.isIntention = true;
+
             var fp = go.GetComponent<FightPortrait>();
-            go.transform.GetChild(0).GetComponent<RawImage>().texture = enemiesRenderTextures[i];
-            fp.id = i + 6;
+            List<RenderTexture> renderTextures = new(enemiesRenderTextures);
+            foreach (var rt in addictsRenderTextures) renderTextures.Add(rt);
+            go.transform.GetChild(0).GetComponent<RawImage>().texture = renderTextures[i];
+
+            //fp.id = i + 6;
             fp.isInteractable = false;
-            /*if (one_enemies != null)
-            {
-               if (Fight.EnemyTeam.Contains(one_enemies))
-                  fp.id = Fight.EnemyTeam.IndexOf(one_enemies) + 6;
-               else
-               {
-                  fp.id = Fight.PlayerTeam.IndexOf(one_enemies as PlayableCharacter);
-               }
-            }; */
+
             if (Fight.EnemyTeam.Contains(Fight.EnemyUITeam[i]))
                fp.id = Fight.EnemyTeam.IndexOf(Fight.EnemyUITeam[i]) + 6;
             else
-            {
                fp.id = Fight.PlayerTeam.IndexOf(Fight.EnemyUITeam[i] as PlayableCharacter);
-            }
          }
-         switch (_countEnemies)
-         {
-            case 1:
-               CharacterUpdate(enemies, 400, 480, 80, 80, 68, 50, 70, 1, 10, 80);
-               break;
-            case 2:
-               CharacterUpdate(enemies, 300, 360, 60, 70, 51, 40, 50, 1, 5, 70);
-               break;
-            case 3:
-            case 4:
-               CharacterUpdate(enemies, 250, 300, 50, 65, 34, 30, 40, 2, 0, 60);
-               break;
-            case 5:
-            case 6:
-               CharacterUpdate(enemies, 200, 240, 40, 60, 23, 15, 30, 2, 0, 50);
-               break;
-         }
+         UpdateSize(_countEnemies, enemies);
       }
    }
 
-   private void CharacterUpdate(GridLayoutGroup grid, float sizeX, float sizeY, float bottomImage, float heightSlider, float sliderPosY, float sliderRightMove, float sliderLeftMove, int ColumnCount, float iconPosX, float iconSize)
+   public void UpdateSize(int count, GridLayoutGroup grid)
+   {
+      switch (count)
+      {
+         case 1:
+            CharacterUpdate(grid, 400, 480, 80, 80, 68, 50, 70, 1, 10, 80);
+            break;
+         case 2:
+            CharacterUpdate(grid, 300, 360, 60, 70, 51, 40, 50, 1, 5, 70);
+            break;
+         case 3:
+         case 4:
+            CharacterUpdate(grid, 250, 300, 50, 65, 34, 30, 40, 2, 0, 60);
+            break;
+         case 5:
+         case 6:
+            CharacterUpdate(grid, 200, 240, 40, 60, 23, 15, 30, 2, 0, 50);
+            break;
+         default: //more then 6
+            CharacterUpdate(grid, 150, 180, 30, 55, 23, 15, 30, 3, 0, 45);
+            break;
+      }
+}
+
+   private void CharacterUpdate(GridLayoutGroup grid, float sizeX, float sizeY, float bottomImage,
+      float heightSlider, float sliderPosY, float sliderRightMove, float sliderLeftMove, 
+      int ColumnCount, float iconPosX, float iconSize)
    {
       grid.cellSize = new Vector2(sizeX, sizeY);
       grid.constraintCount = ColumnCount;
@@ -213,6 +234,18 @@ public class FightUIController : MonoBehaviour
          UpdateCount(1);
          UpdateCount(2);
          UpdateCount(0);
+      }
+   }
+
+   public void ContinueBtn()
+   {
+      if (Fight.isLose)
+      {
+         loader.LoadScene(0);
+      }
+      else
+      {
+         loader.LoadScene(1);
       }
    }
 }

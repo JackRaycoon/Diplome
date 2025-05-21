@@ -11,9 +11,10 @@ namespace KeySystem
       public enum ObjectType
       {
          ZeroDoor,
+         LockDoor, //Always lock
+         FogDoor, //Без двери (эффект тумана)
          RedDoor,
-         RedKey,
-         LockDoor //Always
+         RedKey
       }
       private KeyDoorController doorObject;
 

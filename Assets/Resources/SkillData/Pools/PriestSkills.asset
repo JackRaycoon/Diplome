@@ -12,4 +12,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9807ccf0c390d974b9520e60e841da4f, type: 3}
   m_Name: PriestSkills
   m_EditorClassIdentifier: 
-  skillList: []
+  activeSkillList:
+  - {fileID: 11400000, guid: f087d4d62c8a93944ac2b8a15273a5a8, type: 2}
+  passiveSkillList:
+  - {fileID: 11400000, guid: 5853799c5e3719a49a39b78e7226b961, type: 2}
+  - {fileID: 11400000, guid: 129442e0ac6ee8c4d93d6bb2de6c2d58, type: 2}
+  - {fileID: 11400000, guid: 1a24eaf8ebcbec24d88c84e46eba15a5, type: 2}
+  - {fileID: 11400000, guid: 895bf12a70b74a248be333d15ce18eca, type: 2}
+  - {fileID: 11400000, guid: a605cdc6bde0f5c42b41246fd4f59e41, type: 2}

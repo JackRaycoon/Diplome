@@ -35,6 +35,7 @@ public class CardController : MonoBehaviour
          //Ћок по клику
          if (Input.GetKeyDown(KeyCode.Mouse0))
          {
+            if (Fight.cast) return;
             var cardSh = topCard.GetComponent<CardShower>();
             /*if (cardSh.isLock)
             {
@@ -61,7 +62,7 @@ public class CardController : MonoBehaviour
             {
                //var skimage = topCard.GetComponent<Skill_Image>();
                skimage.Exit();
-               skimage.Enter(false);
+               skimage.Enter(false, Fight.SelectedCharacter());
                //StartCoroutine(skimage.Open(false));
             }
          }

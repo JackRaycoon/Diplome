@@ -7,21 +7,17 @@ using UnityEngine;
 public class PlayableCharacter : Fighter
 {
    public byte currentPhase = 1; //1 - человек, 2 - получеловек, 3 - монстр
-   public Class charClass;
+   public bool isDoubleTurn = false;
 
-   public PlayableCharacter(string name) : base(name)
+   public PlayableCharacter(string name) : base("Playable/" + name)
    {
-      //Временно, потом это всё добавлять на ивентах надо будет, а тут только 1-й скилл и + после прокачки случайный
-      foreach(SkillSO skillSO in Data.skills)
+      /*foreach(SkillSO skillSO in Data.skills)
       {
          skills.Add(SkillDB.Instance.GetSkillByName(skillSO.name));
-         if (skills.Count == 5) break;
-      }
-      charClass = StringToClass(name);
-      //
+      }*/
    }
 
-   public PlayableCharacter(CharacterSaveData charSD) : base(charSD.nameClass)
+   public PlayableCharacter(CharacterSaveData charSD) : base("Playable/" + charSD.nameClass)
    {
       hp = charSD.hp;
       defence = charSD.defence;
@@ -32,18 +28,19 @@ public class PlayableCharacter : Fighter
       currentPhase = charSD.currentPhase;
       isDead = charSD.isDead;
       isSpawn = charSD.isSpawn;
+      effectStacks = new(charSD.effectStacks);
       skills = new();
       foreach(var skillName in charSD.skillNameList)
       {
          AddSkill(skillName);
       }
-      charClass = StringToClass(charSD.nameClass);
    }
 
    public new Sprite Portrait
    {
       get
       {
+         if (isSummon && Data.portrait_summon != null) return Data.portrait_summon;
          return currentPhase switch
          {
             1 => Data.portrait_human,
@@ -55,23 +52,25 @@ public class PlayableCharacter : Fighter
       private set { }
    }
 
-   private Class StringToClass(string name)
+   public List<SkillPool> AvailableSkills
    {
-      return name switch
+      get
       {
-         "Playable Warrior" => Class.Warrior,
-         "Playable Archer" => Class.Archer,
-         "Playable Priest" => Class.Priest,
-         _ => Class.Enemy,
-      };
-   }
-
-   public enum Class
-   {
-      Enemy,
-      All,
-      Warrior,
-      Archer,
-      Priest
+         List<SkillPool> list = new(Data._availableSkills);
+         //global buffs
+         if (SaveLoadController.runInfo.globalBuffs.Contains(RunInfo.GlobalBuff.AmuletWind)
+            && skills.Contains(SkillDB.Instance.GetSkillByName("Amulet of the Wind"))
+            )
+         {
+            list.Add(SkillDB.Instance.GetPoolByName("WindSkills"));
+         }
+         if (SaveLoadController.runInfo.globalBuffs.Contains(RunInfo.GlobalBuff.HeartDarkness)
+            && skills.Contains(SkillDB.Instance.GetSkillByName("Heart of Darkness"))
+            )
+         {
+            list.Add(SkillDB.Instance.GetPoolByName("DarkSkills"));
+         }
+         return list;
+      }
    }
 }

@@ -1,0 +1,27 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a6113aaa646022a4e9700cf6e87f64ab, type: 3}
+  m_Name: Corpseless
+  m_EditorClassIdentifier: 
+  _name: "\u041D\u0435\u0442 \u0442\u0440\u0443\u043F\u0430"
+  icon: {fileID: 21300000, guid: 432674ffbd1955540a071bc115b9be42, type: 3}
+  description: "\u041F\u043E\u0441\u043B\u0435 \u0441\u043C\u0435\u0440\u0442\u0438
+    \u043D\u0435 \u043E\u0441\u0442\u0430\u0451\u0442\u0441\u044F \u0442\u0440\u0443\u043F\u0430"
+  quote: 
+  skill_target: 9
+  skill_type: 6
+  skill_elem: 0
+  cooldown: 1
+  isAllAvailable: 0
+  isCorpseTargetToo: 0
+  passiveBuff: 8
+  globalPassiveBuff: 0

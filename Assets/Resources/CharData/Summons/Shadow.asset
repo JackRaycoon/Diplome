@@ -1,0 +1,31 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe0d30022cbdbdc469fd8a301de89b48, type: 3}
+  m_Name: Shadow
+  m_EditorClassIdentifier: 
+  character_name: "\u0422\u0435\u043D\u044C"
+  charClass: 0
+  character_description: 
+  portrait_human: {fileID: 0}
+  portrait_halfhuman: {fileID: 0}
+  portrait_monster: {fileID: 21300000, guid: bd250825413c62b4c9c269a3b1282ed1, type: 3}
+  portrait_summon: {fileID: 21300000, guid: bd250825413c62b4c9c269a3b1282ed1, type: 3}
+  other_portraits: []
+  skills:
+  - {fileID: 11400000, guid: 9d0116810892b8444a0ca6b1cc8f70f3, type: 2}
+  _availableSkills: []
+  strengh: 0
+  agility: 0
+  wisdow: 0
+  constitution: 0
+  defence: 0
+  priorityStats: 

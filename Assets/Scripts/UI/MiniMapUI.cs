@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class MiniMapUI : MonoBehaviour
 {
@@ -12,6 +13,9 @@ public class MiniMapUI : MonoBehaviour
    [SerializeField] GameObject playerMiniMapPrefab;
    [SerializeField] GameObject horizontalCorridorMiniMapPrefab, verticalCorridorMiniMapPrefab;
    [SerializeField] private float distanceBetweenRooms;
+
+   [Tooltip("Стартовая, обычная, босс, торговец")]
+   public List<Sprite> typeRoomsSprites;
 
    public static bool isNeedUpdate = false;
    private Vector3 shift = new(0,0,0);
@@ -115,6 +119,7 @@ public class MiniMapUI : MonoBehaviour
 
    private void FogOfWar()
    {
+      bool isNoFogOfWar = SaveLoadController.runInfo.globalBuffs.Contains(RunInfo.GlobalBuff.TraceAncientRoute);
       var currentRoom = SaveLoadController.runInfo.currentRoom;
       if(currentRoom == null)
       {
@@ -135,20 +140,7 @@ public class MiniMapUI : MonoBehaviour
          if (!room.isFogOfWar)
             allRoomList_WithoutFogOfWar.Add(room);
       }
-      /*foreach (Transform child in mapContent.transform)
-      {
-         var fog = child.GetComponent<FogOfWarUI>();
-         if (fog.room == null) continue;
 
-         if (Math.Abs(currentRoom.Coords.x - fog.room.Coords.x) < 2
-            && Math.Abs(currentRoom.Coords.y - fog.room.Coords.y) < 2)
-            fog.isFogOfWar = false;
-         if (currentRoom.Coords.x == fog.room.Coords.x
-            && currentRoom.Coords.y == fog.room.Coords.y)
-            fog.isUnlocked = true;
-         if(!fog.isFogOfWar) 
-            allRoomList_WithoutFogOfWar.Add(fog.room);
-      }*/
       //Открываем коридоры
       foreach (Corridor corridor in SaveLoadController.runInfo.dungeonStructure.corridors)
       {
@@ -158,31 +150,20 @@ public class MiniMapUI : MonoBehaviour
             corridor.isFogOfWar = false;
          }
       }
-      /*
-      foreach (Transform child in mapContent.transform)
-      {
-         var fog = child.GetComponent<FogOfWarUI>();
-         if (fog.corridor == null) continue;
-            
-         if(allRoomList_WithoutFogOfWar.Contains(fog.corridor.room1) 
-               && allRoomList_WithoutFogOfWar.Contains(fog.corridor.room2))
-            {
-               fog.isFogOfWar = false;
-            }
-      }*/
+
       //Если туман войны есть, то скрываем клетку
       foreach (Transform child in mapContent.transform)
       {
          var fullUI = child.GetComponent<MiniMapFullUI>();
          if (fullUI.room == null) 
          {
-            child.gameObject.SetActive(!fullUI.corridor.isFogOfWar);
-            fullUI.fullMapAnalogue.SetActive(!fullUI.corridor.isFogOfWar);
+            child.gameObject.SetActive(!fullUI.corridor.isFogOfWar || isNoFogOfWar);
+            fullUI.fullMapAnalogue.SetActive(!fullUI.corridor.isFogOfWar || isNoFogOfWar);
          }
          else
          {
-            child.gameObject.SetActive(!fullUI.room.isFogOfWar);
-            fullUI.fullMapAnalogue.SetActive(!fullUI.room.isFogOfWar);
+            child.gameObject.SetActive(!fullUI.room.isFogOfWar || isNoFogOfWar);
+            fullUI.fullMapAnalogue.SetActive(!fullUI.room.isFogOfWar || isNoFogOfWar);
          }
       }
 
@@ -191,8 +172,13 @@ public class MiniMapUI : MonoBehaviour
       {
          var fullUI = child.GetComponent<MiniMapFullUI>();
          if (fullUI.room == null) continue;
-         child.GetChild(0).gameObject.SetActive(fullUI.room.isUnlocked);
-         fullUI.fullMapAnalogue.transform.GetChild(0).gameObject.SetActive(fullUI.room.isUnlocked);
+         Image imageTypeRoom = child.GetChild(0).GetComponent<Image>();
+         imageTypeRoom.gameObject.SetActive(fullUI.room.isUnlocked);
+         imageTypeRoom.sprite = typeRoomsSprites[(int)fullUI.room.roomType];
+
+         imageTypeRoom = fullUI.fullMapAnalogue.transform.GetChild(0).GetComponent<Image>();
+         imageTypeRoom.gameObject.SetActive(fullUI.room.isUnlocked);
+         imageTypeRoom.sprite = typeRoomsSprites[(int)fullUI.room.roomType];
       }
    }
 

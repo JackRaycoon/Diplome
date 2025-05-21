@@ -15,10 +15,14 @@ public class Buttons : MonoBehaviour
 
    public List<CanvasGroup> panels;
    public CanvasGroup dark;
-   public CanvasGroup loadScreen;
+   //public CanvasGroup loadScreen;
+   public Loading load;
    public float duration = 0.2f; // Время анимации
 
    public List<Button> slotsContinue;
+
+   public List<TextMeshProUGUI> sliderTexts;
+   public List<Slider> sliders;
 
    private bool isOpened;
    private int openID = -1;
@@ -37,6 +41,8 @@ public class Buttons : MonoBehaviour
       cm = GetComponent<CircularMenu>();
       cg = GetComponent<CanvasGroup>();
 
+      selectedCharacter = null;
+
       //Загрузка здесь
       SaveLoadController.Load();
       for (short i = 1; i <= newGameSlots.Length; i++)
@@ -53,6 +59,11 @@ public class Buttons : MonoBehaviour
       Cursor.lockState = CursorLockMode.None;
    }
 
+   private void Start()
+   {
+      load.StartScene();
+   }
+
    private void Update()
    {
       if (isLoading) return;
@@ -61,8 +72,13 @@ public class Buttons : MonoBehaviour
          if (isChangedMenu)
          {
             isChangedMenu = false;
+            isSure = false;
             selectedCharacter = null;
             StartCoroutine(ChangeMenuBack());
+         }
+         else if (isSureMenu)
+         {
+            DontSureBtn();
          }
          else
             CloseAllPanels();
@@ -74,9 +90,10 @@ public class Buttons : MonoBehaviour
    }
    public void ButtonClick(int id)
    {
-      if (cm.isMoving || openID == id) return;
       if (cm.currentIndex == id)
       {
+         if (cm.isMoving || openID == id) return;
+
          if (id == 1 && (newGameSlots[0] && newGameSlots[1] && newGameSlots[2])) return;
          if (animate != null) StopCoroutine(animate);
          if (isOpened)
@@ -151,20 +168,66 @@ public class Buttons : MonoBehaviour
       selectedCharacter = null;
    }
 
+   bool isSure = false;
+   bool isSureMenu = false;
    public void NewRunBtn(int slot)
    {
       SaveLoadController.slot = (short)slot;
-      StartCoroutine(ChangeMenu());
+      if (!newGameSlots[slot - 1] && !isSure)
+      {
+         if (animate != null) StopCoroutine(animate);
+         animate = StartCoroutine(AnimatePanel(panels[0], false, true, panels[6]));
+         isSureMenu = true;
+      }
+      else
+      {
+         StartCoroutine(ChangeMenu());
+      }
+   }
+
+   public void SureBtn()
+   {
+      isSure = true;
+      NewRunBtn(SaveLoadController.slot);
+      if (animate != null) StopCoroutine(animate);
+      animate = StartCoroutine(AnimatePanel(panels[6], false, false));
+      isSureMenu = false;
+   } 
+   public void DontSureBtn()
+   {
+      isSure = false;
+      if (animate != null) StopCoroutine(animate);
+      animate = StartCoroutine(AnimatePanel(panels[6], false, true, panels[0]));
+      isSureMenu = false;
    }
 
    public void BeginNewRun()
    {
-      StartCoroutine(LoadScene(true));
+      if (PlatformMove.is_Block) return;
+      LoadScene(true);
    }
    public void ContinueBtn(int slot)
    {
       SaveLoadController.slot = (short)slot;
-      StartCoroutine(LoadScene(false));
+      LoadScene(false);
+   }
+   
+   public void OpenLink(string link)
+   {
+      Application.OpenURL(link);
+   }
+
+   public void UpdateSlider(int id)
+   {
+      switch (id)
+      {
+         case 1://Громкость звуков
+            sliderTexts[id - 1].text = $"Громкость звука: {sliders[id-1].value}%";
+            break;
+         case 2://Громкость музыки
+            sliderTexts[id - 1].text = $"Громкость музыки: {sliders[id - 1].value}%";
+            break;
+      }
    }
 
    IEnumerator ChangeMenu()
@@ -261,12 +324,10 @@ public class Buttons : MonoBehaviour
       isChangedMenu = false;
    }
 
-   IEnumerator LoadScene(bool isNewGame)
+   void LoadScene(bool isNewGame)
    {
       //Переход к игре для выбранного слота
       isLoading = true;
-      loadScreen.interactable = true;
-      loadScreen.blocksRaycasts = true;
 
       //Здесь устанавливаем параметры
       if (isNewGame)
@@ -282,24 +343,7 @@ public class Buttons : MonoBehaviour
          SaveLoadController.Load();
       }
 
-         //Экран загрузки
-         float startAlpha = 0f, endAlpha = 1f, elapsed = 0f;
-      loadScreen.alpha = startAlpha;
-
-      while (elapsed < duration)
-      {
-         float t = elapsed / duration;
-         float alpha = Mathf.Lerp(startAlpha, endAlpha, t);
-
-         loadScreen.alpha = alpha;
-
-         elapsed += Time.deltaTime;
-         yield return null;
-      }
-
-      // Установка финальных значений
-      loadScreen.alpha = endAlpha;
-      yield return null;
-      SceneManager.LoadScene(1);
+      //Экран загрузки
+      load.LoadScene(1);
    }
 }

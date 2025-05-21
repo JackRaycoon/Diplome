@@ -17,9 +17,13 @@ public class EventData : ScriptableObject
 
    [TextArea(10, 20)]
    public string eventText;
+   [TextArea(10, 20)]
+   [Tooltip("Для того чтобы поменять род слов в тексте")]
+   public string eventTextWomanCharacter;
 
    [Tooltip("StartEvent - Стартовый для персонажа, сюжетный?\n" +
       "EnteranceEvent - Появляется после входа в комнату, старт ивента\n" +
+      "Trap - Требует 2 выбора - первый для попавшего в ловушку, второй для избегания ловушки\n" +
       "EventPart - Часть ивента, по сути после любого действия с ивентом мы переходим к его следующей части")]
    public EventType eventType;
 
@@ -29,6 +33,8 @@ public class EventData : ScriptableObject
    [Tooltip("Текст на кнопку выбора, если это часть ивента")]
    [TextArea]
    public string textChoice;
+   [Tooltip("Скрытый ли это выбор?")]
+   public bool isHidden;
 
    [Tooltip("Выборы для ивента, если пустой значит ивент закончился")]
    public List<EventData> choices;
@@ -37,26 +43,58 @@ public class EventData : ScriptableObject
    {
       EventPart, //Часть ивента, по сути после любого действия с ивентом мы переходим к его следующей части
       StartEvent, //Стартовый для персонажа, сюжетный?
-      EnteranceEvent //Появляется после входа в комнату, старт ивента
+      EnteranceEvent, //Появляется после входа в комнату, старт ивента
+      FightEvent, //Боевой ивент
+      BossEvent, //Босс локации
+      BossWin, //Ивент победы над боссом, будет появляться переход на следующую локацию
+      Trap //Ловушка ли это, требуется 2 ивента для попадания в ловушку и её избегания
    }
+
+   [Tooltip("Если ловушка, то по какой хар-ке смотрим её избегание? Если None, то по ловкости")]
+   public Characteristic checkTrap;
+
+   public enum Characteristic
+   {
+      None,
+      Strengh,
+      Agility,
+      Wisdow,
+      Consitution,
+      Armor
+   }
+
 
    [Header("Бой")]
    [Tooltip("Если никого нет, то ивент обычный, но если есть хоть 1, то все выборы заменяются на кнопку Начать Бой" +
       "\nНе может быть финальным! Требует ровно 1 ивент для перехода дальше (после победы в бою)")]
    public List<CharacterSO> enemies;
+   [Tooltip("Количество врагов конкретного типа. В сумме не больше 6." +
+   "\nНе нужно для randomEnemies.")]
+   public List<short> enemiesCount;
    [Tooltip("При включении игрок не будет видеть врагов до боя.")]
    public bool isFog;
+   [Tooltip("Если включено и умер в бою, вместо поражения активируется 2-й ивент из списка выборов.")]
+   public bool isNotOver;
+   [Tooltip("Сколько хп (в %) должно быть у персонажа после поражения в бою, если включен isNotOver")]
+   public int overHpProcent;
    [Tooltip("При включении список выше станет пулом из которого могут сгенерироваться враги.")]
    public bool randomEnemies;
    [Tooltip("Нужно только для randomEnemies.")]
    public int minEnemyCount;
    [Tooltip("Нужно только для randomEnemies.")]
    public int maxEnemyCount;
+   [Tooltip("Шанс на спавн конкретного врага из списка, от 0 до 100. Сумма должна быть 100." +
+      "\nНужно только для randomEnemies.")]
+   public List<float> enemiesChances;
 
 
    [Header("Награда")]
-   public int minGold;
-   public int maxGold;
+
+   [Tooltip("Вместо Получено станет Потеряно")]
+   public bool isLost;
+
+   public int minSoul;
+   public int maxSoul;
 
    public List<SkillSO> rewardSkillList = new();
    [Tooltip("Пулл скиллов которые могут быть выданы, обычно выдаётся только 1 отсюда, список выше игнорируется")]
@@ -64,6 +102,8 @@ public class EventData : ScriptableObject
    [Tooltip("Если включено, то в награду будут выданы все скиллы из списка\n" +
       "Иначе будет выдан случайный")]
    public bool allSkillsFromList;
+   [Tooltip("Не проверяет принадлежность пуллам")]
+   public bool ignoreSkillPools;
    [Tooltip("Шанс на получение скилла из списка, от 0 до 100.")]
    public List<float> chanceToReceiveSkill = new();
    [Tooltip("Случайный ли (подходящий) герой из списка получит скилл в награду, если выключено то игрок выбирает сам")]
@@ -84,8 +124,12 @@ public class EventData : ScriptableObject
    public int armorRewardMin;
    public int armorRewardMax;
 
+   [Tooltip("В процентах")]
    public int healRewardMin;
    public int healRewardMax;
 
-   public bool isStatsPackReward;
+   public int karmaMin;
+   public int karmaMax;
+
+   //public bool isStatsPackReward;
 }
