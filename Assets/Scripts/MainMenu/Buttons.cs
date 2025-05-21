@@ -208,6 +208,11 @@ public class Buttons : MonoBehaviour
       SaveLoadController.slot = (short)slot;
       LoadScene(false);
    }
+   
+   public void OpenLink(string link)
+   {
+      Application.OpenURL(link);
+   }
 
    
 
