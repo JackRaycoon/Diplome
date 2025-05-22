@@ -55,10 +55,11 @@
 1. [Stylized Hand Painted Dungeon (Free)](https://assetstore.unity.com/packages/3d/environments/stylized-hand-painted-dungeon-free-173934)
 2. [Json & MessagePack Serialization](https://assetstore.unity.com/packages/tools/network/json-messagepack-serialization-59918)
 
-### 📦 Используемая музыка:
+### 🎵 Используемая музыка:
 Вся используемая музыка распространяется под лицензией [CC-BY 4.0.](https://creativecommons.org/licenses/by/4.0/deed.ru)
 1. Adrift Among Infinite Stars – Scott Buckley
-2. 
+2. Permafrost – Scott Buckley
+3. Honour Among Thieves – Scott Buckley
 
 ---
 
