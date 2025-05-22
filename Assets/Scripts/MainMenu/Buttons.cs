@@ -1,8 +1,10 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Data.Common;
 using TMPro;
 using UnityEngine;
+using UnityEngine.Audio;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
@@ -23,6 +25,9 @@ public class Buttons : MonoBehaviour
 
    public List<TextMeshProUGUI> sliderTexts;
    public List<Slider> sliders;
+
+   public AudioMixer mixer;
+   public SFXPlayer player;
 
    private bool isOpened;
    private int openID = -1;
@@ -52,6 +57,10 @@ public class Buttons : MonoBehaviour
          slotsContinue[i - 1].interactable = exist;
          slotsContinue[i - 1].gameObject.GetComponent<CanvasGroup>().alpha = exist ? 1f : 0.5f;
       }
+
+      OptionsManager.Load();
+      StartCoroutine(ApplyOptions());
+
       //отключаем "продолжить"
       continueText.color = (newGameSlots[0] && newGameSlots[1] && newGameSlots[2]) ? 
          new Color(0.4528302f, 0.4528302f, 0.4528302f) : new Color(1f, 1f, 1f);
@@ -67,10 +76,11 @@ public class Buttons : MonoBehaviour
    private void Update()
    {
       if (isLoading) return;
-      if (Input.GetKeyUp(KeyCode.Mouse1) || Input.GetKeyUp(KeyCode.Escape))
+      if ((Input.GetKeyUp(KeyCode.Mouse1) || Input.GetKeyUp(KeyCode.Escape)) && animate == null)
       {
          if (isChangedMenu)
          {
+            player.PlayClick();
             isChangedMenu = false;
             isSure = false;
             selectedCharacter = null;
@@ -78,6 +88,7 @@ public class Buttons : MonoBehaviour
          }
          else if (isSureMenu)
          {
+            player.PlayClick();
             DontSureBtn();
          }
          else
@@ -88,10 +99,18 @@ public class Buttons : MonoBehaviour
          ButtonClick(cm.currentIndex);
       }
    }
+
+   private void OnApplicationQuit()
+   {
+      if (openID == 3)
+         CloseOptionWindow();
+   }
+
    public void ButtonClick(int id)
    {
       if (cm.currentIndex == id)
       {
+         player.PlayClick();
          if (cm.isMoving || openID == id) return;
 
          if (id == 1 && (newGameSlots[0] && newGameSlots[1] && newGameSlots[2])) return;
@@ -104,6 +123,7 @@ public class Buttons : MonoBehaviour
       }
       else
       {
+         player.PlaySweep();
          cm.currentIndex = id;
          cm.UpdateButtonPositions(false);
       }
@@ -121,6 +141,7 @@ public class Buttons : MonoBehaviour
       panelGroup.blocksRaycasts = false;
       dark.interactable = false;
       dark.blocksRaycasts = false;
+      isOpened = false;
 
       while (elapsed < duration)
       {
@@ -139,7 +160,6 @@ public class Buttons : MonoBehaviour
       panelGroup.alpha = endAlpha;
       if (!needOpen)
          dark.alpha = endAlpha;
-      isOpened = false;
 
       if (open)
       {
@@ -147,6 +167,7 @@ public class Buttons : MonoBehaviour
          panelGroup.blocksRaycasts = true;
          isOpened = true;
       }
+      animate = null;
       if (needOpen)
       {
          animate = StartCoroutine(AnimatePanel(panelOpen, true, false));
@@ -161,6 +182,8 @@ public class Buttons : MonoBehaviour
    public void CloseAllPanels()
    {
       if (openID == -1) return;
+      player.PlayClick();
+      if (openID == 3) CloseOptionWindow();
       if (animate != null) StopCoroutine(animate);
       animate = StartCoroutine(AnimatePanel(panels[openID], false, false));
       openID = -1;
@@ -219,16 +242,42 @@ public class Buttons : MonoBehaviour
 
    public void UpdateSlider(int id)
    {
+      var slider = sliders[id - 1];
+      var sliderText = sliderTexts[id - 1];
+      float rawValue = slider.value;         // 0Ц100
+      float normalized = rawValue / 100f;             // 0.0Ц1.0
+      float dBVolume = normalized < 0.01f ? -80f : Mathf.Lerp(-20f, 0f, normalized);
+
       switch (id)
       {
-         case 1://√ромкость звуков
-            sliderTexts[id - 1].text = $"√ромкость звука: {sliders[id-1].value}%";
+         case 1: // √ромкость звуков
+            OptionsManager.gameOptions.sfxVolume = (short)rawValue;
+            sliderText.text = $"√ромкость звука: {Mathf.RoundToInt(rawValue)}%";
+            mixer.SetFloat("SFX_Volume", dBVolume);
             break;
-         case 2://√ромкость музыки
-            sliderTexts[id - 1].text = $"√ромкость музыки: {sliders[id - 1].value}%";
+
+         case 2: // √ромкость музыки
+            OptionsManager.gameOptions.bgmVolume = (short)rawValue;
+            sliderText.text = $"√ромкость музыки: {Mathf.RoundToInt(rawValue)}%";
+            mixer.SetFloat("BGM_Volume", dBVolume);
             break;
       }
    }
+
+   private void CloseOptionWindow()
+   {
+      OptionsManager.Save();
+   }
+
+   IEnumerator ApplyOptions()
+   {
+      sliders[0].value = OptionsManager.gameOptions.sfxVolume;
+      sliders[1].value = OptionsManager.gameOptions.bgmVolume;
+      yield return null;
+      UpdateSlider(1);
+      UpdateSlider(2);
+   }
+
 
    IEnumerator ChangeMenu()
    {

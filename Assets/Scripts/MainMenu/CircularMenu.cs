@@ -15,6 +15,8 @@ public class CircularMenu : MonoBehaviour
    public float yStretch = 1.5f; // например, 1.5 для 150% высоты
    public float lerpSpeed = 10f;
 
+   public SFXPlayer player;
+
    public bool isMoving;
 
    private Coroutine[] move = new Coroutine[5];
@@ -37,11 +39,13 @@ public class CircularMenu : MonoBehaviour
       if ((Input.GetKeyDown(KeyCode.UpArrow) || Input.GetAxis("Mouse ScrollWheel") > 0f) && currentIndex > 0)
       {
          currentIndex--;
+         player.PlaySweep();
          UpdateButtonPositions();
       }
       else if ((Input.GetKeyDown(KeyCode.DownArrow) || Input.GetAxis("Mouse ScrollWheel") < 0f) && currentIndex < 4)
       {
          currentIndex++;
+         player.PlaySweep();
          UpdateButtonPositions();
       }
    }
