@@ -5,7 +5,8 @@ using System.Collections.Generic;
 public class MagicScrollController : MonoBehaviour
 {
    public GameObject magicScrollPrefab;
-   public Transform player; // назначь игрока в инспекторе
+   public Transform player;
+   public SFXPlayer sfxPlayer;
    private GameObject currentScroll;
    private Coroutine currentRoutine;
    private float showDistance = 1f;
@@ -51,6 +52,8 @@ public class MagicScrollController : MonoBehaviour
    {
       if (isClosing) yield break;
 
+      sfxPlayer.PlayScroll();
+
       Transform cube = scroll.transform;
       Transform canvas = cube.GetComponentInChildren<Canvas>().transform;
       CanvasGroup cg = canvas.GetComponent<CanvasGroup>();
@@ -90,6 +93,8 @@ public class MagicScrollController : MonoBehaviour
    {
       if (currentScroll == null) yield break;
       if (isClosing) yield break;
+
+      sfxPlayer.PlayScroll();
 
       isClosing = true;
       Transform cube = currentScroll.transform;

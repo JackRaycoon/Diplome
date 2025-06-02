@@ -23,6 +23,8 @@ public class HandAnimationManager : MonoBehaviour
    private Vector3 startPos_part1, startPos_part2;
    public Transform pos_part1, pos_part2;
 
+   public CanvasGroup TurnTextPan;
+
    public TMP_Text Description;
 
    public static bool isOpen;
@@ -72,6 +74,7 @@ public class HandAnimationManager : MonoBehaviour
    {
       // «десь можно помен€ть текст (если нужно)
       // Ќапример:
+      TurnTextPan.alpha = 0f;
       Description.text = externalSkill.Name + "\n" + "<i>" + externalSkill.Description(true, caster) + "</i>";
 
       Vector3 target1 = pos_part1.position;
@@ -114,6 +117,7 @@ public class HandAnimationManager : MonoBehaviour
 
       // ѕосле полного закрыти€ Ч если запрашивали открытие, делаем его
       isOpen = false;
+      TurnTextPan.alpha = 1f;
       if (pendingOpenRequest && pendingSkill != null)
       {
          RequestOpen(pendingSkill, pendingFighter);
