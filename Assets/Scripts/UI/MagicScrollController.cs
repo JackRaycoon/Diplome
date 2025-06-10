@@ -48,7 +48,7 @@ public class MagicScrollController : MonoBehaviour
       currentRoutine = StartCoroutine(OpenScroll(currentScroll));
    }
 
-   IEnumerator OpenScroll(GameObject scroll)
+   public IEnumerator OpenScroll(GameObject scroll)
    {
       if (isClosing) yield break;
 
@@ -89,7 +89,7 @@ public class MagicScrollController : MonoBehaviour
       cg.blocksRaycasts = true;
    }
 
-   IEnumerator CloseScroll(System.Action onComplete = null)
+   public IEnumerator CloseScroll(System.Action onComplete = null)
    {
       if (currentScroll == null) yield break;
       if (isClosing) yield break;

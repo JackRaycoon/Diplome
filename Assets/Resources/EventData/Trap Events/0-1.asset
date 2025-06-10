@@ -41,10 +41,11 @@ MonoBehaviour:
   isNotOver: 1
   overHpProcent: 20
   randomEnemies: 1
-  minEnemyCount: 3
-  maxEnemyCount: 6
+  minEnemyCount: 1
+  maxEnemyCount: 3
   enemiesChances:
   - 100
+  isLost: 0
   minSoul: 0
   maxSoul: 0
   rewardSkillList: []

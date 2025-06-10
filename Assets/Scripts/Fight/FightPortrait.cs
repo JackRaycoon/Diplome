@@ -43,7 +43,6 @@ public class FightPortrait : MonoBehaviour
          else if (Fight.PlayerUITeam.Count == 1 && !Fight.isEnemyTurn) 
          {
             BuffPanelController.buffFighter = (id < 6) ? Fight.PlayerTeam[id] : Fight.EnemyTeam[id - 6];
-            Debug.Log("CLICK");
          }
          else
             Fight.SelectCharacter(id);
@@ -51,7 +50,6 @@ public class FightPortrait : MonoBehaviour
       else if(Fight.PlayerUITeam.Count == 1 && !Fight.isEnemyTurn)
       {
          BuffPanelController.buffFighter = (id < 6) ? Fight.PlayerTeam[id] : Fight.EnemyTeam[id - 6];
-         Debug.Log("CLICK");
       }
    }
 

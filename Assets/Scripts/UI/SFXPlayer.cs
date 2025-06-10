@@ -12,7 +12,7 @@ public class SFXPlayer : MonoBehaviour
 
    public void PlayClick() => audioSource.PlayOneShot(clickSound);
    public void PlaySweep() => audioSource.PlayOneShot(sweepSound);
-   public void PlayScroll() => audioSource.PlayOneShot(sweepSound);
-   public void PlayDoor() => audioSource.PlayOneShot(sweepSound);
-   public void PlayLockDoor() => audioSource.PlayOneShot(sweepSound);
+   public void PlayScroll() => audioSource.PlayOneShot(scrollSound);
+   public void PlayDoor() => audioSource.PlayOneShot(doorSound);
+   public void PlayLockDoor() => audioSource.PlayOneShot(lockDoorSound);
 }

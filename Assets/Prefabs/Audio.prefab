@@ -304,3 +304,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   clickSound: {fileID: 8300000, guid: 82d8fe317dad4da458a01195b26f299c, type: 3}
   sweepSound: {fileID: 8300000, guid: 4e237d935bd6ca849a1ece8593acf67f, type: 3}
+  scrollSound: {fileID: 8300000, guid: 82d8fe317dad4da458a01195b26f299c, type: 3}
+  doorSound: {fileID: 8300000, guid: 82d8fe317dad4da458a01195b26f299c, type: 3}
+  lockDoorSound: {fileID: 8300000, guid: 82d8fe317dad4da458a01195b26f299c, type: 3}

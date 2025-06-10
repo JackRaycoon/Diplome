@@ -72,8 +72,8 @@ MonoBehaviour:
   isNotOver: 1
   overHpProcent: 20
   randomEnemies: 1
-  minEnemyCount: 2
-  maxEnemyCount: 5
+  minEnemyCount: 1
+  maxEnemyCount: 3
   enemiesChances:
   - 40
   - 40

@@ -26,6 +26,6 @@ MonoBehaviour:
   strengh: 3
   agility: 0
   wisdow: 0
-  constitution: 4
-  defence: 5
+  constitution: 1
+  defence: 3
   priorityStats: 0400000003000000

@@ -288,16 +288,22 @@ public class Fighter
       private set { }
    }
 
+   public void PrepareToFight()
+   {
+      skillsBattle = new(skills);
+   }
+
    public void Spawn()
    {
       if (isSpawn) return;
+
+      PrepareToFight();
 
       //Все уже появившиеся на поле
       var allSpawned = new List<Fighter>();
       foreach (Fighter character in Fight.AllCharacter)
          if (character.isSpawn) allSpawned.Add(character);
 
-      skillsBattle = new(skills);
 
       //Свои абилки
       foreach (Skill skill in skillsBattle)

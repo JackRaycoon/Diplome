@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using TMPro;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using Random = UnityEngine.Random;
 
@@ -28,6 +29,8 @@ public class Room3D : MonoBehaviour
 
    private List<Fighter> enemiesForFight = new();
 
+   public Loading loader;
+
    bool isFilled = false;
 
    private void Start()
@@ -45,7 +48,10 @@ public class Room3D : MonoBehaviour
       if(data != null 
          && data.eventType == EventData.EventType.BossWin && SaveLoadController.runInfo.currentRoom != room)
       {
-         Debug.Log("Меню победы в забеге, можно кидать на сцену статистики например и удалять сейв сразу.");
+         SaveLoadController.ClearSave(SaveLoadController.slot);
+         loader.LoadScene(0);
+         SceneManager.LoadScene(0);
+         //Debug.Log("Меню победы в забеге, можно кидать на сцену статистики например и удалять сейв сразу.");
       }
    }
 

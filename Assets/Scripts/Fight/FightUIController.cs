@@ -239,7 +239,7 @@ public class FightUIController : MonoBehaviour
 
    public void ContinueBtn()
    {
-      if (Fight.isLose)
+      if (Fight.isLose && !Fight.isNotOver)
       {
          loader.LoadScene(0);
       }

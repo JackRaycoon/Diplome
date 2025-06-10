@@ -20,6 +20,9 @@ public class DungeonGenerator : MonoBehaviour
 
    [SerializeField] GameObject player;
 
+   public Loading loader;
+
+
    private List<Room> createdRooms = new();
    private List<GameObject> createdRoomsGO = new();
    private List<Corridor> createdCorridors = new();
@@ -95,6 +98,7 @@ public class DungeonGenerator : MonoBehaviour
             Quaternion.identity,
             transform).GetComponent<RoomBehaviour>();*/
          roomBeh.gameObject.GetComponent<Room3D>().room = room;
+         roomBeh.gameObject.GetComponent<Room3D>().loader = loader;
          createdRooms.Add(room);
          createdRoomsGO.Add(roomBeh.gameObject);
          bool[] status = new bool[4];

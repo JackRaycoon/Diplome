@@ -127,7 +127,8 @@ public class MiniMapUI : MonoBehaviour
          if (!currentRoom.isUnlocked) currentRoom = SaveLoadController.runInfo.currentCorridor.room2;
       }
       //Открываем новые клетки
-      List<Room> allRoomList_WithoutFogOfWar = new();
+      //List<Room> allRoomList_WithoutFogOfWar = new();
+      List<Vector2Int> allRoomList_WithoutFogOfWar = new();
       //Открываем комнаты
       foreach (Room room in SaveLoadController.runInfo.dungeonStructure.rooms)
       {
@@ -138,14 +139,14 @@ public class MiniMapUI : MonoBehaviour
             && currentRoom.Coords.y == room.Coords.y)
             room.isUnlocked = true;
          if (!room.isFogOfWar)
-            allRoomList_WithoutFogOfWar.Add(room);
+            allRoomList_WithoutFogOfWar.Add(new(room.coordX, room.coordY));
       }
 
       //Открываем коридоры
       foreach (Corridor corridor in SaveLoadController.runInfo.dungeonStructure.corridors)
       {
-         if (allRoomList_WithoutFogOfWar.Contains(corridor.room1)
-               && allRoomList_WithoutFogOfWar.Contains(corridor.room2))
+         if (allRoomList_WithoutFogOfWar.Contains(new(corridor.room1.coordX, corridor.room1.coordY))
+               && allRoomList_WithoutFogOfWar.Contains(new(corridor.room2.coordX, corridor.room2.coordY)))
          {
             corridor.isFogOfWar = false;
          }
@@ -159,6 +160,11 @@ public class MiniMapUI : MonoBehaviour
          {
             child.gameObject.SetActive(!fullUI.corridor.isFogOfWar || isNoFogOfWar);
             fullUI.fullMapAnalogue.SetActive(!fullUI.corridor.isFogOfWar || isNoFogOfWar);
+
+            Debug.Log($"Corridor {fullUI.corridor.orientation} " +
+               $"\nroom 1: {fullUI.corridor.room1.coordX} {fullUI.corridor.room1.coordY} " +
+               $"\nroom 2: {fullUI.corridor.room2.coordX} {fullUI.corridor.room2.coordY} " +
+               $"State: {fullUI.corridor.isFogOfWar}");
          }
          else
          {

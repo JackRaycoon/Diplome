@@ -60,6 +60,7 @@ public class Fight : MonoBehaviour
    public static bool endFight = false;
    public static bool isEnemyTurn = false;
    public static bool skipTurn = false;
+   public static bool isNotOver = false;
 
    public static List<CastSkillStructure> additionalCastSkills = new();
 
@@ -84,6 +85,7 @@ public class Fight : MonoBehaviour
       isEnemyTurn = false;
       endFight = false;
       skipTurn = false;
+      isNotOver = false;
       additionalCastSkills = new();
 
       PlayerTeam = SaveLoadController.runInfo.PlayerTeam;
@@ -318,6 +320,8 @@ public class Fight : MonoBehaviour
 
    private void FightStart()
    {
+      foreach (var chara in AllCharacter)
+         chara.PrepareToFight();
       foreach (Fighter character in AllCharacter)
       {
          character.isSpawn = false;
@@ -880,6 +884,7 @@ public class Fight : MonoBehaviour
    private void EndFight() 
    {
       StopAllCoroutines();
+      if (endFight) return;
       endFight = true;
       Skill_Image.isNeedClose = true;
       WinLosePanel.SetActive(true);
@@ -905,6 +910,7 @@ public class Fight : MonoBehaviour
                chara.hp = (int)(chara.max_hp * (data.overHpProcent / 100.0f));
             }
             SaveLoadController.Save();
+            isNotOver = true;
          }
          else
             SaveLoadController.ClearSave(SaveLoadController.slot);
