@@ -640,13 +640,6 @@ public class Fight : MonoBehaviour
       //UpdatePortrait();
       //Реализовать логику выбора цели
       Fighter target;
-      //int i = 0;
-      /*do
-      {
-         target = PlayerTeam[Random.Range(0, PlayerTeam.Count)];
-         i++;
-      } while (target.isDead && i < 1000 && target.buffs.Contains(Fighter.Buff.Provocation)); //выбираем не мёртвую цель без провокации
-      */
       var possibleTargets = PlayerTeam
     .Where(f => !f.isDead && !f.buffs.Contains(Fighter.Buff.Provocation))
     .ToList();
@@ -794,14 +787,6 @@ public class Fight : MonoBehaviour
                }
             }
          }
-
-         
-         ////Проверка на просмотр намерений:
-         //var mainChar = PlayerTeam[0];
-         //int chance = (mainChar.wisdow + mainChar.bonus_wisdow) * procentPerOneCharacteristic;
-         //if (chance > limitProcent) chance = limitProcent;
-         //int res = Random.Range(0, 100);
-         //seeIntension = res < chance;
 
          AlreadyTurn.Clear();
          allEnemiesDoTurn = false;

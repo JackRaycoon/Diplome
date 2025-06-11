@@ -53,7 +53,7 @@ public class Fighter
    {
     SkillDB.Instance.GetSkillByName("Basic Attack")
    };
-   public List<Skill> skillsBattle; //в бою используем этот список, мало ли изменится что-нибудь в бою
+   public List<Skill> skillsBattle; //в бою используем этот список, на случай если изменится что-нибудь
 
    public Fighter(string name)
    {
@@ -374,7 +374,8 @@ public class Fighter
    {
       if(this == SaveLoadController.runInfo.PlayerTeam[0])
       {
-         //Проверка на бессмертие:
+         //Проверка на бессмертие (работает, но не уверен в плане баланса, отключено):
+         /*
          int chance = (strengh + bonus_strengh) * Fight.procentPerOneCharacteristic;
          if (chance > Fight.limitProcent) chance = Fight.limitProcent;
          int res = Random.Range(0, 100);
@@ -382,7 +383,7 @@ public class Fighter
          {
             hp = 1;
             return;
-         }
+         }*/
       }
 
       //Баффы перед смертью
