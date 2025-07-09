@@ -43,6 +43,7 @@
 ## 📄 Полный текст дипломной работы
 
 Ссылка на диплом в библиотеке НГТУ: [ЭБС НГТУ](https://elibrary.nstu.ru/source?id=190125).
+Ссылка на файл дипломной работы: [Yandex Disk](https://disk.yandex.ru/i/8haVnVXUNzXAVw).
 
 ---
 
